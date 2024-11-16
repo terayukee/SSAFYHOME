@@ -10,11 +10,14 @@ import Ad from "@/assets/findmyhome.jpg";
 
 <style scoped>
 .ad-banner {
-  margin-top: 16px;
-  text-align: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .ad-banner img {
   max-width: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
