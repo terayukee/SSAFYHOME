@@ -1,130 +1,169 @@
 <script setup>
 import { ref, onMounted } from "vue";
-// import { listStations } from "@/api/estation"
-import { listSido, listGugun } from "@/api/map";
-
 import VKakaoMap from "@/components/common/VKakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
+import { listSido, listGugun } from "@/api/map";
 
-// const serviceKey = import.meta.env.VITE_OPEN_API_SERVICE_KEY;
-const { VITE_OPEN_API_SERVICE_KEY } = import.meta.env;
+const VITE_OPEN_API_SERVICE_KEY = import.meta.env.VITE_OPEN_API_SERVICE_KEY;
 
-const sidoList = ref([]);
-const gugunList = ref([{ text: "구군선택", value: "" }]);
-const chargingStations = ref([]);
-const selectStation = ref({});
-
-const param = ref({
-  serviceKey: VITE_OPEN_API_SERVICE_KEY,
-  pageNo: 1,
-  numOfRows: 20,
-  zscode: 0,
+const filters = ref({
+  rentType: "",
+  roomSize: "",
+  approvalDate: "",
+  numHouseholds: "",
+  parkingSpaces: "",
+  numRooms: "",
+  additionalFilters: "",
 });
 
-onMounted(() => {
-  // getChargingStations();
-  getSidoList();
-});
-
-const getSidoList = () => {
-  listSido(
-    ({ data }) => {
-      let options = [];
-      options.push({ text: "시도선택", value: "" });
-      data.forEach((sido) => {
-        options.push({ text: sido.sidoName, value: sido.sidoCode });
-      });
-      sidoList.value = options;
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
+const filterOptions = {
+  rentType: [
+    { text: "월세", value: "월세" },
+    { text: "전세", value: "전세" },
+    { text: "매매", value: "매매" },
+  ],
+  roomSize: [
+    { text: "10평 이하", value: "10평 이하" },
+    { text: "10~20평", value: "10~20평" },
+    { text: "20평 이상", value: "20평 이상" },
+  ],
+  approvalDate: [
+    { text: "5년 이내", value: "5년 이내" },
+    { text: "10년 이내", value: "10년 이내" },
+    { text: "10년 이상", value: "10년 이상" },
+  ],
+  numHouseholds: [
+    { text: "50세대 이하", value: "50세대 이하" },
+    { text: "50~100세대", value: "50~100세대" },
+    { text: "100세대 이상", value: "100세대 이상" },
+  ],
+  parkingSpaces: [
+    { text: "1대 이하", value: "1대 이하" },
+    { text: "2대", value: "2대" },
+    { text: "3대 이상", value: "3대 이상" },
+  ],
+  numRooms: [
+    { text: "1개", value: "1개" },
+    { text: "2개", value: "2개" },
+    { text: "3개 이상", value: "3개 이상" },
+  ],
+  additionalFilters: [
+    { text: "옵션 포함", value: "옵션 포함" },
+    { text: "신축", value: "신축" },
+    { text: "엘리베이터", value: "엘리베이터" },
+  ],
 };
 
-const onChangeSido = (val) => {
-  listGugun(
-    { sido: val },
-    ({ data }) => {
-      let options = [];
-      options.push({ text: "구군선택", value: "" });
-      data.forEach((gugun) => {
-        options.push({ text: gugun.gugunName, value: gugun.gugunCode });
-      });
-      gugunList.value = options;
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
-};
-
-const onChangeGugun = (val) => {
-  param.value.zscode = val;
-  getChargingStations();
-};
-
-const getChargingStations = () => {
-  listStations(
-    param.value,
-    ({ data }) => {
-      chargingStations.value = data.items[0].item;
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
-};
-
-const viewStation = (station) => {
-  selectStation.value = station;
+const onFilterChange = (filterKey, value) => {
+  filters.value[filterKey] = value;
+  console.log("Filter Changed:", filters.value);
 };
 </script>
 
 <template>
-  <div class="container text-center mt-3">
-    <div class="alert alert-success" role="alert">전기차 충전소</div>
-    <div class="row mb-2">
-      <div class="col d-flex flex-row-reverse">
-        <VSelect :selectOption="sidoList" @onKeySelect="onChangeSido" />
-      </div>
-      <div class="col">
-        <VSelect :selectOption="gugunList" @onKeySelect="onChangeGugun" />
-      </div>
+  <div class="apt-map-view">
+    <!-- 상단 네비게이션 -->
+    <header class="top-nav">
+      <VSelect
+        :selectOption="filterOptions.rentType"
+        @onKeySelect="(val) => onFilterChange('rentType', val)"
+      />
+      <VSelect
+        :selectOption="filterOptions.roomSize"
+        @onKeySelect="(val) => onFilterChange('roomSize', val)"
+      />
+      <VSelect
+        :selectOption="filterOptions.approvalDate"
+        @onKeySelect="(val) => onFilterChange('approvalDate', val)"
+      />
+      <VSelect
+        :selectOption="filterOptions.numHouseholds"
+        @onKeySelect="(val) => onFilterChange('numHouseholds', val)"
+      />
+      <VSelect
+        :selectOption="filterOptions.parkingSpaces"
+        @onKeySelect="(val) => onFilterChange('parkingSpaces', val)"
+      />
+      <VSelect
+        :selectOption="filterOptions.numRooms"
+        @onKeySelect="(val) => onFilterChange('numRooms', val)"
+      />
+      <VSelect
+        :selectOption="filterOptions.additionalFilters"
+        @onKeySelect="(val) => onFilterChange('additionalFilters', val)"
+      />
+    </header>
+
+    <div class="main-content">
+      <!-- 좌측 네비게이션 -->
+      <aside class="left-nav">
+        <ul>
+          <li>원/투룸</li>
+          <li>아파트</li>
+          <li>주택/빌라</li>
+          <li>오피스텔</li>
+          <li>분양</li>
+        </ul>
+      </aside>
+
+      <!-- 지도 및 결과 영역 -->
+      <section class="map-section">
+        <VKakaoMap
+          :stations="chargingStations"
+          :selectStation="selectStation"
+        />
+      </section>
     </div>
-    <VKakaoMap :stations="chargingStations" :selectStation="selectStation" />
-    <table class="table table-hover">
-      <thead>
-        <tr class="text-center">
-          <th scope="col">충전소명</th>
-          <th scope="col">충전소ID</th>
-          <th scope="col">충전기상태</th>
-          <th scope="col">위치</th>
-          <th scope="col">위도</th>
-          <th scope="col">경도</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          class="text-center"
-          v-for="station in chargingStations"
-          :key="station.statId + station.chgerId"
-          @click="viewStation(station)"
-        >
-          <th>{{ station.statNm }}</th>
-          <td>{{ station.statId }}</td>
-          <td>{{ station.stat }}</td>
-          <td>{{ station.addr }}</td>
-          <td>{{ station.lat }}</td>
-          <td>{{ station.lng }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
-<style>
-mark.purple {
-  background: linear-gradient(to top, #c354ff 20%, transparent 30%);
+<style scoped>
+.apt-map-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* 상단 네비게이션 스타일 */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+  gap: 16px;
+}
+
+.top-nav > * {
+  flex: 1;
+}
+
+/* 메인 컨텐츠 영역 */
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+/* 좌측 네비게이션 스타일 */
+.left-nav {
+  width: 200px;
+  padding: 16px;
+  background-color: #f3f3f3;
+  border-right: 1px solid #e0e0e0;
+}
+.left-nav ul {
+  list-style: none;
+  padding: 0;
+}
+.left-nav li {
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+/* 지도 섹션 */
+.map-section {
+  flex: 1;
+  padding: 16px;
 }
 </style>
