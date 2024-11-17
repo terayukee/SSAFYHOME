@@ -8,6 +8,7 @@ import VillaIcon from "@/assets/icons/villa.png";
 import OfficetelIcon from "@/assets/icons/office.png";
 import PreSaleIcon from "@/assets/icons/presale.png";
 
+// 좌측 네비게이션 항목
 const navItems = [
   { id: "apartment", label: "아파트", icon: ApartmentIcon },
   { id: "villa", label: "주택/빌라", icon: VillaIcon },
@@ -15,12 +16,19 @@ const navItems = [
   { id: "pre-sale", label: "분양", icon: PreSaleIcon },
 ];
 
-// 선택된 네비게이션 항목
+// 세로 네비게이션 항목
+
+// 선택 상태
 const selectedNav = ref("apartment");
+const selectedVerticalNav = ref("");
 
 // 네비게이션 항목 선택 함수
 const selectNav = (id) => {
   selectedNav.value = id;
+};
+
+const selectVerticalNav = (id) => {
+  selectedVerticalNav.value = id;
 };
 
 // 필터 데이터 및 옵션
@@ -95,7 +103,7 @@ const onFilterChange = (filterKey, value) => {
       </ul>
     </aside>
 
-    <div class="content-wrapper">
+    <div class="main-content">
       <!-- 상단 네비게이션 -->
       <header class="top-nav">
         <VSelect
@@ -135,10 +143,28 @@ const onFilterChange = (filterKey, value) => {
         />
       </header>
 
-      <!-- 지도 및 결과 영역 -->
-      <section class="map-section">
-        <VKakaoMap />
-      </section>
+      <div class="content-wrapper">
+        <!-- 세로 네비게이션 -->
+        <nav class="vertical-nav">
+          <button
+            :class="{ active: selectedButton === '단지' }"
+            @click="selectButton('단지')"
+          >
+            단지
+          </button>
+          <button
+            :class="{ active: selectedButton === '거래이력' }"
+            @click="selectButton('거래이력')"
+          >
+            거래이력
+          </button>
+        </nav>
+
+        <!-- 지도 및 결과 영역 -->
+        <section class="map-section">
+          <VKakaoMap />
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -149,6 +175,7 @@ const onFilterChange = (filterKey, value) => {
   height: 100vh;
 }
 
+/* 좌측 네비게이션 스타일 */
 .left-nav {
   width: 200px;
   background-color: #fff;
@@ -177,34 +204,60 @@ const onFilterChange = (filterKey, value) => {
 
 .left-nav li.active {
   background-color: #e8f0fe;
-  border: 1px solid #4285f4;
-}
-
-.nav-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 12px;
-}
-
-.left-nav li span {
-  font-size: 14px;
-  color: #333;
+  border-left: 4px solid #4285f4;
   font-weight: bold;
-}
-
-.left-nav li.active span {
   color: #4285f4;
 }
 
+/* main */
+.main-content {
+  width: 100%;
+}
+
+/* 세로 네비게이션 스타일 */
+.vertical-nav {
+  width: 300px;
+  background-color: #f9f9f9;
+  border-right: 1px solid #e0e0e0;
+  padding: 16px 0;
+}
+
+.vertical-nav button {
+  margin: 0px 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.vertical-nav button.active {
+  background-color: #4285f4;
+  color: white;
+  border-color: #4285f4;
+}
+
+.vertical-nav button:hover {
+  background-color: #e8f0fe;
+}
+
+/* 콘텐츠 스타일 */
 .content-wrapper {
   display: flex;
-  flex-direction: column;
   flex: 1;
+}
+
+.map-section {
+  flex: 1;
+  padding: 16px;
 }
 
 .top-nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   align-items: center;
   padding: 16px;
   background-color: #f9f9f9;
@@ -212,12 +265,9 @@ const onFilterChange = (filterKey, value) => {
   gap: 16px;
 }
 
-.top-nav > * {
-  flex: 1;
-}
-
-.map-section {
-  flex: 1;
-  padding: 16px;
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
 }
 </style>
