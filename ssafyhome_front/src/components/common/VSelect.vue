@@ -1,12 +1,22 @@
 <script setup>
 import { ref } from "vue";
-defineProps({ selectOption: Array });
+
+defineProps({
+  selectOption: {
+    type: Array,
+    default: () => [],
+  },
+  placeholder: {
+    type: String,
+    default: "옵션을 선택하세요",
+  },
+});
+
 const emit = defineEmits(["onKeySelect"]);
 
 const key = ref("");
 
 const onSelect = () => {
-  // console.log(key.value + "선택!!!");
   emit("onKeySelect", key.value);
 };
 </script>
@@ -17,11 +27,13 @@ const onSelect = () => {
     class="form-select form-select-sm w-50"
     @change="onSelect"
   >
+    <!-- Placeholder 역할 -->
+    <option value="" disabled selected>{{ placeholder }}</option>
+    <!-- 옵션 목록 -->
     <option
       v-for="option in selectOption"
       :key="option.value"
       :value="option.value"
-      :disabled="option.value === '' ? true : false"
     >
       {{ option.text }}
     </option>

@@ -66,30 +66,37 @@ const onFilterChange = (filterKey, value) => {
     <header class="top-nav">
       <VSelect
         :selectOption="filterOptions.rentType"
+        placeholder="월세, 전세, 매매"
         @onKeySelect="(val) => onFilterChange('rentType', val)"
       />
       <VSelect
         :selectOption="filterOptions.roomSize"
+        placeholder="방크기"
         @onKeySelect="(val) => onFilterChange('roomSize', val)"
       />
       <VSelect
         :selectOption="filterOptions.approvalDate"
+        placeholder="사용승인일"
         @onKeySelect="(val) => onFilterChange('approvalDate', val)"
       />
       <VSelect
         :selectOption="filterOptions.numHouseholds"
+        placeholder="세대수"
         @onKeySelect="(val) => onFilterChange('numHouseholds', val)"
       />
       <VSelect
         :selectOption="filterOptions.parkingSpaces"
+        placeholder="주차대수"
         @onKeySelect="(val) => onFilterChange('parkingSpaces', val)"
       />
       <VSelect
         :selectOption="filterOptions.numRooms"
+        placeholder="방수"
         @onKeySelect="(val) => onFilterChange('numRooms', val)"
       />
       <VSelect
         :selectOption="filterOptions.additionalFilters"
+        placeholder="추가필터"
         @onKeySelect="(val) => onFilterChange('additionalFilters', val)"
       />
     </header>
