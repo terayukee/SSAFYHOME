@@ -217,7 +217,7 @@ const onFilterChange = (filterKey, value) => {
 /* 세로 네비게이션 스타일 */
 .vertical-nav {
   width: 300px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
   padding: 16px 0;
 }
@@ -229,7 +229,7 @@ const onFilterChange = (filterKey, value) => {
   font-weight: bold;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
@@ -260,7 +260,7 @@ const onFilterChange = (filterKey, value) => {
   justify-content: left;
   align-items: center;
   padding: 16px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   gap: 16px;
 }

@@ -48,7 +48,7 @@ const navigateTo = (route) => {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
 }
 
