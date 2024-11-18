@@ -40,10 +40,10 @@ public class HouseInfoController {
             @RequestParam("neLat") double neLat,
             @RequestParam("neLng") double neLng) {
     	List<HouseRecentDealDto> houseRecentDealList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng);
-        System.out.println("찾은 내역 : "+houseRecentDealList.size());
-        for (HouseRecentDealDto deal : houseRecentDealList) {
-            System.out.println(deal.toString()); // `toString()` 메서드를 호출해 출력
-        }
+//        System.out.println("찾은 내역 : "+houseRecentDealList.size());
+//        for (HouseRecentDealDto deal : houseRecentDealList) {
+//            System.out.println(deal.toString()); // `toString()` 메서드를 호출해 출력
+//        }
     	return houseRecentDealList;
     }
 }
