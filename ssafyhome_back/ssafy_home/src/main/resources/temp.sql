@@ -1,112 +1,55 @@
-users-- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema home
--- -----------------------------------------------------
-
 -- -----------------------------------------------------
 -- Schema home
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `home` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-USE `home` ;
 
 -- -----------------------------------------------------
 -- Table `home`.`users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `home`.`users` (
-  `user_id` INT NOT NULL AUTO_INCREMENT,
-  `user_name` VARCHAR(255) NOT NULL,
-  `user_password` VARCHAR(255) NOT NULL,
-  `user_nickname` VARCHAR(255) NOT NULL,
-  `user_email` VARCHAR(255) NOT NULL,
+  `user_no` INT auto_increment primary key,
+  `user_name` VARCHAR(50) NOT NULL,
+  `user_password` VARCHAR(50) NOT NULL,
+  `user_nickname` VARCHAR(50) NOT NULL,
+  `user_email` VARCHAR(255) NOT NULL UNIQUE,
   `phone_number` VARCHAR(20) NULL DEFAULT NULL,
-  `role` VARCHAR(50) NULL DEFAULT NULL,
+  `role` VARCHAR(30) NULL DEFAULT NULL,
   `register_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted` TINYINT(1) NULL DEFAULT NULL,
+  `deleted` TINYINT(1) DEFAULT FALSE,
   `deleted_at` TIMESTAMP NULL DEFAULT NULL,
-  `refresh_token` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `user_email` (`user_email` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+  `reusersfresh_token` VARCHAR(255) NULL DEFAULT NULL
+);
 
 
 -- -----------------------------------------------------
 -- Table `home`.`board`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `home`.`board` (
-  `article_no` INT NOT NULL AUTO_INCREMENT,
-  `user_id` INT NOT NULL,
-  `user_nickname` VARCHAR(50) NOT NULL,
-  `subject` VARCHAR(100) NULL DEFAULT NULL,
-  `content` VARCHAR(2000) NULL DEFAULT NULL,
+  `board_no` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_no` INT,
+  `subject` VARCHAR(100) DEFAULT '',
+  `content` VARCHAR(2000) DEFAULT '',
   `hit` INT NULL DEFAULT '0',
   `register_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `comment_num` INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`article_no`),
-  INDEX `user_id` (`user_id` ASC) VISIBLE,
-  CONSTRAINT `board_ibfk_1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `home`.`users` (`user_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
+   FOREIGN KEY (`user_no`) REFERENCES users(`user_no`));
 
 -- -----------------------------------------------------
 -- Table `home`.`attachments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `home`.`attachments` (
   `attachment_id` INT NOT NULL AUTO_INCREMENT,
-  `article_no` INT NOT NULL,
+  `board_no` INT NOT NULL,
   `file_name` VARCHAR(255) NOT NULL,
   `file_size` INT NOT NULL,
   `file_type` VARCHAR(100) NOT NULL,
   `file_path` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`attachment_id`),
-  INDEX `article_no` (`article_no` ASC) VISIBLE,
-  CONSTRAINT `attachments_ibfk_1`
-    FOREIGN KEY (`article_no`)
-    REFERENCES `home`.`board` (`article_no`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `home`.`comments`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `home`.`comments` (
-  `comment_no` INT NOT NULL AUTO_INCREMENT,
-  `article_no` INT NOT NULL,
-  `user_id` INT NOT NULL,
-  `user_nickname` VARCHAR(50) NOT NULL,
-  `content` VARCHAR(2000) NOT NULL,
-  `register_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `parent_comment_no` INT NULL DEFAULT NULL,
-  PRIMARY KEY (`comment_no`),
-  INDEX `article_no` (`article_no` ASC) VISIBLE,
-  INDEX `user_id` (`user_id` ASC) VISIBLE,
-  CONSTRAINT `comments_ibfk_1`
-    FOREIGN KEY (`article_no`)
-    REFERENCES `home`.`board` (`article_no`)
-    ON DELETE CASCADE,
-  CONSTRAINT `comments_ibfk_2`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `home`.`users` (`user_id`)
-    ON DELETE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+  FOREIGN KEY (`board_no`) REFERENCES `home`.`board` (`board_no`));
 
 
 -- -----------------------------------------------------
@@ -162,30 +105,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-
--- -----------------------------------------------------
--- Table `home`.`favorite`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `home`.`favorite` (
-  `favoriteId` INT NOT NULL AUTO_INCREMENT,
-  `apt_seq` VARCHAR(20) NOT NULL,
-  `user_id` INT NOT NULL,
-  PRIMARY KEY (`favoriteId`),
-  UNIQUE INDEX `unique_favorite` (`apt_seq` ASC, `user_id` ASC) VISIBLE,
-  INDEX `user_id` (`user_id` ASC) VISIBLE,
-  CONSTRAINT `favorite_ibfk_1`
-    FOREIGN KEY (`apt_seq`)
-    REFERENCES `home`.`houseinfos` (`apt_seq`)
-    ON DELETE CASCADE,
-  CONSTRAINT `favorite_ibfk_2`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `home`.`users` (`user_id`)
-    ON DELETE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
 -- -----------------------------------------------------
 -- Table `home`.`guguncode`
 -- -----------------------------------------------------
@@ -221,7 +140,35 @@ AUTO_INCREMENT = 7084512
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
+-- -----------------------------------------------------
+-- Table `home`.`favorite`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `home`.`favorite` (
+  `apt_seq` VARCHAR(20),
+  `user_no` INT,
+  `selected_at` timestamp not null,
+  PRIMARY KEY (`apt_seq`, `user_no`),
+  FOREIGN KEY (`apt_seq`) REFERENCES houseInfos (`apt_seq`),
+  FOREIGN KEY (`user_no`) REFERENCES users (`user_no`)
+);
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+select * from users;
+INSERT INTO `home`.`users` (
+  `user_name`, 
+  `user_password`, 
+  `user_nickname`, 
+  `user_email`, 
+  `phone_number`, 
+  `role`
+) VALUES (
+  'ssafy',           -- 실제 사용자 이름을 적어주세요
+  'example_password',       -- 실제 비밀번호를 적어주세요
+  'ssafy',                  -- 닉네임
+  'example@example.com',    -- 실제 이메일을 적어주세요
+  '010-1234-5678',          -- 실제 전화번호를 적어주세요
+  'user'                    -- 실제 역할을 적어주세요
+);
+select * from board;
+insert into board(user_no,subject,content) values (1,"aa","aaaa")
+
+

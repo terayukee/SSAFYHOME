@@ -2,6 +2,11 @@ package com.ssafy.home.board.model;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class BoardListDto {
 	
 	// 글 목록
@@ -10,4 +15,5 @@ public class BoardListDto {
 	private int currentPage;
 	// 전체 페이지 수
 	private int totalPageCount;
+	
 }

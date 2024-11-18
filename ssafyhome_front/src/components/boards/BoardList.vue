@@ -2,17 +2,19 @@
 import { ref, onMounted } from 'vue';
 import { listArticle } from '@/api/board';
 
+import VPageNavigation from '../common/VPageNavigation.vue';
+
 onMounted(()=>{
     getArticleList();
 })
 
 
 
-
-// 
 const articles = ref([]);
 const currentPage = ref(1);
 const totalPage = ref(0);
+
+const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 
 // 페이징 처리
 const param = ref({
@@ -22,10 +24,23 @@ const param = ref({
   word: "",
 });
 
+const changeKey = (val) => {
+  console.log("BoarList에서 선택한 조건 : " + val);
+  param.value.key = val;
+};
+
+const onPageChange = (val) => {
+  console.log(val + "번 페이지로 이동 준비 끝!!!");
+  currentPage.value = val;
+  param.value.pgno = val;
+  getArticleList();
+};
+
 const getArticleList = () => {
   listArticle(
     param.value,
     ({data}) => {
+      console.log("adsdsa")
     articles.value = data.articles;
     currentPage.value = data.currentPage;
     totalPage.value = data.totalPageCount;
@@ -40,7 +55,6 @@ const getArticleList = () => {
 
 <template>
   <div class="board-container">
-    
     <!-- 게시글 목록 테이블 -->
     <table class="board-table">
       <thead>
@@ -48,56 +62,30 @@ const getArticleList = () => {
           <th>번호</th>
           <th>제목</th>
           <th>작성자</th>
-          <th>작성일</th>
           <th>조회수</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="post in boardList" 
+        <!-- <tr v-for="post in boardList" 
             :key="post.id" 
             @click="handlePostClick(post.id)"
             class="board-row">
           <td>{{ post.id }}</td>
           <td>{{ post.title }}</td>
           <td>{{ post.author }}</td>
-          <td>{{ post.date }}</td>
           <td>{{ post.views }}</td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
-
+  </div>  
     <!-- 페이지네이션 -->
-    <div class="pagination">
-      <button 
-        :disabled="currentPage === 1"
-        @click="handlePageChange(currentPage - 1)"
-        class="page-btn"
-      >
-        이전
-      </button>
-      <span v-for="page in totalPages" :key="page">
-        <button 
-          @click="handlePageChange(page)"
-          :class="['page-btn', { active: currentPage === page }]"
-        >
-          {{ page }}
-        </button>
-      </span>
-      <button 
-        :disabled="currentPage === totalPages"
-        @click="handlePageChange(currentPage + 1)"
-        class="page-btn"
-      >
-        다음
-      </button>
-    </div>
-
-    <!-- 글쓰기 버튼 -->
-    <div class="button-container">
-      <button @click="goToWrite" class="write-btn">글쓰기</button>
-    </div>
-  </div>
+    <VPageNavigation
+        :current-page="currentPage"
+        :total-page="totalPage"
+        @pageChange="onPageChange"
+    ></VPageNavigation>
 </template>
+
 
 <style scoped>
 .board-container {

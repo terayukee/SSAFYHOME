@@ -24,41 +24,70 @@ function range(start, end) {
   const list = [];
   for (let i = start; i <= end; i++) list.push(i);
   return list;
-  //   return Array(end - start + 1)
-  //     .fill()
-  //     .map((val, i) => start + i);
 }
 
 function onPageChange(pg) {
-  console.log(pg + "로 이동!!!");
   emit("pageChange", pg);
 }
 </script>
-
 <template>
-  <div class="row">
-    <ul class="pagination justify-content-center">
-      <li class="page-item">
-        <a class="page-link" @click="onPageChange(1)">최신</a>
+  <div class="pagination-container">
+    <ul class="pagination">
+      <li>
+        <button @click="onPageChange(1)">최신</button>
       </li>
-      <li class="page-item">
-        <a class="page-link" @click="onPageChange(startPage == 1 ? 1 : startPage - 1)">이전</a>
+      <li>
+        <button @click="onPageChange(startPage == 1 ? 1 : startPage - 1)">이전</button>
       </li>
       <template v-for="pg in range(startPage, endPage)" :key="pg">
-        <li :class="currentPage === pg ? 'page-item active' : 'page-item'">
-          <a class="page-link" @click="onPageChange(pg)">{{ pg }}</a>
+        <li :class="{ active: currentPage === pg }">
+          <button @click="onPageChange(pg)">{{ pg }}</button>
         </li>
       </template>
-      <li class="page-item">
-        <a class="page-link" @click="onPageChange(endRange ? totalPage : endPage + 1)">다음</a>
+      <li>
+        <button @click="onPageChange(endRange ? totalPage : endPage + 1)">다음</button>
       </li>
-      <li class="page-item"><a class="page-link" @click="onPageChange(totalPage)">마지막</a></li>
+      <li>
+        <button @click="onPageChange(totalPage)">마지막</button>
+      </li>
     </ul>
   </div>
 </template>
-
 <style scoped>
-a {
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  gap: 5px;
+}
+
+.pagination li {
+  margin: 0 2px;
+}
+
+.pagination button {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #007bff;
+  padding: 8px 12px;
   cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.pagination button:hover {
+  background-color: #e9ecef;
+}
+
+.pagination li.active button {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }
 </style>
