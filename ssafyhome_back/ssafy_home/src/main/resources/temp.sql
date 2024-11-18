@@ -1,4 +1,4 @@
--- MySQL Workbench Forward Engineering
+users-- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `home`.`users` (
   `deleted_at` TIMESTAMP NULL DEFAULT NULL,
   `refresh_token` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `user_email` (`user_email` ASC))
+  UNIQUE INDEX `user_email` (`user_email` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -50,8 +50,9 @@ CREATE TABLE IF NOT EXISTS `home`.`board` (
   `content` VARCHAR(2000) NULL DEFAULT NULL,
   `hit` INT NULL DEFAULT '0',
   `register_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment_num` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`article_no`),
-  INDEX `user_id` (`user_id` ASC),
+  INDEX `user_id` (`user_id` ASC) VISIBLE,
   CONSTRAINT `board_ibfk_1`
     FOREIGN KEY (`user_id`)
     REFERENCES `home`.`users` (`user_id`))
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `home`.`attachments` (
   `file_path` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`attachment_id`),
-  INDEX `article_no` (`article_no` ASC),
+  INDEX `article_no` (`article_no` ASC) VISIBLE,
   CONSTRAINT `attachments_ibfk_1`
     FOREIGN KEY (`article_no`)
     REFERENCES `home`.`board` (`article_no`))
@@ -93,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `home`.`comments` (
   `register_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `parent_comment_no` INT NULL DEFAULT NULL,
   PRIMARY KEY (`comment_no`),
-  INDEX `article_no` (`article_no` ASC),
+  INDEX `article_no` (`article_no` ASC) VISIBLE,
   INDEX `user_id` (`user_id` ASC) VISIBLE,
   CONSTRAINT `comments_ibfk_1`
     FOREIGN KEY (`article_no`)
@@ -115,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `home`.`sidocode` (
   `sidoCode` VARCHAR(10) NOT NULL,
   `sidoName` VARCHAR(30) NULL DEFAULT NULL,
   PRIMARY KEY (`sidoCode`),
-  UNIQUE INDEX `sidoName` (`sidoName` ASC))
+  UNIQUE INDEX `sidoName` (`sidoName` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -130,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `home`.`dongcode` (
   `gugunName` VARCHAR(30) NULL DEFAULT NULL,
   `dongName` VARCHAR(30) NULL DEFAULT NULL,
   PRIMARY KEY (`dongCode`),
-  INDEX `sidoName` (`sidoName` ASC),
+  INDEX `sidoName` (`sidoName` ASC) VISIBLE,
   CONSTRAINT `dongcode_ibfk_1`
     FOREIGN KEY (`sidoName`)
     REFERENCES `home`.`sidocode` (`sidoName`))
@@ -170,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `home`.`favorite` (
   `apt_seq` VARCHAR(20) NOT NULL,
   `user_id` INT NOT NULL,
   PRIMARY KEY (`favoriteId`),
-  UNIQUE INDEX `unique_favorite` (`apt_seq` ASC, `user_id` ASC),
+  UNIQUE INDEX `unique_favorite` (`apt_seq` ASC, `user_id` ASC) VISIBLE,
   INDEX `user_id` (`user_id` ASC) VISIBLE,
   CONSTRAINT `favorite_ibfk_1`
     FOREIGN KEY (`apt_seq`)
@@ -211,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `home`.`housedeals` (
   `exclu_use_ar` DECIMAL(7,2) NULL DEFAULT NULL,
   `deal_amount` VARCHAR(10) NULL DEFAULT NULL,
   PRIMARY KEY (`no`),
-  INDEX `apt_seq_to_house_info_idx` (`apt_seq` ASC),
+  INDEX `apt_seq_to_house_info_idx` (`apt_seq` ASC) VISIBLE,
   CONSTRAINT `apt_seq_to_house_info`
     FOREIGN KEY (`apt_seq`)
     REFERENCES `home`.`houseinfos` (`apt_seq`))
