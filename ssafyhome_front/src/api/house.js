@@ -7,4 +7,11 @@ function listHouses(param, success, fail) {
   house.get("/houses", { params: param }).then(success).catch(fail);
 }
 
-export { listHouses };
+function listHousesInBounds(bounds, success, fail) {
+    house
+      .get("/bounds", { params: bounds })
+      .then(success)
+      .catch(fail);
+  }
+
+export { listHouses, listHousesInBounds };

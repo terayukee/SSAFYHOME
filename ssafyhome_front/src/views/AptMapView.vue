@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import VKakaoMap from "@/components/common/VKakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import { listHouses } from "@/api/house.js";
+import { listHouses, listHousesInBounds  } from "@/api/house.js";
 
 import ApartmentIcon from "@/assets/icons/residential.png";
 import VillaIcon from "@/assets/icons/villa.png";
@@ -23,7 +23,41 @@ const navItems = [
 const selectedNav = ref("apartment");
 const selectedVerticalNav = ref("");
 
+// 집 정보 
 const houses = ref([]); // house 정보를 저장할 ref 변수
+
+// 집 정보 불러오기 
+// onMounted(() => {
+//   fetchHouses(); // 컴포넌트가 마운트될 때 house 데이터 가져오기
+// });
+
+// const fetchHouses = () => {
+//   listHouses(
+//     {},
+//     (response) => {
+//       houses.value = response.data; // 성공 시 house 데이터 저장
+//     },
+//     (error) => {
+//       console.error("Failed to fetch houses:", error);
+//     }
+//   );
+// };
+const fetchHousesInBounds = (bounds) => {
+  listHousesInBounds(
+    bounds,
+    (response) => {
+      houses.value = response.data;
+    },
+    (error) => {
+      console.error("Failed to fetch houses:", error);
+    }
+  );
+};
+
+// 지도 영역 변경 이벤트 핸들러
+const handleBoundsChange = (bounds) => {
+  fetchHousesInBounds(bounds);
+};
 
 // 네비게이션 항목 선택 함수
 const selectNav = (id) => {
@@ -86,23 +120,6 @@ const filterOptions = {
 const onFilterChange = (filterKey, value) => {
   filters.value[filterKey] = value;
   console.log("Filter Changed:", filters.value);
-};
-
-// 집 정보 불러오기 
-onMounted(() => {
-  fetchHouses(); // 컴포넌트가 마운트될 때 house 데이터 가져오기
-});
-
-const fetchHouses = () => {
-  listHouses(
-    {},
-    (response) => {
-      houses.value = response.data; // 성공 시 house 데이터 저장
-    },
-    (error) => {
-      console.error("Failed to fetch houses:", error);
-    }
-  );
 };
 </script>
 
@@ -182,7 +199,7 @@ const fetchHouses = () => {
 
         <!-- 지도 및 결과 영역 -->
         <section class="map-section">
-          <VKakaoMap :houses="houses" />
+          <VKakaoMap :houses="houses" @boundsChange="handleBoundsChange" />
         </section>
       </div>
     </div>

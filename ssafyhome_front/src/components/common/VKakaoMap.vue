@@ -12,6 +12,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["boundsChange"]);
+
 watch(
   () => props.selectStation,
   (newStation) => {
@@ -39,13 +41,11 @@ onMounted(() => {
 watch(
   () => props.houses,
   (newHouses) => {
-    if (Array.isArray(newHouses) && newHouses.length > 0) {
-      positions.value = newHouses.map((house) => ({
-        latlng: new kakao.maps.LatLng(house.latitude, house.longitude),
-        title: house.aptNm,
-      }));
-      loadMarkers();
-    }
+    positions.value = newHouses.map((house) => ({
+      latlng: new kakao.maps.LatLng(house.latitude, house.longitude),
+      title: house.aptNm,
+    }));
+    loadMarkers();
   },
   { deep: true }
 );
@@ -57,6 +57,22 @@ const initMap = () => {
     level: 3,
   };
   map = new kakao.maps.Map(container, options);
+
+  kakao.maps.event.addListener(map, "bounds_changed", onBoundsChange);
+};
+
+const onBoundsChange = () => {
+  const bounds = map.getBounds(); // 현재 지도 영역
+  const sw = bounds.getSouthWest(); // 남서쪽 좌표
+  const ne = bounds.getNorthEast(); // 북동쪽 좌표
+
+  // emit 이벤트로 부모 컴포넌트에 전달
+  emit("boundsChange", {
+    swLat: sw.getLat(),
+    swLng: sw.getLng(),
+    neLat: ne.getLat(),
+    neLng: ne.getLng(),
+  });
 };
 
 const loadMarkers = () => {
@@ -72,13 +88,13 @@ const loadMarkers = () => {
     return marker;
   });
 
-  if (positions.value.length > 0) {
-    const bounds = positions.value.reduce(
-      (bounds, position) => bounds.extend(position.latlng),
-      new kakao.maps.LatLngBounds()
-    );
-    map.setBounds(bounds);
-  }
+  // if (positions.value.length > 0) {
+  //   const bounds = positions.value.reduce(
+  //     (bounds, position) => bounds.extend(position.latlng),
+  //     new kakao.maps.LatLngBounds()
+  //   );
+  //   map.setBounds(bounds);
+  // }
 };
 
 const deleteMarkers = () => {
