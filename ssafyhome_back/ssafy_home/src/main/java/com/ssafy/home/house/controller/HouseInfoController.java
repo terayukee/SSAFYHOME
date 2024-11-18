@@ -15,14 +15,14 @@ import com.ssafy.home.house.model.HouseInfoDto;
 import com.ssafy.home.house.model.service.HouseInfoService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/houseinfo")
 @CrossOrigin(origins = "*") // CORS 설정
 public class HouseInfoController {
 
     @Autowired
     private HouseInfoService houseInfoService;
 
-    @GetMapping("/houses")
+    @GetMapping("/list")
     public List<HouseInfoDto> getAllHouses() {
         return houseInfoService.getAllHouses();
     }

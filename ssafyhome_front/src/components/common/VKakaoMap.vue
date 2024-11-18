@@ -55,7 +55,7 @@ const initMap = () => {
   const container = document.getElementById("map");
   const options = {
     center: new kakao.maps.LatLng(33.450701, 126.570667),
-    level: 5,
+    level: 4,
   };
   map = new kakao.maps.Map(container, options);
 
@@ -63,7 +63,7 @@ const initMap = () => {
   clusterer = new kakao.maps.MarkerClusterer({
     map: map,
     averageCenter: true,
-    minLevel: 7,
+    minLevel: 5,
   });
 
   // 초기 마커 로드
@@ -79,10 +79,24 @@ const updateMarkers = (houses) => {
   markers.value = [];
 
   const newMarkers = houses.map((house) => {
-    return new kakao.maps.Marker({
+    // 커스텀 오버레이 내용
+    const content = `
+      <div class="custom-overlay">
+        <p>${house.dealType || "N/A"}㎡</p>
+        <p>${house.avgDealAmount || "N/A"}만원</p>
+      </div>
+    `;
+
+    // 커스텀 오버레이 생성
+    const customOverlay = new kakao.maps.CustomOverlay({
+      map: map,
       position: new kakao.maps.LatLng(house.latitude, house.longitude),
-      title: house.aptNm,
+      content: content,
+      yAnchor: 1, // 마커 아래쪽에 배치
     });
+
+    // 커스텀 오버레이를 마커 배열에 저장
+    return customOverlay;
   });
 
   clusterer.clear();
@@ -139,6 +153,17 @@ const loadMarkers = () => {
 const deleteMarkers = () => {
   markers.value.forEach((marker) => marker.setMap(null));
   markers.value = [];
+};
+
+// 최근 거래 정보 
+const fetchDealData = async (aptSeq) => {
+  try {
+    const response = await getRecentDeals(aptSeq);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching recent deals:", error);
+    return [];
+  }
 };
 </script>
 
