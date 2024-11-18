@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.home.board.model.mapper.BoardMapper">
 
+	<!--  
 	<resultMap type="BoardDto" id="article">
 		<result column="article_no" property="articleNo"/>
 		<result column="user_id" property="userId"/>
@@ -22,5 +23,5 @@
 	<select id="listArticle" parameterType="map">
 	
 	</select>
-
+	-->
 </mapper>

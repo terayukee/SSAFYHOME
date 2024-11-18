@@ -23,6 +23,8 @@ const navItems = [
 const selectedNav = ref("apartment");
 const selectedVerticalNav = ref("");
 
+const houses = ref([]); // house 정보를 저장할 ref 변수
+
 // 네비게이션 항목 선택 함수
 const selectNav = (id) => {
   selectedNav.value = id;
