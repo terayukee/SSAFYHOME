@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from "vue";
 
 let map;
+let clusterer; // 클러스터러 선언
 const positions = ref([]);
 const markers = ref([]);
 
@@ -54,12 +55,50 @@ const initMap = () => {
   const container = document.getElementById("map");
   const options = {
     center: new kakao.maps.LatLng(33.450701, 126.570667),
-    level: 3,
+    level: 5,
   };
   map = new kakao.maps.Map(container, options);
 
+  // 클러스터러 초기화
+  clusterer = new kakao.maps.MarkerClusterer({
+    map: map,
+    averageCenter: true,
+    minLevel: 7,
+  });
+
+  // 초기 마커 로드
+  updateMarkers(props.houses);
+
   kakao.maps.event.addListener(map, "bounds_changed", onBoundsChange);
 };
+
+// 마커 업데이트
+const updateMarkers = (houses) => {
+  // 기존 마커 제거
+  markers.value.forEach((marker) => marker.setMap(null));
+  markers.value = [];
+
+  const newMarkers = houses.map((house) => {
+    return new kakao.maps.Marker({
+      position: new kakao.maps.LatLng(house.latitude, house.longitude),
+      title: house.aptNm,
+    });
+  });
+
+  clusterer.clear();
+  clusterer.addMarkers(newMarkers);
+
+  markers.value = newMarkers;
+};
+
+// props.houses가 변경될 때 마커 업데이트
+watch(
+  () => props.houses,
+  (newHouses) => {
+    updateMarkers(newHouses);
+  },
+  { deep: true }
+);
 
 const onBoundsChange = () => {
   const bounds = map.getBounds(); // 현재 지도 영역
