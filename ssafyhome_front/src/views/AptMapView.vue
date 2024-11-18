@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import VKakaoMap from "@/components/common/VKakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import { listHouses, listHousesInBounds  } from "@/api/house.js";
+import { listHouses, listHousesInBounds } from "@/api/house.js";
 
 import ApartmentIcon from "@/assets/icons/residential.png";
 import VillaIcon from "@/assets/icons/villa.png";
@@ -23,10 +23,10 @@ const navItems = [
 const selectedNav = ref("apartment");
 const selectedVerticalNav = ref("");
 
-// 집 정보 
+// 집 정보
 const houses = ref([]); // house 정보를 저장할 ref 변수
 
-// 집 정보 불러오기 
+// 집 정보 불러오기
 // onMounted(() => {
 //   fetchHouses(); // 컴포넌트가 마운트될 때 house 데이터 가져오기
 // });
@@ -47,6 +47,7 @@ const fetchHousesInBounds = (bounds) => {
     bounds,
     (response) => {
       houses.value = response.data;
+      console.log("listHousesInBounds 성공, ", response.data);
     },
     (error) => {
       console.error("Failed to fetch houses:", error);
