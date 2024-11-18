@@ -1,4 +1,4 @@
-package com.ssafy.vue.map.model;
+package com.ssafy.home.map.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

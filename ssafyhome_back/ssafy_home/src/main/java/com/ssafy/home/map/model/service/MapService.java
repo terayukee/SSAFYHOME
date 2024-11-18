@@ -1,8 +1,8 @@
-package com.ssafy.vue.map.model.service;
+package com.ssafy.home.map.model.service;
 
 import java.util.List;
 
-import com.ssafy.vue.map.model.SidoGugunCodeDto;
+import com.ssafy.home.map.model.SidoGugunCodeDto;
 
 public interface MapService {
 

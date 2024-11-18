@@ -24,4 +24,14 @@ function stationAxios() {
   return instance;
 }
 
-export { localAxios, stationAxios };
+// 아파트 정보 가져오기
+function houseAxios() {
+  const instance = axios.create({
+    baseURL: "http://localhost:8080/api", // Spring Boot API의 baseURL
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+export { localAxios, stationAxios, houseAxios };

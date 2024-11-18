@@ -1,11 +1,11 @@
-package com.ssafy.vue.map.model.service;
+package com.ssafy.home.map.model.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ssafy.vue.map.model.SidoGugunCodeDto;
-import com.ssafy.vue.map.model.mapper.MapMapper;
+import com.ssafy.home.map.model.SidoGugunCodeDto;
+import com.ssafy.home.map.model.mapper.MapMapper;
 
 @Service
 public class MapServiceImpl implements MapService {

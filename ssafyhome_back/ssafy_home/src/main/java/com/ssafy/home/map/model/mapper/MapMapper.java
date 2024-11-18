@@ -1,9 +1,9 @@
-package com.ssafy.vue.map.model.mapper;
+package com.ssafy.home.map.model.mapper;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import com.ssafy.vue.map.model.SidoGugunCodeDto;
+import com.ssafy.home.map.model.SidoGugunCodeDto;
 
 public interface MapMapper {
 

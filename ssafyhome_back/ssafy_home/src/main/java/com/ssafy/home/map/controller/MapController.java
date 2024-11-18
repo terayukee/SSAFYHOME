@@ -1,4 +1,4 @@
-package com.ssafy.vue.map.controller;
+package com.ssafy.home.map.controller;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.vue.map.model.SidoGugunCodeDto;
-import com.ssafy.vue.map.model.service.MapService;
+import com.ssafy.home.map.model.SidoGugunCodeDto;
+import com.ssafy.home.map.model.service.MapService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

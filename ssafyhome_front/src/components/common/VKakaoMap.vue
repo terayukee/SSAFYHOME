@@ -6,13 +6,9 @@ const positions = ref([]);
 const markers = ref([]);
 
 const props = defineProps({
-  stations: {
+  houses: {
     type: Array,
     default: () => [],
-  },
-  selectStation: {
-    type: Object,
-    default: () => ({}),
   },
 });
 
@@ -41,12 +37,12 @@ onMounted(() => {
 });
 
 watch(
-  () => props.stations,
-  (newStations) => {
-    if (Array.isArray(newStations) && newStations.length > 0) {
-      positions.value = newStations.map((station) => ({
-        latlng: new kakao.maps.LatLng(station.lat, station.lng),
-        title: station.statNm,
+  () => props.houses,
+  (newHouses) => {
+    if (Array.isArray(newHouses) && newHouses.length > 0) {
+      positions.value = newHouses.map((house) => ({
+        latlng: new kakao.maps.LatLng(house.latitude, house.longitude),
+        title: house.aptNm,
       }));
       loadMarkers();
     }
