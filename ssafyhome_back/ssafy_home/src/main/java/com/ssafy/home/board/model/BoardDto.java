@@ -13,6 +13,7 @@ public class BoardDto {
 
 	private int BoardNo;
 	private String userNo;
+	private String userNickname;
 	private String subject;
 	private String content;
 	private int hit;

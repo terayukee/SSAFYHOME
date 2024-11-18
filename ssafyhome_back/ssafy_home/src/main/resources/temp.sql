@@ -169,6 +169,27 @@ INSERT INTO `home`.`users` (
   'user'                    -- 실제 역할을 적어주세요
 );
 select * from board;
-insert into board(user_no,subject,content) values (1,"aa","aaaa")
+insert into board(user_no,subject,content) values (1,"aa","aaaa");
+INSERT INTO home.board (user_no, subject, content) VALUES
+(1, 'Hello World', 'This is a test content for the board.'),
+(1, 'Vue.js is awesome!', 'Vue.js is a progressive framework for building user interfaces.'),
+(1, 'Tips for JavaScript', 'Here are some useful JavaScript tips and tricks.'),
+(1, 'How to use CSS Grid', 'CSS Grid is a powerful layout system in CSS.'),
+(1, 'Learning SQL', 'This is a simple introduction to SQL queries and their usage.'),
+(1, 'Frontend Development', 'Frontend development is all about creating beautiful user interfaces.'),
+(1, 'Backend with Node.js', 'Node.js is a great platform for building scalable backend applications.'),
+(1, 'Web Accessibility', 'Web accessibility ensures that websites are usable by everyone, including people with disabilities.'),
+(1, 'Responsive Web Design', 'Responsive web design is essential for creating mobile-friendly websites.'),
+(1, 'Building APIs with Express', 'Express.js is a minimal and flexible Node.js web application framework that provides a robust set of features for building APIs.'),
+(1, 'Understanding Promises in JavaScript', 'Promises in JavaScript are a way to handle asynchronous operations.'),
+(1, 'The Power of React', 'React is a popular JavaScript library for building user interfaces.'),
+(1, 'Introduction to MongoDB', 'MongoDB is a NoSQL database that is scalable and flexible for modern applications.'),
+(1, 'CSS Flexbox Basics', 'Flexbox is a CSS layout module that allows you to design complex layouts with simple properties.'),
+(1, 'Best Practices for Web Development', 'Web development best practices help ensure your applications are maintainable and scalable.'),
+(1, 'Asynchronous Programming in JavaScript', 'Asynchronous programming is essential for non-blocking operations in JavaScript.'),
+(1, 'Introduction to GraphQL', 'GraphQL is a query language for APIs that gives clients the ability to ask for specific data.'),
+(1, 'Testing in JavaScript', 'Testing is crucial to ensure that your code is functioning correctly and as expected.'),
+(1, 'State Management with Vuex', 'Vuex is a state management pattern and library for Vue.js applications.'),
+(1, 'Building a To-Do App with Vue', 'In this tutorial, we will build a simple to-do app using Vue.js.');
 
 

@@ -12,7 +12,7 @@
 
 <style scoped>
     .container{
-        margin-top: 200px;
+        margin-top: 80px;
         text-align: center;
     }
 </style>

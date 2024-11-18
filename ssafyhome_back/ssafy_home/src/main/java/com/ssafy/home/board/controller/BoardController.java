@@ -39,10 +39,12 @@ public class BoardController {
 	
 	@GetMapping
 	public ResponseEntity<?> listArticle(@RequestParam Map<String, String> map) throws Exception {
-		log.info("확인");
+		System.out.println("확인");
 		BoardListDto boardListDto = boardService.getListArticle(map);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+		System.out.println(boardListDto);
+		System.out.println(boardListDto.getArticles().size());
 		return ResponseEntity.ok().headers(header).body(boardListDto);
 	}
 	

@@ -1,14 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { listArticle } from '@/api/board';
-
+import { useRouter } from "vue-router";
 import VPageNavigation from '../common/VPageNavigation.vue';
+import BoardListItem from './item/BoardListItem.vue';
+
+const router = useRouter();
 
 onMounted(()=>{
     getArticleList();
 })
-
-
 
 const articles = ref([]);
 const currentPage = ref(1);
@@ -24,9 +25,21 @@ const param = ref({
   word: "",
 });
 
-const changeKey = (val) => {
-  console.log("BoarList에서 선택한 조건 : " + val);
-  param.value.key = val;
+
+
+const getArticleList = () => {
+  console.log("서버에서 글목록 얻어오자!!!", param.value);
+  listArticle(
+    param.value,
+    ({ data }) => {
+      articles.value = data.articles;
+      currentPage.value = data.currentPage;
+      totalPage.value = data.totalPageCount;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 };
 
 const onPageChange = (val) => {
@@ -34,47 +47,29 @@ const onPageChange = (val) => {
   currentPage.value = val;
   param.value.pgno = val;
   getArticleList();
+  router.push({ name: "board-list-page", params: { page: val } });
 };
 
-const getArticleList = () => {
-  listArticle(
-    param.value,
-    ({data}) => {
-      console.log("adsdsa")
-    articles.value = data.articles;
-    currentPage.value = data.currentPage;
-    totalPage.value = data.totalPageCount;
-    },
-    (error) => {
-        console.log(error);
-    }
-  )
-};
 
 </script>
 
 <template>
   <div class="board-container">
-    <!-- 게시글 목록 테이블 -->
     <table class="board-table">
       <thead>
         <tr>
-          <th>번호</th>
-          <th>제목</th>
-          <th>작성자</th>
-          <th>조회수</th>
+          <th class="col-no">번호</th>
+          <th class="col-title">제목</th>
+          <th class="col-author">작성자</th>
+          <th class="col-hit">조회수</th>
         </tr>
       </thead>
       <tbody>
-        <!-- <tr v-for="post in boardList" 
-            :key="post.id" 
-            @click="handlePostClick(post.id)"
-            class="board-row">
-          <td>{{ post.id }}</td>
-          <td>{{ post.title }}</td>
-          <td>{{ post.author }}</td>
-          <td>{{ post.views }}</td>
-        </tr> -->
+        <BoardListItem 
+          v-for="article in articles"
+          :key="article.boardNo"
+          :article="article"
+        />
       </tbody>
     </table>
   </div>  
@@ -94,27 +89,48 @@ const getArticleList = () => {
   padding: 20px;
 }
 
-.board-title {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
 .board-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  table-layout: fixed;
 }
 
-.board-table th,
+/* 컬럼 너비 설정 */
+.col-no { width: 7%; }
+.col-title { width: 63%; }
+.col-author { width: 15%; }
+.col-hit { width: 15%; }
+
+/* 테이블 헤더 스타일 */
+.board-table th {
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* 테이블 셀 공통 스타일 */
 .board-table td {
   padding: 12px;
   border-bottom: 1px solid #ddd;
-  text-align: left;
+  text-align: center; /* 모든 셀을 중앙 정렬로 변경 */
 }
 
-.board-table th {
-  background-color: #f5f5f5;
-  font-weight: bold;
+/* 제목 열만 왼쪽 정렬 */
+.board-table .text-start {
+  text-align: left !important;
+  padding-left: 10px !important;
+}
+
+.board-table tr {
+  height: 50px;
+}
+
+.board-table tbody tr:hover {
+  background-color: #f8f8f8;
 }
 
 .board-row {
@@ -126,6 +142,19 @@ const getArticleList = () => {
   background-color: #f8f8f8;
 }
 
+/* 링크 스타일 */
+.article-title {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 4px 0;
+}
+
+.article-title:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+/* 여기까지 */
 .pagination {
   display: flex;
   justify-content: center;

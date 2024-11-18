@@ -26,7 +26,12 @@ const routes = [
         path: "list/page/:page",
         name: "board-list-page",
         component: () => import("@/components/boards/BoardList.vue"),
-      }
+      },
+      {
+        path: "view/:articleno",
+        name: "article-view",
+        component: () => import("@/components/boards/BoardDetail.vue"),
+      },
     ]
   }
 ];

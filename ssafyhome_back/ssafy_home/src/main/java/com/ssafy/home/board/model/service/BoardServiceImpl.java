@@ -80,4 +80,10 @@ public class BoardServiceImpl implements BoardService{
 		
 	}
 
+	@Override
+	public BoardDto getArticle(int articleNo) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
