@@ -152,6 +152,45 @@ CREATE TABLE IF NOT EXISTS `home`.`favorite` (
   FOREIGN KEY (`user_no`) REFERENCES users (`user_no`)
 );
 
+CREATE TABLE `houserecentdeals` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `apt_seq` varchar(20) NOT NULL,
+  `deal_type` varchar(10) NOT NULL,
+  `avg_deal_amount` decimal(10,2) DEFAULT NULL,
+  `deal_count` int DEFAULT '0',
+  `most_deal_type` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `apt_seq` (`apt_seq`),
+  CONSTRAINT `houserecentdeals_ibfk_1` FOREIGN KEY (`apt_seq`) REFERENCES `houseinfos` (`apt_seq`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+
+-- STEP: 최근 3회 거래 데이터를 추출하여 평균 거래 금액 및 거래 횟수를 집계
+INSERT INTO houserecentdeals (apt_seq, deal_type, avg_deal_amount, deal_count)
+SELECT 
+    ranked.apt_seq,
+    CONCAT(ranked.deal_type, '평') AS deal_type,
+    ROUND(AVG(ranked.deal_amount), 2) AS avg_deal_amount,
+    COUNT(*) AS deal_count -- 거래 횟수 집계
+FROM (
+    SELECT 
+        apt_seq,
+        FLOOR(exclu_use_ar * 0.3025) AS deal_type, -- 제곱미터 -> 평 단위 변환
+        CAST(REPLACE(deal_amount, ',', '') AS UNSIGNED) AS deal_amount,
+        ROW_NUMBER() OVER (
+            PARTITION BY apt_seq, FLOOR(exclu_use_ar * 0.3025)
+            ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+        ) AS rn
+    FROM 
+        housedeals
+) AS ranked
+WHERE 
+    ranked.rn <= 3 -- 각 아파트 및 평형별로 최근 3회 거래만 포함
+GROUP BY 
+    ranked.apt_seq, ranked.deal_type;
+    
+
 select * from users;
 INSERT INTO `home`.`users` (
   `user_name`, 

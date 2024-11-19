@@ -1,10 +1,17 @@
 <script setup>
+import { ref } from 'vue';
+import { useRouter , useRoute } from 'vue-router';
+
 defineProps({ article: Object });
+
+const route = useRoute()
+const router = useRouter()
+
 </script>
 
 <template>
   <tr>
-    <!-- 번호를 클릭할 수 있도록 router-link로 감싸기 -->
+    <!-- 번호를  수 있도록 router-link로 감싸기 -->
     <td>
       <router-link
         :to="{ name: 'article-view', params: { articleno: article.boardNo } }"

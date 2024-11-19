@@ -12,9 +12,7 @@ import com.ssafy.home.board.model.FileInfoDto;
 @Mapper
 public interface BoardMapper {
 
-	void writeArticle(BoardDto boardDto) throws SQLException;
-
-	void registerFile(BoardDto boardDto) throws SQLException;
+	int writeArticle(BoardDto boardDto) throws SQLException;
 
 	List<BoardDto> listArticle(Map<String, Object> param) throws SQLException;
 
@@ -30,7 +28,8 @@ public interface BoardMapper {
 
 	void deleteArticle(int articleNo) throws SQLException;
 
-	List<FileInfoDto> fileInfoList(int articleNo) throws Exception;
+	void registerFile(FileInfoDto fileDto) throws SQLException;
 	
+	List<FileInfoDto> fileInfoList(int articleNo) throws SQLException;
 	
 }

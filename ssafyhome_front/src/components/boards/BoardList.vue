@@ -1,21 +1,24 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { listArticle } from '@/api/board';
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import VPageNavigation from '../common/VPageNavigation.vue';
 import BoardListItem from './item/BoardListItem.vue';
 
 const router = useRouter();
+const route = useRoute();
 
 onMounted(()=>{
-    getArticleList();
+  param.value.pgno = route.params.page;
+  getArticleList();
 })
+
+
+const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 
 const articles = ref([]);
 const currentPage = ref(1);
 const totalPage = ref(0);
-
-const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 
 // 페이징 처리
 const param = ref({
@@ -24,7 +27,6 @@ const param = ref({
   key: "",
   word: "",
 });
-
 
 
 const getArticleList = () => {
@@ -43,15 +45,14 @@ const getArticleList = () => {
 };
 
 const onPageChange = (val) => {
-  console.log(val + "번 페이지로 이동 준비 끝!!!");
   currentPage.value = val;
   param.value.pgno = val;
   getArticleList();
   router.push({ name: "board-list-page", params: { page: val } });
 };
 
-const moveWrite = () => {
-  router.push({ name: "article-write" });
+const moveWrite = (val = 1) => {
+  router.push({ name: "board-write" , params: { page : val }});
 };
 
 </script>
@@ -76,7 +77,7 @@ const moveWrite = () => {
       </tbody>
     </table>
     <div class="button-container">
-        <button class="pagination-button" @click="moveWrite">게시판 글쓰기</button>
+        <button class="pagination-button" @click="moveWrite(param.pgno)">게시판 글쓰기</button>
     </div>
   </div>  
     <!-- 페이지네이션 -->
