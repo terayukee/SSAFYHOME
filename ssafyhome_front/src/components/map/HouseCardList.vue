@@ -8,13 +8,36 @@ const props = defineProps({
     default: () => [],
   },
 });
+
+function getImagePath(avgDealAmount, dealType) {
+  let category = "";
+
+  // 평당 가격
+  const amountPerSpace = avgDealAmount / dealType;
+
+  // 아파트 가격 기준으로 카테고리 설정
+  if (amountPerSpace > 3000) {
+    category = "high";
+  } else if (amountPerSpace > 1000) {
+    category = "mid";
+  } else {
+    category = "low";
+  }
+
+  const randomIndex = Math.floor(Math.random() * 10) + 1; // 1~10 범위의 숫자
+  return `/assets/apart/${category}${randomIndex}.jpg`;
+}
 </script>
 
 <template>
   <div class="vertical-nav-content">
     <div class="house-card" v-for="house in houses" :key="house.aptSeq">
       <div class="house-image">
-        <img src="" alt="House" class="image" />
+        <img
+          :src="getImagePath(house.avgDealAmount, house.dealType)"
+          alt="House"
+          class="image"
+        />
       </div>
       <div class="house-info">
         <h3>{{ house.aptNm }}</h3>
