@@ -197,7 +197,7 @@ const handleMapClick = () => {
 
 /* 좌측 네비게이션 스타일 */
 .left-nav {
-  width: 140px;
+  width: 150px;
   background-color: #fff;
   border-right: 1px solid #e0e0e0;
   padding: 16px 0;

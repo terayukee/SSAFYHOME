@@ -102,22 +102,34 @@ const handleCardClick = (house) => {
 
 .house-info {
   flex: 2;
-  padding-left: 10px;
+  padding-left: 20px;
 }
 
 .house-info h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50; /* 어두운 파란색 톤 */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .house-info p {
-  margin: 4px 0;
   font-size: 14px;
-  color: #666;
+  color: #7f8c8d; /* 회색 톤 */
+  line-height: 1.5;
+}
+
+/* 거래 유형과 금액 강조 */
+.avg-deal-amount {
+  font-size: 16px;
+  font-weight: bold;
+  color: #e74c3c; /* 붉은색 톤 */
 }
 
 .deal-space {
-  margin-right: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #3498db; /* 밝은 파란색 */
 }
 </style>
