@@ -17,8 +17,8 @@ public class HouseRecentDealServiceImpl implements HouseRecentDealService {
     }
 
     @Override
-    public List<HouseRecentDealDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng, String tableName) {
-        return houseRecentDealMapper.getHousesInBounds(swLat, swLng, neLat, neLng, tableName);
+    public List<HouseRecentDealDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng, String dealCategory) {
+        return houseRecentDealMapper.getHousesInBounds(swLat, swLng, neLat, neLng, dealCategory);
     }
 
     @Override

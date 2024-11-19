@@ -12,6 +12,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+
+  selectedCategory: {
+    type: String,
+  },
 });
 
 const emit = defineEmits(["boundsChange"]);
@@ -139,8 +143,8 @@ const updateMarkers = (houses) => {
     const content = `
       <div class="custom-marker">
         <div class="custom-marker-content">
-          <div class="custom-marker-title">${house.dealType}평</div>
-          <div class="custom-marker-price">매 ${dealAmountInEok}억</div>
+          <div class="custom-marker-title">${house.dealSpace}평</div>
+          <div class="custom-marker-price">${props.selectedCategory} ${dealAmountInEok}억</div>
         </div>
       </div>
     `;
@@ -215,7 +219,7 @@ const emitBoundsChange = (bounds) => {
 
 .custom-marker {
   position: relative;
-  width: 70px;
+  width: 75px;
   text-align: center;
   font-size: 12px;
   font-family: Arial, sans-serif;

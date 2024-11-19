@@ -20,17 +20,16 @@ const navItems = [
 ];
 
 const selectedNav = ref("apartment"); // 선택 상태
-const selectedType = ref("매매"); // 현재 선택된 타입 (매매, 전세, 월세)
-const bounds = ref(null); // 현재 지도 bounds (초기값은 null)
+const selectedCategory = ref("매매"); // 현재 선택된 타입 (매매, 전세, 월세)
 
-// 집 정보
 const houses = ref([]); // house 정보를 저장할 ref 변수
+const bounds = ref(null); // 현재 지도 bounds
 
 const fetchHousesInBounds = (bounds) => {
   console.log("bounds:", bounds);
   listHousesInBounds(
-    bounds,
-    selectedType.value,
+    bounds.value,
+    selectedCategory.value,
     (response) => {
       houses.value = response.data;
       // console.log("listHousesInBounds 성공, ", response.data);
@@ -42,7 +41,8 @@ const fetchHousesInBounds = (bounds) => {
 };
 
 // 지도 영역 변경 이벤트 핸들러
-const handleBoundsChange = (bounds) => {
+const handleBoundsChange = (newBounds) => {
+  bounds.value = newBounds;
   fetchHousesInBounds(bounds);
 };
 
@@ -53,7 +53,7 @@ const selectNav = (id) => {
 
 // 필터 데이터 및 옵션
 const filters = ref({
-  rentType: "",
+  dealCategory: "",
   roomSize: "",
   approvalDate: "",
   numHouseholds: "",
@@ -63,7 +63,7 @@ const filters = ref({
 });
 
 const filterOptions = {
-  rentType: [
+  dealCategory: [
     { text: "월세", value: "월세" },
     { text: "전세", value: "전세" },
     { text: "매매", value: "매매" },
@@ -91,10 +91,10 @@ const onFilterChange = (filterKey, value) => {
 };
 
 // 선택된 타입이 변경될 때 fetch 호출
-watch(selectedType, (newType) => {
-  console.log("Type changed to:", newType);
+watch(selectedCategory, (newCategory) => {
+  console.log("Category changed to:", newCategory);
   if (bounds.value) {
-    fetchHousesInBounds(bounds.value);
+    fetchHousesInBounds(bounds);
   } else {
     console.warn("Bounds are not defined yet.");
   }
@@ -122,8 +122,8 @@ watch(selectedType, (newType) => {
       <!-- 상단 네비게이션 -->
       <header class="top-nav">
         <VSelect
-          :selectOption="filterOptions.rentType"
-          v-model="selectedType"
+          :selectOption="filterOptions.dealCategory"
+          v-model="selectedCategory"
           placeholder="거래 유형"
         />
         <VSelect
@@ -157,13 +157,20 @@ watch(selectedType, (newType) => {
           </div>
           <div class="vertical-nav-content">
             <!-- HouseCardList 컴포넌트로 데이터 전달 -->
-            <HouseCardList :houses="houses" />
+            <HouseCardList
+              :houses="houses"
+              :selectedCategory="selectedCategory"
+            />
           </div>
         </nav>
 
         <!-- 지도 및 결과 영역 -->
         <section class="map-section">
-          <VKakaoMap :houses="houses" @boundsChange="handleBoundsChange" />
+          <VKakaoMap
+            :houses="houses"
+            :selectedCategory="selectedCategory"
+            @boundsChange="handleBoundsChange"
+          />
         </section>
       </div>
     </div>

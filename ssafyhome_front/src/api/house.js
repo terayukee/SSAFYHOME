@@ -8,10 +8,10 @@ function listHouses(param, success, fail) {
   houseInfo.get("/list", { params: param }).then(success).catch(fail);
 }
 
-function listHousesInBounds(bounds, type, success, fail) {
+function listHousesInBounds(bounds, dealCategory, success, fail) {
   const params = {
     ...bounds, // bounds 객체 내의 swLat, swLng, neLat, neLng
-    type, // 매매, 전세, 월세
+    dealCategory, // 매매, 전세, 월세
   };
 
   houseInfo.get("/bounds", { params }).then(success).catch(fail);

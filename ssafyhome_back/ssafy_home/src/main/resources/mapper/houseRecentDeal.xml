@@ -13,28 +13,29 @@
 	            hi.apt_nm AS aptNm,
 	            hi.latitude AS latitude,
 	            hi.longitude AS longitude,
-	            FLOOR(hr.exclu_use_ar * 0.3025) AS dealType, -- 제곱미터 -> 평 단위 변환
-	            CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+	            hr.deal_space AS dealSpace,
+	            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
 	            ROW_NUMBER() OVER (
 	                PARTITION BY hi.apt_seq
-	                ORDER BY CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) DESC
+	                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
 	            ) AS rnk
 	        FROM
 	            houseinfos hi
 	        JOIN
-	            ${tableName} hr -- 동적으로 매매/전세 테이블 결정
+	            houserecentdeals hr -- 동적으로 매매/전세 테이블 결정
 	        ON
 	            hi.apt_seq = hr.apt_seq
 	        WHERE
 	            hi.latitude BETWEEN #{swLat} AND #{neLat}
 	            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+	            AND hr.deal_category = "${dealCategory}"
 	    )
 	    SELECT
 	        aptSeq,
 	        aptNm,
 	        latitude,
 	        longitude,
-	        dealType,
+	        dealSpace,
 	        avgDealAmount
 	    FROM
 	        ranked_deals
@@ -52,31 +53,32 @@
 	            hi.apt_nm AS aptNm,
 	            hi.latitude AS latitude,
 	            hi.longitude AS longitude,
-	            FLOOR(hr.exclu_use_ar * 0.3025) AS dealType, -- 제곱미터 -> 평 단위 변환
-	            CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
-	            CAST(REPLACE(hr.fee_amount, ',', '') AS UNSIGNED) AS feeAmount,
+	            hr.deal_space AS dealSpace,
+	            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+	            CAST(REPLACE(hr.avg_fee_amount, ',', '') AS UNSIGNED) AS avgFeeAmount,
 	            ROW_NUMBER() OVER (
 	                PARTITION BY hi.apt_seq
-	                ORDER BY CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) DESC
+	                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
 	            ) AS rnk
 	        FROM
 	            houseinfos hi
 	        JOIN
-	            housedeals_month hr
+	            houserecentdeals hr
 	        ON
 	            hi.apt_seq = hr.apt_seq
 	        WHERE
 	            hi.latitude BETWEEN #{swLat} AND #{neLat}
 	            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+	            AND hr.deal_category = "월세"
 	    )
 	    SELECT
 	        aptSeq,
 	        aptNm,
 	        latitude,
 	        longitude,
-	        dealType,
+	        dealSpace,
 	        avgDealAmount,
-	        feeAmount
+	        avgFeeAmount
 	    FROM
 	        ranked_monthly_deals
 	    WHERE

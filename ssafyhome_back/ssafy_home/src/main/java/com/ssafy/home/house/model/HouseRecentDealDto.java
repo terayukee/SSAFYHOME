@@ -5,8 +5,9 @@ public class HouseRecentDealDto {
     private String aptNm;
     private String latitude; // 위도 추가
     private String longitude; // 경도 추가
-    private int dealType; // int로 변경
+    private int dealSpace; // int로 변경
     private String avgDealAmount;
+    private String dealCategory;
     private String feeAmount;
 
     // Getter & Setter
@@ -41,24 +42,34 @@ public class HouseRecentDealDto {
     public void setAptNm(String aptNm) {
         this.aptNm = aptNm;
     }
+    
 
-    public int getDealType() { // int로 수정
-        return dealType;
-    }
+    public int getDealSpace() {
+		return dealSpace;
+	}
 
-    public void setDealType(int dealType) { // int로 수정
-        this.dealType = dealType;
-    }
+	public void setDealSpace(int dealSpace) {
+		this.dealSpace = dealSpace;
+	}
 
-    public String getAvgDealAmount() {
+	public String getAvgDealAmount() {
         return avgDealAmount;
     }
 
     public void setAvgDealAmount(String avgDealAmount) {
         this.avgDealAmount = avgDealAmount;
     }
+        
 
-    public String getFeeAmount() {
+    public String getDealCategory() {
+		return dealCategory;
+	}
+
+	public void setDealCategory(String dealCategory) {
+		this.dealCategory = dealCategory;
+	}
+
+	public String getFeeAmount() {
         return feeAmount;
     }
 
@@ -66,16 +77,12 @@ public class HouseRecentDealDto {
         this.feeAmount = feeAmount;
     }
 
-    @Override
-    public String toString() {
-        return "MonthlyHouseDealDto{" +
-               "aptSeq='" + getAptSeq() + '\'' +
-               ", aptNm='" + getAptNm() + '\'' +
-               ", latitude='" + getLatitude() + '\'' +
-               ", longitude='" + getLongitude() + '\'' +
-               ", dealType='" + getDealType() + '\'' +
-               ", avgDealAmount='" + getAvgDealAmount() + '\'' +
-               ", feeAmount='" + feeAmount + '\'' +
-               '}';
-    }
+	@Override
+	public String toString() {
+		return "HouseRecentDealDto [aptSeq=" + aptSeq + ", aptNm=" + aptNm + ", latitude=" + latitude + ", longitude="
+				+ longitude + ", dealSpace=" + dealSpace + ", avgDealAmount=" + avgDealAmount + ", dealCategory="
+				+ dealCategory + ", feeAmount=" + feeAmount + "]";
+	}
+
+    
 }

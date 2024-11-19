@@ -7,14 +7,17 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+
+  selectedCategory: {
+    type: String,
+  },
 });
 
-function getImagePath(avgDealAmount, dealType) {
+function getImagePath(avgDealAmount, dealSpace) {
   let category = "";
 
   // 평당 가격
-  const amountPerSpace = avgDealAmount / dealType;
-  //   console.log(amountPerSpace, avgDealAmount, dealType);
+  const amountPerSpace = avgDealAmount / dealSpace;
 
   // 아파트 가격 기준으로 카테고리 설정
   if (amountPerSpace > 3000) {
@@ -35,15 +38,16 @@ function getImagePath(avgDealAmount, dealType) {
     <div class="house-card" v-for="house in houses" :key="house.aptSeq">
       <div class="house-image">
         <img
-          :src="getImagePath(house.avgDealAmount, house.dealType)"
+          :src="getImagePath(house.avgDealAmount, house.dealSpace)"
           alt="House"
           class="image"
         />
       </div>
       <div class="house-info">
         <h3>{{ house.aptNm }}</h3>
-        <p class="deal-type">{{ house.dealType }}평</p>
+        <p class="deal-space">{{ house.dealSpace }}평</p>
         <p class="avg-deal-amount">
+          {{ props.selectedCategory }}
           {{ (house.avgDealAmount * 0.0001).toFixed(2) }}억
         </p>
       </div>
@@ -87,7 +91,7 @@ function getImagePath(avgDealAmount, dealType) {
   color: #666;
 }
 
-.deal-type {
+.deal-space {
   margin-right: 5px;
 }
 </style>

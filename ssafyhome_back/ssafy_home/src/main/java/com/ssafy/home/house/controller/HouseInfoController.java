@@ -32,28 +32,21 @@ public class HouseInfoController {
 	}
 
 	@GetMapping("/bounds")
-	public List<HouseRecentDealDto> getHousesInBounds(@RequestParam("type") String type, // 매매, 전세, 월세
+	public List<HouseRecentDealDto> getHousesInBounds(@RequestParam("dealCategory") String type, // 매매, 전세, 월세
 			@RequestParam("swLat") double swLat, @RequestParam("swLng") double swLng,
-			@RequestParam("neLat") double neLat, @RequestParam("neLng") double neLng) {
-    	String table = "";
-		
-    	// 1. 매매 
-		if (type.equals("매매")) {
-			table = "housedeals";
-			List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng, table);
-			for (HouseRecentDealDto result : resultList) {
-				System.out.println(result.toString());
-			}
-			return resultList;
-		} 
-		// 2. 전세 
-		else if (type.equals("전세")) {
-			table = "housedeals_jeonse";
-			return houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng, table);
-		}
-		// 3. 월세 
-		else {
+			@RequestParam("neLat") double neLat, @RequestParam("neLng") double neLng) {    	
+
+		// 1. 월세 
+		if (type.equals("월세")) {
 			return houseRecentDealService.getMonthlyHousesInBounds(swLat, swLng, neLat, neLng);
+		}
+		// 2. 매매 or 전세 
+		else {
+			List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng, type);
+//			for (HouseRecentDealDto result : resultList) {
+//				System.out.println(result.toString());
+//			}
+			return resultList;
 		}
 
 

@@ -16,7 +16,7 @@ public interface HouseRecentDealMapper {
             @Param("swLng") double swLng,
             @Param("neLat") double neLat,
             @Param("neLng") double neLng,
-            @Param("tableName") String tableName // 테이블명 동적 전달
+            @Param("dealCategory") String dealCategory
     );
 
     // 월세 데이터를 가져오는 메서드
