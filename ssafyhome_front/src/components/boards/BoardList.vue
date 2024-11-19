@@ -73,6 +73,7 @@ const moveWrite = (val = 1) => {
           v-for="article in articles"
           :key="article.boardNo"
           :article="article"
+          :current-page="currentPage"
         />
       </tbody>
     </table>

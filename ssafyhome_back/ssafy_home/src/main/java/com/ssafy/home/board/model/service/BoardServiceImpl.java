@@ -36,7 +36,6 @@ public class BoardServiceImpl implements BoardService{
 	    }
 	}
 	
-
 	@Override
 	public BoardListDto getListArticle(Map<String, String> map) throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -69,8 +68,7 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public void updateHit(int articleNo) throws Exception {
-		// TODO Auto-generated method stub
-		
+		boardMapper.updateHit(articleNo);		
 	}
 
 	@Override
@@ -87,8 +85,7 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public BoardDto getArticle(int articleNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return boardMapper.getArticle(articleNo);
 	}
 
 }

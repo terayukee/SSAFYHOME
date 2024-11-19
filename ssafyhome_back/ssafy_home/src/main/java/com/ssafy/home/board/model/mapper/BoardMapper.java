@@ -18,15 +18,15 @@ public interface BoardMapper {
 
 	int getTotalArticleCount(Map<String, Object> param) throws SQLException;
 
-	BoardDto getArticle(int articleNo) throws SQLException;
+	BoardDto getArticle(int boardNo) throws SQLException;
 
-	void updateHit(int articleNo) throws SQLException;
+	void updateHit(int boardNo) throws SQLException;
 
 	void modifyArticle(BoardDto boardDto) throws SQLException;
 
-	void deleteFile(int articleNo) throws SQLException;
+	void deleteFile(int boardNo) throws SQLException;
 
-	void deleteArticle(int articleNo) throws SQLException;
+	void deleteArticle(int boardNo) throws SQLException;
 
 	void registerFile(FileInfoDto fileDto) throws SQLException;
 	

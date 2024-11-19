@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,7 @@ public class BoardController {
 		super();
 		this.boardService = boardService;
 	}
+	
 	
 	@PostMapping
     public ResponseEntity<?> writeArticle(MultipartHttpServletRequest mRequest) throws Exception {
@@ -88,7 +90,7 @@ public class BoardController {
 	    System.out.println("보드 " +boardDto);
 	    boardService.writeArticle(boardDto);
 	    
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+	    return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 	
 	@GetMapping
@@ -99,6 +101,16 @@ public class BoardController {
 		System.out.println(boardListDto.getArticles().size());
 		return ResponseEntity.ok().headers(header).body(boardListDto);
 	}
+	
+	@GetMapping("/{articleno}")
+	public ResponseEntity<BoardDto> getArticle(@PathVariable("articleno") int articleNo) throws Exception{
+		boardService.updateHit(articleNo);
+		System.out.println(articleNo);
+		BoardDto boardDto = boardService.getArticle(articleNo);
+		System.out.println(boardDto);
+		return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK);
+	}
+	
 	
 	
 	
