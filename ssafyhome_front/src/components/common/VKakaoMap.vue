@@ -68,6 +68,10 @@ const initMap = () => {
     minLevel: clusterLevel, // 클러스터링이 활성화되는 최소 레벨
   });
 
+  // 초기 bounds 정보 부모에게 전달
+  const bounds = map.getBounds(); // 현재 지도 경계를 가져옴
+  // emitBoundsChange(bounds);
+
   kakao.maps.event.addListener(map, "zoom_changed", onZoomChanged);
   kakao.maps.event.addListener(map, "bounds_changed", onBoundsChanged); // 지도 경계 변경 이벤트 추가
 
@@ -104,6 +108,7 @@ const displayCustomMarkers = () => {
 
 // 마커 업데이트
 const updateMarkers = (houses) => {
+  console.log("houses : ", houses);
   // 기존 마커 제거
   markers.value.forEach((marker) => marker.setMap(null));
   clusterer.clear();
@@ -176,7 +181,6 @@ const onBoundsChanged = () => {
   debounceTimeout = setTimeout(() => {
     const bounds = map.getBounds(); // 현재 지도 경계를 가져옴
     emitBoundsChange(bounds); // 부모 컴포넌트에 `boundsChange` 이벤트 전달
-    console.log("Bounds changed:", bounds); // 디버그용
   }, 300); // 300ms 후에 실행
 };
 
@@ -192,6 +196,7 @@ const emitBoundsChange = (bounds) => {
     neLng: ne.getLng(),
   };
 
+  console.log("Bounds changed:", bounds); // 디버그용
   emit("boundsChange", boundsParams);
 };
 </script>

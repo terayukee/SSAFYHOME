@@ -6,42 +6,83 @@
 	namespace="com.ssafy.home.house.model.mapper.HouseRecentDealMapper">
 
 	<select id="getHousesInBounds"
-		resultType="com.ssafy.home.house.model.HouseRecentDealDto">
-		WITH ranked_deals AS (
-			SELECT
-				hi.apt_seq AS aptSeq,
-				hi.apt_nm AS aptNm,
-				hi.latitude AS latitude,
-				hi.longitude AS longitude,
-				hr.deal_type AS dealType,
-				hr.avg_deal_amount AS avgDealAmount,
-				hr.deal_count AS dealCount,
-				ROW_NUMBER() OVER (
-					PARTITION BY hi.apt_seq
-					ORDER BY hr.deal_count DESC
-				) AS rnk
-			FROM
-				houseinfos hi
-			JOIN
-				houserecentdeals hr
-			ON
-				hi.apt_seq = hr.apt_seq
-			WHERE
-				hi.latitude BETWEEN #{swLat} AND #{neLat}
-				AND hi.longitude BETWEEN #{swLng} AND #{neLng}
-		)
-		SELECT
-			aptSeq,
-			aptNm,
-			latitude,
-			longitude,
-			dealType,
-			avgDealAmount
-		FROM
-			ranked_deals
-		WHERE
-			rnk = 1
-		LIMIT 2000
+        resultType="com.ssafy.home.house.model.HouseRecentDealDto">
+	    WITH ranked_deals AS (
+	        SELECT
+	            hi.apt_seq AS aptSeq,
+	            hi.apt_nm AS aptNm,
+	            hi.latitude AS latitude,
+	            hi.longitude AS longitude,
+	            FLOOR(hr.exclu_use_ar * 0.3025) AS dealType, -- 제곱미터 -> 평 단위 변환
+	            CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+	            ROW_NUMBER() OVER (
+	                PARTITION BY hi.apt_seq
+	                ORDER BY CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) DESC
+	            ) AS rnk
+	        FROM
+	            houseinfos hi
+	        JOIN
+	            ${tableName} hr -- 동적으로 매매/전세 테이블 결정
+	        ON
+	            hi.apt_seq = hr.apt_seq
+	        WHERE
+	            hi.latitude BETWEEN #{swLat} AND #{neLat}
+	            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+	    )
+	    SELECT
+	        aptSeq,
+	        aptNm,
+	        latitude,
+	        longitude,
+	        dealType,
+	        avgDealAmount
+	    FROM
+	        ranked_deals
+	    WHERE
+	        rnk = 1
+	    LIMIT 2000
 	</select>
+
+	
+	<select id="getMonthlyHousesInBounds"
+        resultType="com.ssafy.home.house.model.HouseRecentDealDto">
+	    WITH ranked_monthly_deals AS (
+	        SELECT
+	            hi.apt_seq AS aptSeq,
+	            hi.apt_nm AS aptNm,
+	            hi.latitude AS latitude,
+	            hi.longitude AS longitude,
+	            FLOOR(hr.exclu_use_ar * 0.3025) AS dealType, -- 제곱미터 -> 평 단위 변환
+	            CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+	            CAST(REPLACE(hr.fee_amount, ',', '') AS UNSIGNED) AS feeAmount,
+	            ROW_NUMBER() OVER (
+	                PARTITION BY hi.apt_seq
+	                ORDER BY CAST(REPLACE(hr.deal_amount, ',', '') AS UNSIGNED) DESC
+	            ) AS rnk
+	        FROM
+	            houseinfos hi
+	        JOIN
+	            housedeals_month hr
+	        ON
+	            hi.apt_seq = hr.apt_seq
+	        WHERE
+	            hi.latitude BETWEEN #{swLat} AND #{neLat}
+	            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+	    )
+	    SELECT
+	        aptSeq,
+	        aptNm,
+	        latitude,
+	        longitude,
+	        dealType,
+	        avgDealAmount,
+	        feeAmount
+	    FROM
+	        ranked_monthly_deals
+	    WHERE
+	        rnk = 1
+	    LIMIT 2000
+	</select>
+
 
 </mapper>

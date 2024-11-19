@@ -14,7 +14,7 @@ function getImagePath(avgDealAmount, dealType) {
 
   // 평당 가격
   const amountPerSpace = avgDealAmount / dealType;
-  console.log(amountPerSpace, avgDealAmount, dealType);
+  //   console.log(amountPerSpace, avgDealAmount, dealType);
 
   // 아파트 가격 기준으로 카테고리 설정
   if (amountPerSpace > 3000) {

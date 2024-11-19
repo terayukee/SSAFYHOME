@@ -5,5 +5,7 @@ import java.util.List;
 import com.ssafy.home.house.model.HouseRecentDealDto;
 
 public interface HouseRecentDealService {
-    List<HouseRecentDealDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng);
+    List<HouseRecentDealDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng, String tableName);
+    
+    List<HouseRecentDealDto> getMonthlyHousesInBounds(double swLat, double swLng, double neLat, double neLng);
 }

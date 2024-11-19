@@ -17,7 +17,12 @@ public class HouseRecentDealServiceImpl implements HouseRecentDealService {
     }
 
     @Override
-    public List<HouseRecentDealDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng) {
-        return houseRecentDealMapper.getHousesInBounds(swLat, swLng, neLat, neLng);
+    public List<HouseRecentDealDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng, String tableName) {
+        return houseRecentDealMapper.getHousesInBounds(swLat, swLng, neLat, neLng, tableName);
+    }
+
+    @Override
+    public List<HouseRecentDealDto> getMonthlyHousesInBounds(double swLat, double swLng, double neLat, double neLng) {
+        return houseRecentDealMapper.getMonthlyHousesInBounds(swLat, swLng, neLat, neLng);
     }
 }

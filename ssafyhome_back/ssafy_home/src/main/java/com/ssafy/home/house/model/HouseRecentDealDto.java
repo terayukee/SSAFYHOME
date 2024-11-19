@@ -7,6 +7,7 @@ public class HouseRecentDealDto {
     private String longitude; // 경도 추가
     private int dealType; // int로 변경
     private String avgDealAmount;
+    private String feeAmount;
 
     // Getter & Setter
     public String getLatitude() {
@@ -57,15 +58,24 @@ public class HouseRecentDealDto {
         this.avgDealAmount = avgDealAmount;
     }
 
+    public String getFeeAmount() {
+        return feeAmount;
+    }
+
+    public void setFeeAmount(String feeAmount) {
+        this.feeAmount = feeAmount;
+    }
+
     @Override
     public String toString() {
-        return "HouseRecentDealDto{" +
-               "aptSeq='" + aptSeq + '\'' +
-               ", aptNm='" + aptNm + '\'' +
-               ", latitude='" + latitude + '\'' +
-               ", longitude='" + longitude + '\'' +
-               ", dealType=" + dealType + // 수정된 부분
-               ", avgDealAmount='" + avgDealAmount + '\'' +
+        return "MonthlyHouseDealDto{" +
+               "aptSeq='" + getAptSeq() + '\'' +
+               ", aptNm='" + getAptNm() + '\'' +
+               ", latitude='" + getLatitude() + '\'' +
+               ", longitude='" + getLongitude() + '\'' +
+               ", dealType='" + getDealType() + '\'' +
+               ", avgDealAmount='" + getAvgDealAmount() + '\'' +
+               ", feeAmount='" + feeAmount + '\'' +
                '}';
     }
 }

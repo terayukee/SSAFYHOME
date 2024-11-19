@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch } from "vue";
 import VKakaoMap from "@/components/common/VKakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
 import { listHouses, listHousesInBounds } from "@/api/house.js";
@@ -19,21 +19,21 @@ const navItems = [
   { id: "pre-sale", label: "분양", icon: PreSaleIcon },
 ];
 
-// 세로 네비게이션 항목
-
-// 선택 상태
-const selectedNav = ref("apartment");
-const selectedVerticalNav = ref("");
+const selectedNav = ref("apartment"); // 선택 상태
+const selectedType = ref("매매"); // 현재 선택된 타입 (매매, 전세, 월세)
+const bounds = ref(null); // 현재 지도 bounds (초기값은 null)
 
 // 집 정보
 const houses = ref([]); // house 정보를 저장할 ref 변수
 
 const fetchHousesInBounds = (bounds) => {
+  console.log("bounds:", bounds);
   listHousesInBounds(
     bounds,
+    selectedType.value,
     (response) => {
       houses.value = response.data;
-      console.log("listHousesInBounds 성공, ", response.data);
+      // console.log("listHousesInBounds 성공, ", response.data);
     },
     (error) => {
       console.error("Failed to fetch houses:", error);
@@ -49,10 +49,6 @@ const handleBoundsChange = (bounds) => {
 // 네비게이션 항목 선택 함수
 const selectNav = (id) => {
   selectedNav.value = id;
-};
-
-const selectVerticalNav = (id) => {
-  selectedVerticalNav.value = id;
 };
 
 // 필터 데이터 및 옵션
@@ -82,21 +78,6 @@ const filterOptions = {
     { text: "10년 이내", value: "10년 이내" },
     { text: "10년 이상", value: "10년 이상" },
   ],
-  numHouseholds: [
-    { text: "50세대 이하", value: "50세대 이하" },
-    { text: "50~100세대", value: "50~100세대" },
-    { text: "100세대 이상", value: "100세대 이상" },
-  ],
-  parkingSpaces: [
-    { text: "1대 이하", value: "1대 이하" },
-    { text: "2대", value: "2대" },
-    { text: "3대 이상", value: "3대 이상" },
-  ],
-  numRooms: [
-    { text: "1개", value: "1개" },
-    { text: "2개", value: "2개" },
-    { text: "3개 이상", value: "3개 이상" },
-  ],
   additionalFilters: [
     { text: "옵션 포함", value: "옵션 포함" },
     { text: "신축", value: "신축" },
@@ -108,6 +89,16 @@ const onFilterChange = (filterKey, value) => {
   filters.value[filterKey] = value;
   console.log("Filter Changed:", filters.value);
 };
+
+// 선택된 타입이 변경될 때 fetch 호출
+watch(selectedType, (newType) => {
+  console.log("Type changed to:", newType);
+  if (bounds.value) {
+    fetchHousesInBounds(bounds.value);
+  } else {
+    console.warn("Bounds are not defined yet.");
+  }
+});
 </script>
 
 <template>
@@ -132,8 +123,8 @@ const onFilterChange = (filterKey, value) => {
       <header class="top-nav">
         <VSelect
           :selectOption="filterOptions.rentType"
-          placeholder="월세, 전세, 매매"
-          @onKeySelect="(val) => onFilterChange('rentType', val)"
+          v-model="selectedType"
+          placeholder="거래 유형"
         />
         <VSelect
           :selectOption="filterOptions.roomSize"
@@ -144,26 +135,6 @@ const onFilterChange = (filterKey, value) => {
           :selectOption="filterOptions.approvalDate"
           placeholder="사용승인일"
           @onKeySelect="(val) => onFilterChange('approvalDate', val)"
-        />
-        <VSelect
-          :selectOption="filterOptions.numHouseholds"
-          placeholder="세대수"
-          @onKeySelect="(val) => onFilterChange('numHouseholds', val)"
-        />
-        <VSelect
-          :selectOption="filterOptions.parkingSpaces"
-          placeholder="주차대수"
-          @onKeySelect="(val) => onFilterChange('parkingSpaces', val)"
-        />
-        <VSelect
-          :selectOption="filterOptions.numRooms"
-          placeholder="방수"
-          @onKeySelect="(val) => onFilterChange('numRooms', val)"
-        />
-        <VSelect
-          :selectOption="filterOptions.additionalFilters"
-          placeholder="추가필터"
-          @onKeySelect="(val) => onFilterChange('additionalFilters', val)"
         />
       </header>
 
