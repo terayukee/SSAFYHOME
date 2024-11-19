@@ -20,5 +20,26 @@
         FROM
             houseinfos
     </select>
+    
+    <!-- 지도 범위 내의 House 정보 조회 -->
+    <select id="getHousesInBounds" resultType="com.ssafy.home.house.model.HouseInfoDto">
+    SELECT
+        apt_seq AS aptSeq,
+        sgg_cd AS sggCd,
+        umd_cd AS umdCd,
+        umd_nm AS umdNm,
+        jibun,
+        road_nm AS roadNm,
+        apt_nm AS aptNm,
+        build_year AS buildYear,
+        latitude,
+        longitude
+    FROM
+        houseinfos
+    WHERE
+        latitude BETWEEN #{swLat} AND #{neLat}
+        AND longitude BETWEEN #{swLng} AND #{neLng}
+</select>
+    
 
 </mapper>

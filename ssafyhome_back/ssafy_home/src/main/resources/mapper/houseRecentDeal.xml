@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.ssafy.home.house.model.mapper.HouseRecentDealMapper">
+
+	<select id="getHousesInBounds"
+		resultType="com.ssafy.home.house.model.HouseRecentDealDto">
+		WITH ranked_deals AS (
+			SELECT
+				hi.apt_seq AS aptSeq,
+				hi.apt_nm AS aptNm,
+				hi.latitude AS latitude,
+				hi.longitude AS longitude,
+				hr.deal_type AS dealType,
+				hr.avg_deal_amount AS avgDealAmount,
+				hr.deal_count AS dealCount,
+				ROW_NUMBER() OVER (
+					PARTITION BY hi.apt_seq
+					ORDER BY hr.deal_count DESC
+				) AS rnk
+			FROM
+				houseinfos hi
+			JOIN
+				houserecentdeals hr
+			ON
+				hi.apt_seq = hr.apt_seq
+			WHERE
+				hi.latitude BETWEEN #{swLat} AND #{neLat}
+				AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+		)
+		SELECT
+			aptSeq,
+			aptNm,
+			latitude,
+			longitude,
+			dealType,
+			avgDealAmount
+		FROM
+			ranked_deals
+		WHERE
+			rnk = 1
+	</select>
+
+</mapper>
