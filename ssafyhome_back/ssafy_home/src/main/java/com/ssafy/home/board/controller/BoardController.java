@@ -41,6 +41,7 @@ public class BoardController {
 		super();
 		this.boardService = boardService;
 	}
+	
 	@PostMapping
     public ResponseEntity<?> writeArticle(MultipartHttpServletRequest mRequest) throws Exception {
 		
