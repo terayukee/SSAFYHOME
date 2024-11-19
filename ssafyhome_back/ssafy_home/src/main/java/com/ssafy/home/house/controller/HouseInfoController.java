@@ -43,9 +43,9 @@ public class HouseInfoController {
 		// 2. 매매 or 전세 
 		else {
 			List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng, type);
-//			for (HouseRecentDealDto result : resultList) {
-//				System.out.println(result.toString());
-//			}
+			for (HouseRecentDealDto result : resultList) {
+				System.out.println(result.toString());
+			}
 			return resultList;
 		}
 

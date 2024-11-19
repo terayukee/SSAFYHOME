@@ -15,6 +15,7 @@
 	            hi.longitude AS longitude,
 	            hr.deal_space AS dealSpace,
 	            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+	            hr.deal_category AS dealCategory,
 	            ROW_NUMBER() OVER (
 	                PARTITION BY hi.apt_seq
 	                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
@@ -36,6 +37,7 @@
 	        latitude,
 	        longitude,
 	        dealSpace,
+	        dealCategory,
 	        avgDealAmount
 	    FROM
 	        ranked_deals
@@ -56,6 +58,7 @@
 	            hr.deal_space AS dealSpace,
 	            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
 	            CAST(REPLACE(hr.avg_fee_amount, ',', '') AS UNSIGNED) AS avgFeeAmount,
+	            hr.deal_category AS dealCategory,
 	            ROW_NUMBER() OVER (
 	                PARTITION BY hi.apt_seq
 	                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
@@ -77,6 +80,7 @@
 	        latitude,
 	        longitude,
 	        dealSpace,
+	        dealCategory,
 	        avgDealAmount,
 	        avgFeeAmount
 	    FROM

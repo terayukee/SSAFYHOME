@@ -157,10 +157,7 @@ watch(selectedCategory, (newCategory) => {
           </div>
           <div class="vertical-nav-content">
             <!-- HouseCardList 컴포넌트로 데이터 전달 -->
-            <HouseCardList
-              :houses="houses"
-              :selectedCategory="selectedCategory"
-            />
+            <HouseCardList :houses="houses" />
           </div>
         </nav>
 
