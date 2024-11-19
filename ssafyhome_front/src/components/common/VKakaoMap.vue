@@ -55,7 +55,7 @@ const initMap = () => {
   const container = document.getElementById("map");
 
   const options = {
-    center: new kakao.maps.LatLng(33.506, 126.54),
+    center: new kakao.maps.LatLng(37.514575, 127.0495556),
     level: clusterLevel,
   };
 

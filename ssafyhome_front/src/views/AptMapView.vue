@@ -171,7 +171,7 @@ const onFilterChange = (filterKey, value) => {
         <!-- 세로 네비게이션 -->
         <nav class="vertical-nav">
           <div class="vertical-nav-buttons">
-            <button
+            <!-- <button
               :class="{ active: selectedButton === '단지' }"
               @click="selectButton('단지')"
             >
@@ -182,7 +182,7 @@ const onFilterChange = (filterKey, value) => {
               @click="selectButton('거래이력')"
             >
               거래이력
-            </button>
+            </button> -->
           </div>
           <div class="vertical-nav-content">
             <!-- HouseCardList 컴포넌트로 데이터 전달 -->
