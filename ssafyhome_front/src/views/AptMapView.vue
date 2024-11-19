@@ -107,6 +107,11 @@ watch(selectedCategory, (newCategory) => {
 const onCardClick = (house) => {
   selectedHouse.value = house; // 클릭한 하우스 정보 저장
 };
+
+// 지도 클릭 시 detail nav 접기
+const handleMapClick = () => {
+  selectedHouse.value = null;
+};
 </script>
 
 <template>
@@ -158,6 +163,9 @@ const onCardClick = (house) => {
 
         <!-- 두 번째 세로 네비게이션: 하우스 상세보기 -->
         <nav class="vertical-nav-detail" v-if="selectedHouse">
+          <!-- X 버튼 -->
+          <button class="close-button" @click="selectedHouse = null">X</button>
+
           <div class="detail-content">
             <h3>{{ selectedHouse.aptNm }}</h3>
             <p>거래 유형: {{ selectedHouse.dealCategory }}</p>
@@ -173,6 +181,7 @@ const onCardClick = (house) => {
             :selectedCategory="selectedCategory"
             @boundsChange="handleBoundsChange"
             @markerClick="onCardClick"
+            @mapClick="handleMapClick"
           />
         </section>
       </div>
@@ -188,7 +197,7 @@ const onCardClick = (house) => {
 
 /* 좌측 네비게이션 스타일 */
 .left-nav {
-  width: 200px;
+  width: 140px;
   background-color: #fff;
   border-right: 1px solid #e0e0e0;
   padding: 16px 0;
@@ -227,7 +236,7 @@ const onCardClick = (house) => {
 
 /* 세로 네비게이션 스타일 */
 .vertical-nav {
-  width: 300px;
+  width: 350px;
   background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
   padding: 16px 0;
@@ -271,6 +280,29 @@ const onCardClick = (house) => {
   border-right: 1px solid #e0e0e0;
   padding: 16px;
   overflow-y: auto;
+}
+
+/* 닫기 버튼 */
+.close-button {
+  position: absolute;
+  top: 190px;
+  left: 850px;
+  background-color: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+  z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
+}
+
+.close-button:hover {
+  background-color: #d9363e;
 }
 
 .detail-content {

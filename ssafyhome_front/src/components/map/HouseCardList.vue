@@ -96,8 +96,8 @@ const handleCardClick = (house) => {
 }
 
 .image {
-  max-width: 100%;
-  border-radius: 8px;
+  width: 160px;
+  height: 160px;
 }
 
 .house-info {

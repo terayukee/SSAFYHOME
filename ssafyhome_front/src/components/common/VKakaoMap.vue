@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["boundsChange", "markerClick"]);
+const emit = defineEmits(["boundsChange", "markerClick", "mapClick"]);
 
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
@@ -81,6 +81,10 @@ const initMap = () => {
 
   // 초기 마커 로드
   updateMarkers(props.houses);
+
+  kakao.maps.event.addListener(map, "click", () => {
+    emit("mapClick"); // 부모 컴포넌트로 지도 클릭 이벤트 전달
+  });
 };
 
 // 줌 변경 이벤트 핸들러
