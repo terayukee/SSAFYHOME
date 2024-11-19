@@ -168,8 +168,8 @@ INSERT INTO `home`.`users` (
   '010-1234-5678',          -- 실제 전화번호를 적어주세요
   'user'                    -- 실제 역할을 적어주세요
 );
+
 select * from board;
-insert into board(user_no,subject,content) values (1,"aa","aaaa");
 INSERT INTO home.board (user_no, subject, content) VALUES
 (1, 'Hello World', 'This is a test content for the board.'),
 (1, 'Vue.js is awesome!', 'Vue.js is a progressive framework for building user interfaces.'),

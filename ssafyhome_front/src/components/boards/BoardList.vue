@@ -50,6 +50,9 @@ const onPageChange = (val) => {
   router.push({ name: "board-list-page", params: { page: val } });
 };
 
+const moveWrite = () => {
+  router.push({ name: "article-write" });
+};
 
 </script>
 
@@ -72,6 +75,9 @@ const onPageChange = (val) => {
         />
       </tbody>
     </table>
+    <div class="button-container">
+        <button class="pagination-button" @click="moveWrite">게시판 글쓰기</button>
+    </div>
   </div>  
     <!-- 페이지네이션 -->
     <VPageNavigation
@@ -203,5 +209,39 @@ const onPageChange = (val) => {
 
 .write-btn:hover {
   background-color: #0056b3;
+}
+
+.writing-container {
+    position: relative;
+    display: inline-block;
+}
+
+.pagination-button {
+    background-color: #f8f9fa;      /* 버튼 배경색 */
+    border: 1px solid #dee2e6;      /* 버튼 테두리 */
+    color: #007bff;                 /* 기본 텍스트 색 */
+    padding: 8px 12px;              /* 패딩 */
+    margin-right: 10px;
+    cursor: pointer;                /* 마우스 커서 손 모양 */
+    border-radius: 4px;             /* 둥근 모서리 */
+    transition: all 0.3s ease;      /* 부드러운 전환 효과 */
+}
+
+/* 마우스를 올렸을 때 버튼 스타일 */
+.pagination-button:hover {
+    background-color: #e9ecef;      /* 호버 시 배경색 */
+}
+
+/* 버튼이 활성화되었을 때 (클릭된 상태) */
+.pagination-button:active {
+    background-color: #007bff;      /* 클릭 시 배경색 */
+    color: white;                   /* 텍스트 색 변경 */
+    border-color: #007bff;          /* 테두리 색 변경 */
+}
+
+/* 버튼에 포커스를 주었을 때 스타일 */
+.pagination-button:focus {
+    outline: none;                  /* 기본 외곽선 제거 */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* 포커스 시 그림자 효과 */
 }
 </style>
