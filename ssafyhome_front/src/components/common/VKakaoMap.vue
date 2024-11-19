@@ -5,6 +5,7 @@ let map;
 let clusterer;
 const markers = ref([]); // Custom Overlay 마커
 const clusterMarkers = ref([]); // Clustering에 사용할 기본 마커
+const clusterLevel = 5;
 
 const props = defineProps({
   houses: {
@@ -53,8 +54,8 @@ const initMap = () => {
   const container = document.getElementById("map");
 
   const options = {
-    center: new kakao.maps.LatLng(33.2683, 126.570667),
-    level: 5,
+    center: new kakao.maps.LatLng(33.506, 126.54),
+    level: clusterLevel,
   };
 
   map = new kakao.maps.Map(container, options);
@@ -63,10 +64,11 @@ const initMap = () => {
   clusterer = new kakao.maps.MarkerClusterer({
     map: map,
     averageCenter: true,
-    minLevel: 5, // 클러스터링이 활성화되는 최소 레벨
+    minLevel: clusterLevel, // 클러스터링이 활성화되는 최소 레벨
   });
 
   kakao.maps.event.addListener(map, "zoom_changed", onZoomChanged);
+  kakao.maps.event.addListener(map, "bounds_changed", onBoundsChanged); // 지도 경계 변경 이벤트 추가
 
   // 초기 마커 로드
   updateMarkers(props.houses);
@@ -76,9 +78,11 @@ const initMap = () => {
 const onZoomChanged = () => {
   const level = map.getLevel();
   console.log("level : ", level);
-  if (level > 5) {
+  if (level >= clusterLevel) {
+    console.log("클러스터링");
     displayClusterMarkers(); // 클러스터 마커 표시
   } else {
+    console.log("커스텀 마커");
     displayCustomMarkers(); // 커스텀 마커 표시
   }
 };
@@ -145,7 +149,7 @@ const updateMarkers = (houses) => {
   });
 
   const level = map.getLevel();
-  if (level <= 5) {
+  if (level >= clusterLevel) {
     displayClusterMarkers();
   } else {
     displayCustomMarkers();
@@ -159,6 +163,27 @@ watch(
   },
   { deep: true }
 );
+
+// 지도 경계 변경 이벤트 핸들러
+const onBoundsChanged = () => {
+  const bounds = map.getBounds();
+  emitBoundsChange(bounds);
+};
+
+// `boundsChange` 이벤트를 부모에 전달하는 함수
+const emitBoundsChange = (bounds) => {
+  const sw = bounds.getSouthWest();
+  const ne = bounds.getNorthEast();
+
+  const boundsParams = {
+    swLat: sw.getLat(),
+    swLng: sw.getLng(),
+    neLat: ne.getLat(),
+    neLng: ne.getLng(),
+  };
+
+  emit("boundsChange", boundsParams);
+};
 </script>
 
 <template>
