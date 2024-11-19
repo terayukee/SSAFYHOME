@@ -9,6 +9,8 @@ import VillaIcon from "@/assets/icons/villa.png";
 import OfficetelIcon from "@/assets/icons/office.png";
 import PreSaleIcon from "@/assets/icons/presale.png";
 
+import HouseCardList from "@/components/map/HouseCardList.vue";
+
 // 좌측 네비게이션 항목
 const navItems = [
   { id: "apartment", label: "아파트", icon: ApartmentIcon },
@@ -26,22 +28,6 @@ const selectedVerticalNav = ref("");
 // 집 정보
 const houses = ref([]); // house 정보를 저장할 ref 변수
 
-// 집 정보 불러오기
-// onMounted(() => {
-//   fetchHouses(); // 컴포넌트가 마운트될 때 house 데이터 가져오기
-// });
-
-// const fetchHouses = () => {
-//   listHouses(
-//     {},
-//     (response) => {
-//       houses.value = response.data; // 성공 시 house 데이터 저장
-//     },
-//     (error) => {
-//       console.error("Failed to fetch houses:", error);
-//     }
-//   );
-// };
 const fetchHousesInBounds = (bounds) => {
   listHousesInBounds(
     bounds,
@@ -184,18 +170,24 @@ const onFilterChange = (filterKey, value) => {
       <div class="content-wrapper">
         <!-- 세로 네비게이션 -->
         <nav class="vertical-nav">
-          <button
-            :class="{ active: selectedButton === '단지' }"
-            @click="selectButton('단지')"
-          >
-            단지
-          </button>
-          <button
-            :class="{ active: selectedButton === '거래이력' }"
-            @click="selectButton('거래이력')"
-          >
-            거래이력
-          </button>
+          <div class="vertical-nav-buttons">
+            <button
+              :class="{ active: selectedButton === '단지' }"
+              @click="selectButton('단지')"
+            >
+              단지
+            </button>
+            <button
+              :class="{ active: selectedButton === '거래이력' }"
+              @click="selectButton('거래이력')"
+            >
+              거래이력
+            </button>
+          </div>
+          <div class="vertical-nav-content">
+            <!-- HouseCardList 컴포넌트로 데이터 전달 -->
+            <HouseCardList :houses="houses" />
+          </div>
         </nav>
 
         <!-- 지도 및 결과 영역 -->
@@ -258,10 +250,12 @@ const onFilterChange = (filterKey, value) => {
   background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
   padding: 16px 0;
+  overflow-y: scroll; /* 세로 스크롤 활성화 */
+  max-height: 100%; /* 부모 요소 높이에 맞춤 */
 }
 
 .vertical-nav button {
-  margin: 0px 10px;
+  margin: 10px 10px;
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
@@ -286,6 +280,7 @@ const onFilterChange = (filterKey, value) => {
 .content-wrapper {
   display: flex;
   flex: 1;
+  max-height: 100%;
 }
 
 .map-section {
