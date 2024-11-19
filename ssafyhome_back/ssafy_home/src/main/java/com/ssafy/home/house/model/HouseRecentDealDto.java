@@ -8,7 +8,7 @@ public class HouseRecentDealDto {
     private int dealSpace; // int로 변경
     private String avgDealAmount;
     private String dealCategory;
-    private String feeAmount;
+    private String avgFeeAmount;
 
     // Getter & Setter
     public String getLatitude() {
@@ -69,19 +69,19 @@ public class HouseRecentDealDto {
 		this.dealCategory = dealCategory;
 	}
 
-	public String getFeeAmount() {
-        return feeAmount;
+	public String getAvgFeeAmount() {
+        return avgFeeAmount;
     }
 
-    public void setFeeAmount(String feeAmount) {
-        this.feeAmount = feeAmount;
+    public void setFeeAmount(String avgFeeAmount) {
+        this.avgFeeAmount = avgFeeAmount;
     }
 
 	@Override
 	public String toString() {
 		return "HouseRecentDealDto [aptSeq=" + aptSeq + ", aptNm=" + aptNm + ", latitude=" + latitude + ", longitude="
 				+ longitude + ", dealSpace=" + dealSpace + ", avgDealAmount=" + avgDealAmount + ", dealCategory="
-				+ dealCategory + ", feeAmount=" + feeAmount + "]";
+				+ dealCategory + ", avgFeeAmount=" + avgFeeAmount + "]";
 	}
 
     

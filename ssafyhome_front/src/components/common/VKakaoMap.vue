@@ -144,10 +144,18 @@ const updateMarkers = (houses) => {
       <div class="custom-marker">
         <div class="custom-marker-content">
           <div class="custom-marker-title">${house.dealSpace}평</div>
-          <div class="custom-marker-price">${props.selectedCategory} ${dealAmountInEok}억</div>
+          <div class="custom-marker-price">
+            ${
+              props.selectedCategory === "월세"
+                ? `${house.avgDealAmount || "N/A"} / ${
+                    house.avgFeeAmount || "N/A"
+                  }만`
+                : `${props.selectedCategory} ${dealAmountInEok}억`
+            }
+          </div>
         </div>
       </div>
-    `;
+`;
 
     const customOverlay = new kakao.maps.CustomOverlay({
       position: position,
