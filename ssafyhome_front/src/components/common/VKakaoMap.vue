@@ -19,6 +19,7 @@ const emit = defineEmits(["boundsChange"]);
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
+    loadInitialMarkers();
   } else {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${
