@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, defineProps, defineEmits } from "vue";
 
 let map;
 let clusterer;
@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["boundsChange"]);
+const emit = defineEmits(["boundsChange", "markerClick"]);
 
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
@@ -155,13 +155,23 @@ const updateMarkers = (houses) => {
           </div>
         </div>
       </div>
-`;
+    `;
 
     const customOverlay = new kakao.maps.CustomOverlay({
       position: position,
       content: content,
       yAnchor: 1,
     });
+
+    // 클릭 이벤트 추가
+    // 여기에서 DOM 요소를 클릭했을 때 이벤트 연결
+    const element = document.createElement("div");
+    element.innerHTML = content.trim();
+    element.addEventListener("click", () => {
+      handleMarkerClick(house); // 마커 클릭 이벤트 핸들러
+    });
+
+    customOverlay.setContent(element);
 
     markers.value.push(customOverlay);
   });
@@ -210,6 +220,12 @@ const emitBoundsChange = (bounds) => {
 
   console.log("Bounds changed:", bounds); // 디버그용
   emit("boundsChange", boundsParams);
+};
+
+// 마커 클릭 핸들러
+const handleMarkerClick = (house) => {
+  console.log("마커 클릭, house : ", house);
+  emit("markerClick", house); // 선택된 house 정보를 부모로 emit
 };
 </script>
 

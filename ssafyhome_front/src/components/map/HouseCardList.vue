@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 // Props로 전달된 집 정보를 받습니다.
 const props = defineProps({
@@ -33,12 +33,23 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
   return `/assets/apart/${category}${randomIndex}.jpg`;
 }
 
-console.log("카드 houses : ", props.houses);
+// 부모로 이벤트를 전달하기 위한 emit 정의
+const emit = defineEmits(["cardClick"]);
+
+// 카드 클릭 핸들러
+const handleCardClick = (house) => {
+  emit("cardClick", house); // 선택된 house 정보를 부모로 emit
+};
 </script>
 
 <template>
   <div class="vertical-nav-content">
-    <div class="house-card" v-for="house in houses" :key="house.aptSeq">
+    <div
+      class="house-card"
+      v-for="house in houses"
+      :key="house.aptSeq"
+      @click="handleCardClick(house)"
+    >
       <div class="house-image">
         <img
           :src="

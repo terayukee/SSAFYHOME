@@ -25,6 +25,9 @@ const selectedCategory = ref("매매"); // 현재 선택된 타입 (매매, 전�
 const houses = ref([]); // house 정보를 저장할 ref 변수
 const bounds = ref(null); // 현재 지도 bounds
 
+// 추가: 선택된 하우스 정보를 저장
+const selectedHouse = ref(null);
+
 const fetchHousesInBounds = (bounds) => {
   console.log("bounds:", bounds);
   listHousesInBounds(
@@ -99,6 +102,11 @@ watch(selectedCategory, (newCategory) => {
     console.warn("Bounds are not defined yet.");
   }
 });
+
+// 카드 클릭 시 선택된 하우스 정보를 설정
+const onCardClick = (house) => {
+  selectedHouse.value = house; // 클릭한 하우스 정보 저장
+};
 </script>
 
 <template>
@@ -124,7 +132,7 @@ watch(selectedCategory, (newCategory) => {
         <VSelect
           :selectOption="filterOptions.dealCategory"
           v-model="selectedCategory"
-          placeholder="거래 유형"
+          placeholder="매매"
         />
         <VSelect
           :selectOption="filterOptions.roomSize"
@@ -141,23 +149,20 @@ watch(selectedCategory, (newCategory) => {
       <div class="content-wrapper">
         <!-- 세로 네비게이션 -->
         <nav class="vertical-nav">
-          <div class="vertical-nav-buttons">
-            <!-- <button
-              :class="{ active: selectedButton === '단지' }"
-              @click="selectButton('단지')"
-            >
-              단지
-            </button>
-            <button
-              :class="{ active: selectedButton === '거래이력' }"
-              @click="selectButton('거래이력')"
-            >
-              거래이력
-            </button> -->
-          </div>
+          <div class="vertical-nav-buttons"></div>
           <div class="vertical-nav-content">
             <!-- HouseCardList 컴포넌트로 데이터 전달 -->
-            <HouseCardList :houses="houses" />
+            <HouseCardList :houses="houses" @cardClick="onCardClick" />
+          </div>
+        </nav>
+
+        <!-- 두 번째 세로 네비게이션: 하우스 상세보기 -->
+        <nav class="vertical-nav-detail" v-if="selectedHouse">
+          <div class="detail-content">
+            <h3>{{ selectedHouse.aptNm }}</h3>
+            <p>거래 유형: {{ selectedHouse.dealCategory }}</p>
+            <p>평수: {{ selectedHouse.dealSpace }}평</p>
+            <p>거래 금액: {{ selectedHouse.avgDealAmount }}억</p>
           </div>
         </nav>
 
@@ -167,6 +172,7 @@ watch(selectedCategory, (newCategory) => {
             :houses="houses"
             :selectedCategory="selectedCategory"
             @boundsChange="handleBoundsChange"
+            @markerClick="onCardClick"
           />
         </section>
       </div>
@@ -256,6 +262,34 @@ watch(selectedCategory, (newCategory) => {
   display: flex;
   flex: 1;
   max-height: 100%;
+}
+
+/* 두 번째 세로 네비게이션 */
+.vertical-nav-detail {
+  width: 300px;
+  background-color: #f9f9f9;
+  border-right: 1px solid #e0e0e0;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.detail-content {
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detail-content h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #333;
+}
+
+.detail-content p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
 }
 
 .map-section {
