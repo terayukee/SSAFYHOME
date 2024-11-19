@@ -134,7 +134,7 @@ const updateMarkers = (houses) => {
     const content = `
       <div class="custom-marker">
         <div class="custom-marker-content">
-          <div class="custom-marker-title">${house.dealType || "N/A"}</div>
+          <div class="custom-marker-title">${house.dealType}평</div>
           <div class="custom-marker-price">매 ${dealAmountInEok}억</div>
         </div>
       </div>
@@ -166,9 +166,18 @@ watch(
 );
 
 // 지도 경계 변경 이벤트 핸들러
+let debounceTimeout; // 디바운싱 타이머를 위한 변수
+
 const onBoundsChanged = () => {
-  const bounds = map.getBounds();
-  emitBoundsChange(bounds);
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout); // 이전 타이머를 취소
+  }
+
+  debounceTimeout = setTimeout(() => {
+    const bounds = map.getBounds(); // 현재 지도 경계를 가져옴
+    emitBoundsChange(bounds); // 부모 컴포넌트에 `boundsChange` 이벤트 전달
+    console.log("Bounds changed:", bounds); // 디버그용
+  }, 300); // 300ms 후에 실행
 };
 
 // `boundsChange` 이벤트를 부모에 전달하는 함수

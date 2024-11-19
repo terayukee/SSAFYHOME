@@ -41,6 +41,7 @@
 			ranked_deals
 		WHERE
 			rnk = 1
+		LIMIT 2000
 	</select>
 
 </mapper>

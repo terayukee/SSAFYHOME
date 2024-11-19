@@ -5,7 +5,7 @@ public class HouseRecentDealDto {
     private String aptNm;
     private String latitude; // 위도 추가
     private String longitude; // 경도 추가
-    private String dealType;
+    private int dealType; // int로 변경
     private String avgDealAmount;
 
     // Getter & Setter
@@ -24,52 +24,48 @@ public class HouseRecentDealDto {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
-    
-    
-    
+
     public String getAptSeq() {
-		return aptSeq;
-	}
+        return aptSeq;
+    }
 
-	public void setAptSeq(String aptSeq) {
-		this.aptSeq = aptSeq;
-	}
+    public void setAptSeq(String aptSeq) {
+        this.aptSeq = aptSeq;
+    }
 
-	public String getAptNm() {
-		return aptNm;
-	}
+    public String getAptNm() {
+        return aptNm;
+    }
 
-	public void setAptNm(String aptNm) {
-		this.aptNm = aptNm;
-	}
+    public void setAptNm(String aptNm) {
+        this.aptNm = aptNm;
+    }
 
-	public String getDealType() {
-		return dealType;
-	}
+    public int getDealType() { // int로 수정
+        return dealType;
+    }
 
-	public void setDealType(String dealType) {
-		this.dealType = dealType;
-	}
+    public void setDealType(int dealType) { // int로 수정
+        this.dealType = dealType;
+    }
 
-	public String getAvgDealAmount() {
-		return avgDealAmount;
-	}
+    public String getAvgDealAmount() {
+        return avgDealAmount;
+    }
 
-	public void setAvgDealAmount(String avgDealAmount) {
-		this.avgDealAmount = avgDealAmount;
-	}
+    public void setAvgDealAmount(String avgDealAmount) {
+        this.avgDealAmount = avgDealAmount;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return "HouseRecentDealDto{" +
                "aptSeq='" + aptSeq + '\'' +
                ", aptNm='" + aptNm + '\'' +
                ", latitude='" + latitude + '\'' +
                ", longitude='" + longitude + '\'' +
-               ", dealType='" + dealType + '\'' +
+               ", dealType=" + dealType + // 수정된 부분
                ", avgDealAmount='" + avgDealAmount + '\'' +
                '}';
     }
-
 }
-
