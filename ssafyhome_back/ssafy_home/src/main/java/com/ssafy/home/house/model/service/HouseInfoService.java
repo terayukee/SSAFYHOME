@@ -17,4 +17,8 @@ public class HouseInfoService {
     public List<HouseInfoDto> getAllHouses() {
         return houseInfoMapper.getAllHouses();
     }
+    
+    public List<HouseInfoDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng) {
+        return houseInfoMapper.getHousesInBounds(swLat, swLng, neLat, neLng);
+    }
 }

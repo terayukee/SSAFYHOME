@@ -25,13 +25,25 @@ function stationAxios() {
 }
 
 // 아파트 정보 가져오기
-function houseAxios() {
+function houseInfoAxios() {
   const instance = axios.create({
-    baseURL: "http://localhost:8080/api", // Spring Boot API의 baseURL
+    baseURL: "http://localhost:8080/api/houseinfo", // Spring Boot API의 baseURL
     headers: {
       "Content-Type": "application/json;charset=utf-8",
     },
   });
   return instance;
 }
-export { localAxios, stationAxios, houseAxios };
+
+// 거래 정보 가져오기
+function houseDealAxios() {
+  const instance = axios.create({
+    baseURL: "http://localhost:8080/api/housedeal", // Spring Boot API의 baseURL
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
+export { localAxios, stationAxios, houseInfoAxios, houseDealAxios };

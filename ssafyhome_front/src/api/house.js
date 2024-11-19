@@ -1,10 +1,32 @@
-import { houseAxios } from "@/util/http-commons";
+import { houseInfoAxios, houseDealAxios } from "@/util/http-commons";
 
 // API 호출 함수
-const house = houseAxios();
+const houseInfo = houseInfoAxios();
+const houseDeal = houseDealAxios();
 
 function listHouses(param, success, fail) {
-  house.get("/houses", { params: param }).then(success).catch(fail);
+    houseInfo.get("/list", { params: param }).then(success).catch(fail);
 }
 
-export { listHouses };
+function listHousesInBounds(bounds, success, fail) {
+    houseInfo
+      .get("/bounds", { params: bounds })
+      .then(success)
+      .catch(fail);
+  }
+
+function getPopularDealInfo(aptSeq, success, fail) {
+    houseInfo
+    .get(`/popular`, { params: { aptSeq } })
+    .then(success)
+    .catch(fail);
+}
+
+function getRecentDeals(aptSeq, success, fail) {
+    houseDeal
+      .get(`/recent`, { params: { aptSeq } }) 
+      .then(success) // 요청 성공 시 success 콜백 호출
+      .catch(fail);  // 요청 실패 시 fail 콜백 호출
+  }
+
+export { listHouses, listHousesInBounds, getPopularDealInfo, getRecentDeals };
