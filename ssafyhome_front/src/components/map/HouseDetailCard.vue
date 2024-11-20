@@ -241,6 +241,86 @@ watch(
   { immediate: true } // 초기 실행
 );
 
+// 차트 데이터
+const depositChartData = ref({
+  labels: [], // X축 레이블 (거래 연월)
+  datasets: [
+    {
+      label: "보증금 (억원)",
+      data: [], // 보증금 데이터
+      borderColor: "#42A5F5",
+      backgroundColor: "rgba(66, 165, 245, 0.2)",
+      fill: true,
+    },
+  ],
+});
+
+const rentChartData = ref({
+  labels: [], // X축 레이블 (거래 연월)
+  datasets: [
+    {
+      label: "월세 (만원)",
+      data: [], // 월세 데이터
+      borderColor: "#66BB6A",
+      backgroundColor: "rgba(102, 187, 106, 0.2)",
+      fill: true,
+    },
+  ],
+});
+
+// 차트 옵션
+const commonChartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+    title: {
+      display: true,
+      text: "최근 3년 거래 금액 추이",
+    },
+  },
+};
+
+// 월세 차트 데이터 업데이트 함수
+const updateMonthlyChartData = () => {
+  const labels = dealList.value.map(
+    (deal) => `${deal.dealYear}-${deal.dealMonth}`
+  );
+
+  // 보증금
+  const depositData = dealList.value.map((deal) => {
+    const amount = parseInt(deal.dealAmount.replace(/,/g, ""), 10);
+    return (amount / 10000).toFixed(1); // 1억 단위로 변환
+  });
+
+  // 월세
+  const rentData = dealList.value.map((deal) => {
+    console.log("월세 deal 객체 : ", deal);
+    const fee = parseInt(deal.feeAmount.replace(/,/g, ""), 10);
+    return fee; // 만원 단위
+  });
+
+  depositChartData.value.labels = labels;
+  depositChartData.value.datasets[0].data = depositData;
+
+  rentChartData.value.labels = labels;
+  rentChartData.value.datasets[0].data = rentData;
+};
+
+// 거래 리스트 변경 시 차트 데이터 업데이트
+watch(
+  dealList,
+  () => {
+    if (selectedTab.value === "월세") {
+      updateMonthlyChartData();
+    } else {
+      updateChartData(); // 기존의 "매매" 또는 "전세" 차트
+    }
+  },
+  { immediate: true }
+);
+
 console.log("selectedHouse : ", props.selectedHouse);
 </script>
 
@@ -338,9 +418,31 @@ console.log("selectedHouse : ", props.selectedHouse);
 
     <!-- Chart Section -->
     <div class="chart-container">
-      <div class="chart-placeholder">
-        <LineChart :chart-data="chartData" :chart-options="chartOptions" />
-      </div>
+      <!-- 월세일 때 보증금과 월세 차트 -->
+      <template v-if="selectedTab === '월세'">
+        <div class="chart-placeholder">
+          <LineChart
+            :chart-data="depositChartData"
+            :chart-options="commonChartOptions"
+          />
+        </div>
+        <div class="chart-placeholder" style="margin-top: 150px">
+          <LineChart
+            :chart-data="rentChartData"
+            :chart-options="commonChartOptions"
+          />
+        </div>
+      </template>
+
+      <!-- 매매 또는 전세일 때 기본 차트 -->
+      <template v-else>
+        <div class="chart-placeholder">
+          <LineChart
+            :chart-data="chartData"
+            :chart-options="commonChartOptions"
+          />
+        </div>
+      </template>
     </div>
   </div>
 
@@ -369,11 +471,16 @@ console.log("selectedHouse : ", props.selectedHouse);
           <td>{{ selectedTab }}</td>
           <td>{{ deal.floor }}</td>
           <td>
-            {{
-              (
-                parseInt(deal.dealAmount.replace(/,/g, ""), 10) * 0.0001
-              ).toFixed(2)
-            }}억
+            <template v-if="selectedTab === '월세'">
+              {{ deal.dealAmount }}만 / {{ deal.feeAmount }}만
+            </template>
+            <template v-else>
+              {{
+                (
+                  parseInt(deal.dealAmount.replace(/,/g, ""), 10) * 0.0001
+                ).toFixed(2)
+              }}억
+            </template>
           </td>
         </tr>
       </tbody>
@@ -534,6 +641,9 @@ console.log("selectedHouse : ", props.selectedHouse);
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 4px;
+  color: #0d47a1; /* 텍스트 색상 */
 }
 
 .history-header h3 {
@@ -552,18 +662,24 @@ console.log("selectedHouse : ", props.selectedHouse);
   border-collapse: collapse;
   text-align: left;
   font-size: 14px;
-  border: 1px solid #ddd;
+  background-color: #fff; /* 흰색 배경 */
+  border: 1px solid #ddd; /* 테두리 */
 }
 
 .history-table thead th {
-  background-color: #f9f9f9;
+  background-color: #e3f2fd; /* 하늘색 배경 */
+  color: #0d47a1; /* 텍스트 색상 */
   font-weight: bold;
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #42a5f5; /* 하늘색 하단 테두리 */
 }
 
 .history-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f9f9f9; /* 연한 회색 */
+}
+
+.history-table tbody tr:nth-child(odd) {
+  background-color: #fff; /* 흰색 */
 }
 
 .history-table tbody td {
@@ -572,11 +688,23 @@ console.log("selectedHouse : ", props.selectedHouse);
 }
 
 .history-table tbody tr:last-child td {
-  border-bottom: none;
+  border-bottom: none; /* 마지막 행은 하단 테두리 제거 */
 }
 
 .history-table tbody td:last-child {
   text-align: right;
   font-weight: bold;
+  color: #0d47a1; /* 하늘색 텍스트 */
+}
+
+.history-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.history-header span {
+  font-size: 14px;
+  color: #0d47a1;
 }
 </style>

@@ -10,6 +10,7 @@ public class HouseDealDto {
     private int dealDay;
     private double excluUseAr;
     private String dealAmount;
+    private String feeAmount;
 
     // Getter and Setter
     public int getNo() {
@@ -84,12 +85,20 @@ public class HouseDealDto {
         this.dealAmount = dealAmount;
     }
 
+	public String getFeeAmount() {
+		return feeAmount;
+	}
+
+	public void setFeeAmount(String feeAmount) {
+		this.feeAmount = feeAmount;
+	}
+
 	@Override
 	public String toString() {
 		return "HouseDealDto [no=" + no + ", aptSeq=" + aptSeq + ", aptDong=" + aptDong + ", floor=" + floor
 				+ ", dealYear=" + dealYear + ", dealMonth=" + dealMonth + ", dealDay=" + dealDay + ", excluUseAr="
-				+ excluUseAr + ", dealAmount=" + dealAmount + "]";
-	}
+				+ excluUseAr + ", dealAmount=" + dealAmount + ", feeAmount=" + feeAmount + "]";
+	}    
     
     
 }

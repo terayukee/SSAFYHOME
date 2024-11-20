@@ -4,22 +4,32 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.home.house.model.mapper.HouseDealMapper">
 
+    <!-- Result Map 정의 -->
+    <resultMap id="HouseDealResultMap" type="com.ssafy.home.house.model.HouseDealDto">
+        <result column="no" property="no"/>
+        <result column="apt_seq" property="aptSeq"/>
+        <result column="apt_dong" property="aptDong"/>
+        <result column="floor" property="floor"/>
+        <result column="deal_year" property="dealYear"/>
+        <result column="deal_month" property="dealMonth"/>
+        <result column="deal_day" property="dealDay"/>
+        <result column="exclu_use_ar" property="excluUseAr"/>
+        <result column="deal_amount" property="dealAmount"/>
+        <result column="fee_amount" property="feeAmount"/>
+    </resultMap>
+
     <!-- 특정 아파트의 모든 거래 정보 -->
-    <select id="getDealsByAptSeq" resultType="com.ssafy.home.house.model.HouseDealDto">
-        SELECT 
-            no, apt_seq AS aptSeq, apt_dong AS aptDong, floor, deal_year AS dealYear,
-            deal_month AS dealMonth, deal_day AS dealDay, exclu_use_ar AS excluUseAr, deal_amount AS dealAmount
-        FROM ${tableName} 
+    <select id="getDealsByAptSeq" resultMap="HouseDealResultMap">
+        SELECT *
+        FROM ${tableName}
         WHERE apt_seq = #{aptSeq}        	
         ORDER BY deal_year ASC, deal_month ASC, deal_day ASC
     </select>
 
     <!-- 특정 평형의 거래 정보 -->
-    <select id="getDealsBySpace" parameterType="map" resultType="com.ssafy.home.house.model.HouseDealDto">
-	    SELECT
-	    	no, apt_seq AS aptSeq, apt_dong AS aptDong, floor, deal_year AS dealYear,
-	    	deal_month AS dealMonth, deal_day AS dealDay, exclu_use_ar AS excluUseAr, deal_amount AS dealAmount
-	    FROM ${tableName} 
+    <select id="getDealsBySpace" parameterType="map" resultMap="HouseDealResultMap">
+	    SELECT *
+	    FROM ${tableName}
 	    WHERE apt_seq = #{aptSeq} 	    	
 	    	AND exclu_use_ar = #{space}	    	
 	    ORDER BY deal_year ASC, deal_month ASC, deal_day ASC
