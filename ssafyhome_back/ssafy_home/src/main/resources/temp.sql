@@ -120,25 +120,157 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `home`.`housedeals`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `home`.`housedeals` (
-  `no` INT NOT NULL AUTO_INCREMENT,
-  `apt_seq` VARCHAR(20) NULL DEFAULT NULL,
-  `apt_dong` VARCHAR(40) NULL DEFAULT NULL,
-  `floor` VARCHAR(3) NULL DEFAULT NULL,
-  `deal_year` INT NULL DEFAULT NULL,
-  `deal_month` INT NULL DEFAULT NULL,
-  `deal_day` INT NULL DEFAULT NULL,
-  `exclu_use_ar` DECIMAL(7,2) NULL DEFAULT NULL,
-  `deal_amount` VARCHAR(10) NULL DEFAULT NULL,
-  PRIMARY KEY (`no`),
-  INDEX `apt_seq_to_house_info_idx` (`apt_seq` ASC) VISIBLE,
-  CONSTRAINT `apt_seq_to_house_info`
-    FOREIGN KEY (`apt_seq`)
-    REFERENCES `home`.`houseinfos` (`apt_seq`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 7084512
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+CREATE TABLE `houserecentdeals` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `apt_seq` varchar(20) NOT NULL,
+  `deal_space` int NOT NULL,
+  `avg_deal_amount` decimal(10,2) DEFAULT NULL,
+  `avg_fee_amount` decimal(10,2) DEFAULT NULL,
+  `deal_count` int DEFAULT '0',
+  `most_deal_type` varchar(10) DEFAULT NULL,
+  `deal_category` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `apt_seq` (`apt_seq`),
+  CONSTRAINT `houserecentdeals_ibfk_1` FOREIGN KEY (`apt_seq`) REFERENCES `houseinfos` (`apt_seq`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=524281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE housedeals_jeonse (
+  no int NOT NULL AUTO_INCREMENT,
+  apt_seq varchar(20) DEFAULT NULL,
+  apt_dong varchar(40) DEFAULT NULL,
+  floor varchar(3) DEFAULT NULL,
+  deal_year int DEFAULT NULL,
+  deal_month int DEFAULT NULL,
+  deal_day int DEFAULT NULL,
+  exclu_use_ar decimal(7,2) DEFAULT NULL,
+  deal_amount varchar(10) DEFAULT NULL,
+  PRIMARY KEY (no)
+) ENGINE=InnoDB AUTO_INCREMENT=7084512 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `housedeals_month` (
+  `no` int NOT NULL AUTO_INCREMENT,
+  `apt_seq` varchar(20) DEFAULT NULL,
+  `apt_dong` varchar(40) DEFAULT NULL,
+  `floor` varchar(3) DEFAULT NULL,
+  `deal_year` int DEFAULT NULL,
+  `deal_month` int DEFAULT NULL,
+  `deal_day` int DEFAULT NULL,
+  `exclu_use_ar` decimal(7,2) DEFAULT NULL,
+  `deal_amount` varchar(10) DEFAULT NULL,
+  `fee_amount` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`no`)
+) ENGINE=InnoDB AUTO_INCREMENT=7084512 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
+    
+    
+INSERT INTO housedeals_month (
+    apt_seq, apt_dong, floor, deal_year, deal_month, deal_day, exclu_use_ar, deal_amount, fee_amount
+)
+SELECT 
+    apt_seq,
+    apt_dong,
+    floor,
+    deal_year,
+    deal_month,
+    deal_day,
+    exclu_use_ar,
+    CONCAT(FLOOR((RAND() * (8000 - 200) + 200) / 100) * 100) AS deal_amount, -- 200 ~ 8000 범위의 100 단위 랜덤 값
+    CONCAT(FLOOR((RAND() * (100 - 20)) + 20)) AS fee_amount -- 20 ~ 100 범위의 랜덤 값
+FROM 
+    housedeals;
+
+INSERT INTO housedeals_jeonse (
+    apt_seq, apt_dong, floor, deal_year, deal_month, deal_day, exclu_use_ar, deal_amount
+)
+SELECT 
+    apt_seq,
+    apt_dong,
+    floor,
+    deal_year,
+    deal_month,
+    deal_day,
+    exclu_use_ar,
+    ROUND(CAST(REPLACE(deal_amount, ',', '') AS UNSIGNED) * 0.8, 0) AS deal_amount -- deal_amount를 0.8배로 계산
+FROM 
+    housedeals;
+    
+    -- STEP: 최근 3회 거래 데이터를 추출하여 평균 거래 금액 및 거래 횟수를 집계
+INSERT INTO houserecentdeals (apt_seq, deal_space, avg_deal_amount, deal_count, deal_category)
+SELECT 
+    ranked.apt_seq,
+    CONCAT(ranked.deal_space) AS deal_space,
+    ROUND(AVG(ranked.deal_amount), 2) AS avg_deal_amount,
+    COUNT(*) AS deal_count, -- 거래 횟수 집계
+    "매매"    
+FROM (
+    SELECT 
+        apt_seq,
+        FLOOR(exclu_use_ar * 0.3025) AS deal_space, -- 제곱미터 -> 평 단위 변환
+        CAST(REPLACE(deal_amount, ',', '') AS UNSIGNED) AS deal_amount,
+        ROW_NUMBER() OVER (
+            PARTITION BY apt_seq, FLOOR(exclu_use_ar * 0.3025)
+            ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+        ) AS rn
+    FROM 
+        housedeals
+) AS ranked
+WHERE 
+    ranked.rn <= 3 -- 각 아파트 및 평형별로 최근 3회 거래만 포함
+GROUP BY 
+    ranked.apt_seq, ranked.deal_space;      
+    
+-- STEP: 최근 3회 거래 데이터를 추출하여 평균 거래 금액 및 거래 횟수를 집계
+INSERT INTO houserecentdeals (apt_seq, deal_space, avg_deal_amount, deal_count, deal_category)
+SELECT 
+    ranked.apt_seq,
+    CONCAT(ranked.deal_space) AS deal_space,
+    ROUND(AVG(ranked.deal_amount), 2) AS avg_deal_amount,
+    COUNT(*) AS deal_count, -- 거래 횟수 집계
+    "전세"    
+FROM (
+    SELECT 
+        apt_seq,
+        FLOOR(exclu_use_ar * 0.3025) AS deal_space, -- 제곱미터 -> 평 단위 변환
+        CAST(REPLACE(deal_amount, ',', '') AS UNSIGNED) AS deal_amount,
+        ROW_NUMBER() OVER (
+            PARTITION BY apt_seq, FLOOR(exclu_use_ar * 0.3025)
+            ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+        ) AS rn
+    FROM 
+        housedeals_jeonse
+) AS ranked
+WHERE 
+    ranked.rn <= 3 -- 각 아파트 및 평형별로 최근 3회 거래만 포함
+GROUP BY 
+    ranked.apt_seq, ranked.deal_space;   
+    
+    -- STEP: 최근 3회 거래 데이터를 추출하여 평균 거래 금액 및 거래 횟수를 집계
+INSERT INTO houserecentdeals (apt_seq, deal_space, avg_deal_amount, deal_count, deal_category, avg_fee_amount)
+SELECT 
+    ranked.apt_seq,
+    CONCAT(ranked.deal_space) AS deal_space,
+    ROUND(AVG(ranked.deal_amount), 2) AS avg_deal_amount,
+    COUNT(*) AS deal_count, -- 거래 횟수 집계
+    "월세",
+    ROUND(AVG(ranked.fee_amount), 2) AS avg_fee_amount
+FROM (
+    SELECT 
+        apt_seq,
+        FLOOR(exclu_use_ar * 0.3025) AS deal_space, -- 제곱미터 -> 평 단위 변환
+        CAST(REPLACE(deal_amount, ',', '') AS UNSIGNED) AS deal_amount,
+        ROW_NUMBER() OVER (
+            PARTITION BY apt_seq, FLOOR(exclu_use_ar * 0.3025)
+            ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+        ) AS rn,
+        fee_amount
+    FROM 
+        housedeals_month
+) AS ranked
+WHERE 
+    ranked.rn <= 3 -- 각 아파트 및 평형별로 최근 3회 거래만 포함
+GROUP BY 
+    ranked.apt_seq, ranked.deal_space;
+
 
 -- -----------------------------------------------------
 -- Table `home`.`favorite`
@@ -197,3 +329,5 @@ desc attachments;
 insert into board(user_no,subject,content,register_time) values (null,"dasdas","adsdsadsa",now());
 select * from board;
 select * from attachments;
+
+
