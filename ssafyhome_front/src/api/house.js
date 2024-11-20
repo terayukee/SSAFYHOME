@@ -27,14 +27,19 @@ function getRecentDeals(aptSeq, success, fail) {
 }
 
 // 특정 아파트의 모든 거래 정보 가져오기
-function getDealsByAptSeq(aptSeq, success, fail) {
-  houseDeal.get(`/${aptSeq}/deals`).then(success).catch(fail);
+function getDealsByAptSeq(aptSeq, dealCategory, success, fail) {
+  houseDeal
+    .get(`/${aptSeq}/deals`, { params: { aptSeq, dealCategory } })
+    .then(success)
+    .catch(fail);
 }
 
 // 특정 평형의 거래 정보 가져오기
-function getDealsBySpace(aptSeq, space, success, fail) {
+function getDealsBySpace(aptSeq, dealCategory, space, success, fail) {
   houseDeal
-    .get(`/${aptSeq}/deals-by-space`, { params: { space } })
+    .get(`/${aptSeq}/deals-by-space`, {
+      params: { aptSeq, dealCategory, space },
+    })
     .then(success)
     .catch(fail);
 }

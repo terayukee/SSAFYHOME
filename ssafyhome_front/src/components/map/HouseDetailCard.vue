@@ -53,6 +53,7 @@ const calculatePerPyeong = (dealAmount, space) => {
 const fetchDealsByAptSeq = () => {
   getDealsByAptSeq(
     props.selectedHouse.aptSeq,
+    selectedTab.value,
     (response) => {
       dealList.value = response.data;
 
@@ -75,6 +76,7 @@ const fetchDealsByAptSeq = () => {
 const fetchDealsBySpace = (space) => {
   getDealsBySpace(
     props.selectedHouse.aptSeq,
+    selectedTab.value,
     space,
     (response) => {
       dealList.value = response.data;
@@ -90,7 +92,24 @@ fetchDealsByAptSeq();
 watch(selectedSpace, (newSpace) => {
   if (newSpace !== null) {
     fetchDealsBySpace(newSpace);
-    selectedSpace.value = newOptions[0].value; // 첫 번째 옵션 자동 선택
+  } else if (spaceOptions.value.length > 0) {
+    selectedSpace.value = spaceOptions.value[0].value; // 첫 번째 옵션 자동 선택
+  }
+});
+
+// 거래 종류에 따라 데이터 재로드
+watch(selectedTab, (newTab) => {
+  console.log("바뀐 탭 : ", newTab);
+  fetchDealsByAptSeq();
+
+  // `selectedSpace`가 null인 경우 첫 번째 옵션을 설정
+  if (!selectedSpace.value && spaceOptions.value.length > 0) {
+    selectedSpace.value = spaceOptions.value[0].value;
+  }
+
+  // 선택된 공간(제곱미터)에 해당하는 거래 정보 로드
+  if (selectedSpace.value !== null) {
+    fetchDealsBySpace(selectedSpace.value);
   }
 });
 
@@ -98,10 +117,13 @@ watch(selectedSpace, (newSpace) => {
 const threeYearHighLow = ref({ maxDealAmount: "N/A", minDealAmount: "N/A" });
 
 // 최고/최저 거래가 계산 함수
-// 최고/최저 거래가 계산 함수
 const calculateHighLow = () => {
   if (dealList.value.length === 0) {
-    threeYearHighLow.value = { maxDealAmount: "N/A", minDealAmount: "N/A" };
+    threeYearHighLow.value = {
+      maxDealAmount: "N/A",
+      minDealAmount: "N/A",
+      avgDealAmount: "N/A",
+    };
     return;
   }
 
@@ -115,7 +137,11 @@ const calculateHighLow = () => {
   );
 
   if (filteredDeals.length === 0) {
-    threeYearHighLow.value = { maxDealAmount: "N/A", minDealAmount: "N/A" };
+    threeYearHighLow.value = {
+      maxDealAmount: "N/A",
+      minDealAmount: "N/A",
+      avgDealAmount: "N/A",
+    };
     return;
   }
 
@@ -124,9 +150,14 @@ const calculateHighLow = () => {
     parseInt(deal.dealAmount.replace(/,/g, ""), 10)
   );
 
+  // 평균값 계산
+  const avgAmount =
+    amounts.reduce((sum, amount) => sum + amount, 0) / amounts.length;
+
   threeYearHighLow.value = {
     maxDealAmount: Math.max(...amounts),
     minDealAmount: Math.min(...amounts),
+    avgDealAmount: avgAmount, // 평균값 추가
   };
 };
 
@@ -253,17 +284,23 @@ console.log("selectedHouse : ", props.selectedHouse);
           <span>최근 실거래가 평균</span>
         </div>
         <div class="info-content">
-          <span class="highlight"
-            >{{ (selectedHouse.avgDealAmount * 0.0001).toFixed(2) }}억</span
-          >
+          <span class="highlight">
+            {{
+              threeYearHighLow.avgDealAmount !== "N/A"
+                ? (threeYearHighLow.avgDealAmount * 0.0001).toFixed(2) + "억"
+                : "-"
+            }}
+          </span>
           <span class="sub-info">
             평당가
             {{
-              calculatePerPyeong(
-                selectedHouse.avgDealAmount,
-                selectedHouse.dealSpace
-              )
-            }}만원
+              threeYearHighLow.avgDealAmount !== "N/A"
+                ? calculatePerPyeong(
+                    threeYearHighLow.avgDealAmount,
+                    selectedSpace
+                  ) + "만원"
+                : "-"
+            }}
           </span>
         </div>
       </div>
@@ -281,7 +318,7 @@ console.log("selectedHouse : ", props.selectedHouse);
               {{
                 threeYearHighLow.maxDealAmount !== "N/A"
                   ? (threeYearHighLow.maxDealAmount * 0.0001).toFixed(2)
-                  : "N/A"
+                  : "-"
               }}억
             </span>
           </div>
@@ -291,7 +328,7 @@ console.log("selectedHouse : ", props.selectedHouse);
               {{
                 threeYearHighLow.minDealAmount !== "N/A"
                   ? (threeYearHighLow.minDealAmount * 0.0001).toFixed(2)
-                  : "N/A"
+                  : "-"
               }}억
             </span>
           </div>

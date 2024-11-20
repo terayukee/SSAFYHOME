@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface HouseDealMapper {
-    List<HouseDealDto> getDealsByAptSeq(String aptSeq);
+    List<HouseDealDto> getDealsByAptSeq(@Param("aptSeq") String aptSeq, @Param("tableName") String tableName);
 
-    List<HouseDealDto> getDealsBySpace(@Param("aptSeq") String aptSeq, @Param("space") double space);
+    List<HouseDealDto> getDealsBySpace(@Param("aptSeq") String aptSeq, @Param("tableName") String tableName, @Param("space") double space);
 }

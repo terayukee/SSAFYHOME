@@ -46,9 +46,9 @@ public class HouseInfoController {
 		else {
 			List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng,
 					type, roomSize, approvalDate);
-			for (HouseRecentDealDto result : resultList) {
-				System.out.println(result.toString());
-			}
+//			for (HouseRecentDealDto result : resultList) {
+//				System.out.println(result.toString());
+//			}
 			return resultList;
 		}
 	}
