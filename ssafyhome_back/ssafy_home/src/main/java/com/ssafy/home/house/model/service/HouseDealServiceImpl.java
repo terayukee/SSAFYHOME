@@ -16,7 +16,12 @@ public class HouseDealServiceImpl implements HouseDealService {
     }
 
     @Override
-    public List<HouseDealDto> getRecentDeals(String aptSeq) {
-        return houseDealMapper.getRecentDeals(aptSeq);
+    public List<HouseDealDto> getDealsByAptSeq(String aptSeq) {
+        return houseDealMapper.getDealsByAptSeq(aptSeq);
+    }
+
+    @Override
+    public List<HouseDealDto> getDealsBySpace(String aptSeq, double space) {
+        return houseDealMapper.getDealsBySpace(aptSeq, space);
     }
 }

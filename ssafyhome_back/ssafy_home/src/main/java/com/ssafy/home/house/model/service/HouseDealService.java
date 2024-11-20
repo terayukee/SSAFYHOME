@@ -5,5 +5,7 @@ import com.ssafy.home.house.model.HouseDealDto;
 import java.util.List;
 
 public interface HouseDealService {
-    List<HouseDealDto> getRecentDeals(String aptSeq);
+	List<HouseDealDto> getDealsByAptSeq(String aptSeq);
+
+	public List<HouseDealDto> getDealsBySpace(String aptSeq, double space);
 }

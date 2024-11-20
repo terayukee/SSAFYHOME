@@ -83,4 +83,13 @@ public class HouseDealDto {
     public void setDealAmount(String dealAmount) {
         this.dealAmount = dealAmount;
     }
+
+	@Override
+	public String toString() {
+		return "HouseDealDto [no=" + no + ", aptSeq=" + aptSeq + ", aptDong=" + aptDong + ", floor=" + floor
+				+ ", dealYear=" + dealYear + ", dealMonth=" + dealMonth + ", dealDay=" + dealDay + ", excluUseAr="
+				+ excluUseAr + ", dealAmount=" + dealAmount + "]";
+	}
+    
+    
 }

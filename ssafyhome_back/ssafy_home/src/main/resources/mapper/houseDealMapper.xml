@@ -4,15 +4,24 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.home.house.model.mapper.HouseDealMapper">
 
-    <!-- 최근 3개의 평균 거래 금액과 가장 많이 거래된 타입 -->
-    <select id="getRecentDeals" resultType="com.ssafy.home.house.model.HouseDealDto">
+    <!-- 특정 아파트의 모든 거래 정보 -->
+    <select id="getDealsByAptSeq" resultType="com.ssafy.home.house.model.HouseDealDto">
         SELECT 
-            exclu_use_ar AS excluUseAr, 
-            AVG(CAST(REPLACE(deal_amount, ',', '') AS UNSIGNED)) AS dealAmount
+            no, apt_seq AS aptSeq, apt_dong AS aptDong, floor, deal_year AS dealYear,
+            deal_month AS dealMonth, deal_day AS dealDay, exclu_use_ar AS excluUseAr, deal_amount AS dealAmount
         FROM housedeals
         WHERE apt_seq = #{aptSeq}
-        GROUP BY exclu_use_ar
-        ORDER BY COUNT(*) DESC, dealYear DESC, dealMonth DESC, dealDay DESC
-        LIMIT 3
+        ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
     </select>
+
+    <!-- 특정 평형의 거래 정보 -->
+    <select id="getDealsBySpace" parameterType="map" resultType="com.ssafy.home.house.model.HouseDealDto">
+	    SELECT
+	    	no, apt_seq AS aptSeq, apt_dong AS aptDong, floor, deal_year AS dealYear,
+	    	deal_month AS dealMonth, deal_day AS dealDay, exclu_use_ar AS excluUseAr, deal_amount AS dealAmount
+	    FROM housedeals
+	    WHERE apt_seq = #{aptSeq} AND exclu_use_ar = #{space}
+	    ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+	</select>
+
 </mapper>

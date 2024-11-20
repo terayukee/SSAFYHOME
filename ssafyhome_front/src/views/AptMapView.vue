@@ -10,6 +10,7 @@ import OfficetelIcon from "@/assets/icons/office.png";
 import PreSaleIcon from "@/assets/icons/presale.png";
 
 import HouseCardList from "@/components/map/HouseCardList.vue";
+import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
 
 // 좌측 네비게이션 항목
 const navItems = [
@@ -157,12 +158,7 @@ const handleMapClick = () => {
           <!-- X 버튼 -->
           <button class="close-button" @click="selectedHouse = null">X</button>
 
-          <div class="detail-content">
-            <h3>{{ selectedHouse.aptNm }}</h3>
-            <p>거래 유형: {{ selectedHouse.dealCategory }}</p>
-            <p>평수: {{ selectedHouse.dealSpace }}평</p>
-            <p>거래 금액: {{ selectedHouse.avgDealAmount }}억</p>
-          </div>
+          <HouseDetailCard :selectedHouse="selectedHouse" />
         </nav>
 
         <!-- 지도 및 결과 영역 -->
