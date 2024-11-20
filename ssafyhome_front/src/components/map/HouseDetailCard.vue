@@ -367,6 +367,14 @@ console.log("selectedHouse : ", props.selectedHouse);
       <h3 class="house-name">{{ selectedHouse.aptNm }}</h3>
     </div>
 
+    <!-- 카카오 길찾기 버튼 -->
+    <div class="kakao-map-container">
+      <button class="kakao-map-button" @click="openModal">
+        <span class="kakao">KaKao</span>
+        <span class="path">길찾기</span>
+      </button>
+    </div>
+
     <!-- 제곱미터 정보 선택 -->
     <div class="space-select">
       <select v-model="selectedSpace" class="custom-select">
@@ -508,11 +516,6 @@ console.log("selectedHouse : ", props.selectedHouse);
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- 카카오 길찾기 버튼 -->
-    <div class="kakao-map-container">
-      <button class="kakao-map-button" @click="openModal">카카오 길찾기</button>
     </div>
 
     <!-- 모달 -->
@@ -752,25 +755,43 @@ console.log("selectedHouse : ", props.selectedHouse);
 }
 
 .kakao-map-container {
-  text-align: center;
+  display: flex;
+  justify-content: center;
   margin-top: 20px;
 }
 
 .kakao-map-button {
-  background-color: #ffcc00;
-  color: #000;
-  border: none;
-  margin: 30px 0px;
+  background-color: transparent; /* 버튼 배경 투명 */
+  border: 2px solid #ffe28b; /* 주황색 테두리 */
+  margin: 10px 0px 40px 0px;
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px; /* 글씨 간격 */
+}
+
+.kakao-map-button span.kakao {
+  color: #ffcc00; /* KaKao 글씨 노란색 */
+}
+
+.kakao-map-button span.path {
+  color: #000; /* 길찾기 글씨 검정색 */
 }
 
 .kakao-map-button:hover {
-  background-color: #ffaa00;
+  background-color: #fff099; /* 호버 시 주황색 배경 */
+  color: #fff; /* 호버 시 글씨 흰색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.kakao-map-button:hover span.kakao {
+  color: #fff; /* 호버 시 노란색 글씨도 흰색으로 변경 */
 }
 
 .modal-overlay {
