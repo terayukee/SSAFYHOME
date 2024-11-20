@@ -262,7 +262,7 @@ const handleMapClick = () => {
 
 /* 두 번째 세로 네비게이션 */
 .vertical-nav-detail {
-  width: 300px;
+  width: 350px;
   background-color: #f9f9f9;
   border-right: 1px solid #e0e0e0;
   padding: 16px;
@@ -273,7 +273,7 @@ const handleMapClick = () => {
 .close-button {
   position: absolute;
   top: 190px;
-  left: 850px;
+  left: 900px;
   background-color: #ff4d4f;
   color: #fff;
   border: none;

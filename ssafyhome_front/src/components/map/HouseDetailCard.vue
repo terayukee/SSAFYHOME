@@ -98,13 +98,29 @@ watch(selectedSpace, (newSpace) => {
 const threeYearHighLow = ref({ maxDealAmount: "N/A", minDealAmount: "N/A" });
 
 // 최고/최저 거래가 계산 함수
+// 최고/최저 거래가 계산 함수
 const calculateHighLow = () => {
   if (dealList.value.length === 0) {
     threeYearHighLow.value = { maxDealAmount: "N/A", minDealAmount: "N/A" };
     return;
   }
 
-  const amounts = dealList.value.map((deal) =>
+  // 현재 연도와 최근 3년 기준 연도 계산
+  const currentYear = new Date().getFullYear();
+  const threeYearsAgo = currentYear - 3;
+
+  // 최근 3년의 데이터 필터링
+  const filteredDeals = dealList.value.filter(
+    (deal) => deal.dealYear >= threeYearsAgo && deal.dealYear <= currentYear
+  );
+
+  if (filteredDeals.length === 0) {
+    threeYearHighLow.value = { maxDealAmount: "N/A", minDealAmount: "N/A" };
+    return;
+  }
+
+  // 필터링된 데이터에서 거래 금액 추출 및 계산
+  const amounts = filteredDeals.map((deal) =>
     parseInt(deal.dealAmount.replace(/,/g, ""), 10)
   );
 
@@ -128,18 +144,27 @@ watch(
 );
 
 // `spaceOptions`와 `selectedSpace` 동기화
-watch([spaceOptions, () => props.selectedHouse], ([newOptions, newHouse]) => {
-  if (newHouse && newOptions.length > 0) {
+watch(spaceOptions, (newOptions) => {
+  if (newOptions.length > 0) {
     selectedSpace.value = newOptions[0].value; // 첫 번째 옵션 자동 선택
   }
 });
+
+watch(
+  () => props.selectedHouse,
+  (newHouse) => {
+    if (newHouse && spaceOptions.value.length > 0) {
+      selectedSpace.value = spaceOptions.value[0].value; // 첫 번째 옵션 자동 선택
+    }
+  }
+);
 
 // 차트 데이터
 const chartData = ref({
   labels: [], // X축 레이블 (거래 연월)
   datasets: [
     {
-      label: "거래 금액 (만원)",
+      label: "거래 금액 (억원)",
       data: [], // 거래 금액 데이터
       borderColor: "#42A5F5",
       backgroundColor: "rgba(66, 165, 245, 0.2)",
@@ -167,9 +192,10 @@ const updateChartData = () => {
   const labels = dealList.value.map(
     (deal) => `${deal.dealYear}-${deal.dealMonth}`
   );
-  const data = dealList.value.map((deal) =>
-    parseInt(deal.dealAmount.replace(/,/g, ""), 10)
-  );
+  const data = dealList.value.map((deal) => {
+    const amount = parseInt(deal.dealAmount.replace(/,/g, ""), 10);
+    return (amount / 10000).toFixed(1); // 1억 단위로 변환
+  });
 
   chartData.value.labels = labels;
   chartData.value.datasets[0].data = data;
@@ -183,6 +209,8 @@ watch(
   },
   { immediate: true } // 초기 실행
 );
+
+console.log("selectedHouse : ", props.selectedHouse);
 </script>
 
 <template>
@@ -197,6 +225,11 @@ watch(
       >
         {{ tab }}
       </button>
+    </div>
+
+    <!-- 단지 정보 -->
+    <div class="house-info">
+      <h3 class="house-name">{{ selectedHouse.aptNm }}</h3>
     </div>
 
     <!-- 제곱미터 정보 선택 -->
@@ -239,7 +272,7 @@ watch(
       <div class="info-row">
         <div class="info-title">
           <span>거래가</span>
-          <span>최근 3년</span>
+          <span class="span-recent">최근 3년</span>
         </div>
         <div class="info-content">
           <div class="info-text">
@@ -305,6 +338,18 @@ watch(
   border-bottom: 2px solid #4285f4;
 }
 
+/* 아파트 정보 */
+.house-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.house-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3863ff;
+}
+
 /* 셀렉트 박스 스타일 */
 .space-select {
   display: flex;
@@ -314,6 +359,7 @@ watch(
 
 .custom-select {
   width: 150px;
+  height: 30px;
   padding: 8px 12px;
   font-size: 14px;
   color: #333;
@@ -356,11 +402,6 @@ watch(
   border-bottom: none; /* 마지막 행은 보더 제거 */
 }
 
-.info-row span {
-  font-size: 16px;
-  color: #333;
-}
-
 .info-row .highlight {
   font-size: 17px;
   font-weight: bold;
@@ -389,8 +430,14 @@ watch(
   text-align: right; /* 텍스트 오른쪽 정렬 */
 }
 
+.span-recent {
+  margin-left: 5px;
+  font-size: 12px;
+  color: gray;
+}
+
 .chart-container {
-  margin-top: 50px;
+  margin-top: 70px;
 }
 
 .chart-placeholder {
