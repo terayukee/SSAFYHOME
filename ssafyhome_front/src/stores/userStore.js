@@ -32,7 +32,6 @@ export const useUserStore = defineStore("memberStore", () => {
       },
       (error) => {
         console.log("로그인 실패!!!!")
-        console.log("ㅁㅇㄴㅁㅇㅇㅁㄴㅇㄴㅁㅇㅁㄴㅇㄴㅁ")
         console.log(loginUser)
         isLogin.value = false
         isLoginError.value = true

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
+import KakaoLogin from './kakaoLogin.vue';
 
 const userStore = useUserStore();
 const { isLogin, isLoginError } = storeToRefs(userStore)
@@ -27,6 +28,10 @@ const login = () => {
   }
 }
 
+const mvUserRegister = ()=>{
+    router.push({name : `user-regist`});
+}
+
 const check = ()=>{
   console.log("ㅡㅡㅡ채집ㅡㅡㅡ")
   console.log(isLogin.value);
@@ -38,6 +43,7 @@ const check = ()=>{
 <template>
     <div class="login-container">
         <button @click="check">췌크</button>
+        <KakaoLogin/>
         <div class="login-card">
             <!-- 헤더 -->
             <div class="login-header">
@@ -71,6 +77,8 @@ const check = ()=>{
                         placeholder="비밀번호를 입력하세요"
                     />
                 </div>
+                
+                
 
                 <div class="form-options">
                     <!-- <div class="remember-me">
@@ -86,6 +94,7 @@ const check = ()=>{
                 </div>
 
                 <button type="submit" class="login-button">로그인</button>
+                <button @click="mvUserRegister" class="login-button">회원가입</button>
             </form>
         </div>
     </div>
