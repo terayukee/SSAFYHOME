@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
 import KakaoLogin from './kakaoLogin.vue';
+import KakaoLoginCom from './KakaoLoginCom.vue';
 
 const userStore = useUserStore();
 const { isLogin, isLoginError } = storeToRefs(userStore)
@@ -43,6 +44,7 @@ const check = ()=>{
 <template>
     <div class="login-container">
         <button @click="check">췌크</button>
+        <KakaoLoginCom/>
         <KakaoLogin/>
         <div class="login-card">
             <!-- 헤더 -->

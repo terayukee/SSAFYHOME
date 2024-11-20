@@ -1,6 +1,6 @@
 <script setup>
-const KAKAO_CLIENT_ID =``
-const REDIRECT_URI = 'http://localhost:8080/oauth/kakao/callback'
+const KAKAO_CLIENT_ID =`4736eef2397a78d68348b4f3fdbea4ca`
+const REDIRECT_URI = 'http://localhost/home/oauth/kakao/callback'
 
 const loginWithKakao = () => {
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`
