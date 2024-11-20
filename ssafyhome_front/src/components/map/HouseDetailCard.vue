@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { getDealsByAptSeq, getDealsBySpace } from "@/api/house.js";
 import {
   Chart as ChartJS,
@@ -321,6 +321,30 @@ watch(
   { immediate: true }
 );
 
+// 모달 상태 관리
+const isModalOpen = ref(false);
+
+// 카카오 지도 링크 생성
+const kakaoMapLink = computed(() => {
+  if (
+    props.selectedHouse.aptNm &&
+    props.selectedHouse.latitude &&
+    props.selectedHouse.longitude
+  ) {
+    return `https://map.kakao.com/link/to/${props.selectedHouse.aptNm},${props.selectedHouse.latitude},${props.selectedHouse.longitude}`;
+  }
+  return "#";
+});
+
+// 모달 열기/닫기 함수
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
 console.log("selectedHouse : ", props.selectedHouse);
 </script>
 
@@ -444,47 +468,66 @@ console.log("selectedHouse : ", props.selectedHouse);
         </div>
       </template>
     </div>
-  </div>
 
-  <!-- 실거래가 히스토리 -->
-  <div class="deal-history">
-    <div class="history-header">
-      <h3>실거래가 히스토리</h3>
-      <span>총 {{ dealList.length }}건</span>
+    <!-- 실거래가 히스토리 -->
+    <div class="deal-history">
+      <div class="history-header">
+        <h3>실거래가 히스토리</h3>
+        <span>총 {{ dealList.length }}건</span>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>계약일</th>
+            <th>거래종류</th>
+            <th>층수</th>
+            <th>거래금액</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="deal in [...dealList].reverse()" :key="deal.no">
+            <td>
+              {{ deal.dealYear }}.{{
+                deal.dealMonth.toString().padStart(2, "0")
+              }}.{{ deal.dealDay.toString().padStart(2, "0") }}
+            </td>
+            <td>{{ selectedTab }}</td>
+            <td>{{ deal.floor }}</td>
+            <td>
+              <template v-if="selectedTab === '월세'">
+                {{ deal.dealAmount }}만 / {{ deal.feeAmount }}만
+              </template>
+              <template v-else>
+                {{
+                  (
+                    parseInt(deal.dealAmount.replace(/,/g, ""), 10) * 0.0001
+                  ).toFixed(2)
+                }}억
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>계약일</th>
-          <th>거래종류</th>
-          <th>층수</th>
-          <th>거래금액</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="deal in [...dealList].reverse()" :key="deal.no">
-          <td>
-            {{ deal.dealYear }}.{{
-              deal.dealMonth.toString().padStart(2, "0")
-            }}.{{ deal.dealDay.toString().padStart(2, "0") }}
-          </td>
-          <td>{{ selectedTab }}</td>
-          <td>{{ deal.floor }}</td>
-          <td>
-            <template v-if="selectedTab === '월세'">
-              {{ deal.dealAmount }}만 / {{ deal.feeAmount }}만
-            </template>
-            <template v-else>
-              {{
-                (
-                  parseInt(deal.dealAmount.replace(/,/g, ""), 10) * 0.0001
-                ).toFixed(2)
-              }}억
-            </template>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+    <!-- 카카오 길찾기 버튼 -->
+    <div class="kakao-map-container">
+      <button class="kakao-map-button" @click="openModal">카카오 길찾기</button>
+    </div>
+
+    <!-- 모달 -->
+    <div v-if="isModalOpen" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" @click="closeModal">닫기</button>
+        <iframe
+          :src="kakaoMapLink"
+          width="100%"
+          height="800px"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -564,9 +607,9 @@ console.log("selectedHouse : ", props.selectedHouse);
 .transaction-info {
   margin-bottom: 16px;
   padding: 16px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  /* background-color: #f9f9f9; */
+  border: 1px solid #4788ff;
+  /* border-radius: 8px; */
 }
 
 .info-row {
@@ -706,5 +749,68 @@ console.log("selectedHouse : ", props.selectedHouse);
 .history-header span {
   font-size: 14px;
   color: #0d47a1;
+}
+
+.kakao-map-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.kakao-map-button {
+  background-color: #ffcc00;
+  color: #000;
+  border: none;
+  margin: 30px 0px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.kakao-map-button:hover {
+  background-color: #ffaa00;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 1200px;
+  height: 800px;
+  /* max-width: 1800px; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.modal-close:hover {
+  background-color: #d32f2f;
 }
 </style>
