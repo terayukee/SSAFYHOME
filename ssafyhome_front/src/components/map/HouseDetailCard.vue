@@ -1,6 +1,30 @@
 <script setup>
 import { ref, watch } from "vue";
 import { getDealsByAptSeq, getDealsBySpace } from "@/api/house.js";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineController,
+} from "chart.js";
+import { LineChart } from "vue-chart-3";
+
+// Chart.js 플러그인 등록
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineController
+);
 
 // Props로 전달된 집 정보
 const props = defineProps({
@@ -66,6 +90,7 @@ fetchDealsByAptSeq();
 watch(selectedSpace, (newSpace) => {
   if (newSpace !== null) {
     fetchDealsBySpace(newSpace);
+    selectedSpace.value = newOptions[0].value; // 첫 번째 옵션 자동 선택
   }
 });
 
@@ -100,6 +125,63 @@ watch(
     console.log("Selected house updated:", newVal);
     // 필요하면 추가 로직 처리
   }
+);
+
+// `spaceOptions`와 `selectedSpace` 동기화
+watch([spaceOptions, () => props.selectedHouse], ([newOptions, newHouse]) => {
+  if (newHouse && newOptions.length > 0) {
+    selectedSpace.value = newOptions[0].value; // 첫 번째 옵션 자동 선택
+  }
+});
+
+// 차트 데이터
+const chartData = ref({
+  labels: [], // X축 레이블 (거래 연월)
+  datasets: [
+    {
+      label: "거래 금액 (만원)",
+      data: [], // 거래 금액 데이터
+      borderColor: "#42A5F5",
+      backgroundColor: "rgba(66, 165, 245, 0.2)",
+      fill: true,
+    },
+  ],
+});
+
+// 차트 옵션
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+    title: {
+      display: true,
+      text: "최근 3년 거래 금액 추이",
+    },
+  },
+};
+
+// 차트 데이터 업데이트 함수
+const updateChartData = () => {
+  const labels = dealList.value.map(
+    (deal) => `${deal.dealYear}-${deal.dealMonth}`
+  );
+  const data = dealList.value.map((deal) =>
+    parseInt(deal.dealAmount.replace(/,/g, ""), 10)
+  );
+
+  chartData.value.labels = labels;
+  chartData.value.datasets[0].data = data;
+};
+
+// `dealList` 변경 감지 및 차트 데이터 업데이트
+watch(
+  dealList,
+  () => {
+    updateChartData();
+  },
+  { immediate: true } // 초기 실행
 );
 </script>
 
@@ -183,26 +265,13 @@ watch(
         </div>
       </div>
     </div>
+
     <!-- Chart Section -->
     <div class="chart-container">
-      <div class="chart-header">
-        <span>매매</span>
-        <span>거래량</span>
-      </div>
       <div class="chart-placeholder">
-        <p>여기에 차트가 들어갈 예정입니다.</p>
+        <LineChart :chart-data="chartData" :chart-options="chartOptions" />
       </div>
     </div>
-  </div>
-
-  <!-- 거래 목록 -->
-  <div>
-    <ul>
-      <li v-for="deal in dealList" :key="deal.no">
-        {{ deal.dealYear }}년 {{ deal.dealMonth }}월 {{ deal.dealDay }}일 -
-        {{ deal.dealAmount }}만원 - {{ deal.excluUseAr }}㎡
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -321,29 +390,7 @@ watch(
 }
 
 .chart-container {
-  margin-top: 16px;
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.chart-header button {
-  background: none;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.chart-header button.active {
-  background-color: #4285f4;
-  color: #fff;
+  margin-top: 50px;
 }
 
 .chart-placeholder {

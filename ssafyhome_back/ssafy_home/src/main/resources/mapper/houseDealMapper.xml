@@ -11,7 +11,7 @@
             deal_month AS dealMonth, deal_day AS dealDay, exclu_use_ar AS excluUseAr, deal_amount AS dealAmount
         FROM housedeals
         WHERE apt_seq = #{aptSeq}
-        ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+        ORDER BY deal_year ASC, deal_month ASC, deal_day ASC
     </select>
 
     <!-- 특정 평형의 거래 정보 -->
@@ -21,7 +21,7 @@
 	    	deal_month AS dealMonth, deal_day AS dealDay, exclu_use_ar AS excluUseAr, deal_amount AS dealAmount
 	    FROM housedeals
 	    WHERE apt_seq = #{aptSeq} AND exclu_use_ar = #{space}
-	    ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+	    ORDER BY deal_year ASC, deal_month ASC, deal_day ASC
 	</select>
 
 </mapper>

@@ -12,9 +12,11 @@
   "dependencies": {
     "axios": "^1.7.7",
     "bootstrap": "^5.3.1",
+    "chart.js": "^3.9.1",
     "pinia": "^2.2.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "vue": "^3.5.12",
+    "vue-chart-3": "^3.1.8",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
