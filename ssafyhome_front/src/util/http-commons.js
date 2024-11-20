@@ -13,6 +13,17 @@ function localAxios() {
   return instance;
 }
 
+// 폼 데이터 가져오기 
+function formAxios(){
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return instance;
+}
+
 // station vue api axios instance
 // function stationAxios() {
 //   const instance = axios.create({
@@ -46,4 +57,4 @@ function houseDealAxios() {
   return instance;
 }
 
-export { localAxios, houseInfoAxios, houseDealAxios };
+export { localAxios, houseInfoAxios, houseDealAxios , formAxios};

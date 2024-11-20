@@ -152,6 +152,7 @@ CREATE TABLE IF NOT EXISTS `home`.`favorite` (
   FOREIGN KEY (`user_no`) REFERENCES users (`user_no`)
 );
 
+use home;
 select * from users;
 INSERT INTO `home`.`users` (
   `user_name`, 
@@ -170,6 +171,7 @@ INSERT INTO `home`.`users` (
 );
 
 select * from board;
+use home;
 INSERT INTO home.board (user_no, subject, content) VALUES
 (1, 'Hello World', 'This is a test content for the board.'),
 (1, 'Vue.js is awesome!', 'Vue.js is a progressive framework for building user interfaces.'),
@@ -191,5 +193,7 @@ INSERT INTO home.board (user_no, subject, content) VALUES
 (1, 'Testing in JavaScript', 'Testing is crucial to ensure that your code is functioning correctly and as expected.'),
 (1, 'State Management with Vuex', 'Vuex is a state management pattern and library for Vue.js applications.'),
 (1, 'Building a To-Do App with Vue', 'In this tutorial, we will build a simple to-do app using Vue.js.');
-
-
+desc attachments;
+insert into board(user_no,subject,content,register_time) values (null,"dasdas","adsdsadsa",now());
+select * from board;
+select * from attachments;

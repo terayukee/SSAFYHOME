@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.home.board.model.BoardDto;
 import com.ssafy.home.board.model.BoardListDto;
@@ -21,17 +22,20 @@ public class BoardServiceImpl implements BoardService{
 		this.boardMapper = boardMapper;
 	}
 
+	@Transactional
 	@Override
 	public void writeArticle(BoardDto boardDto) throws Exception {
-		boardMapper.writeArticle(boardDto);
-		List<FileInfoDto> fileInfos = boardDto.getFileInfos();
-		// 파일이 있으면
-		if (fileInfos != null && !fileInfos.isEmpty()) {
-			boardMapper.registerFile(boardDto);
-		}
 		
+		boardMapper.writeArticle(boardDto);
+	    List<FileInfoDto> fileInfos = boardDto.getFileInfos();
+	    if (fileInfos != null && !fileInfos.isEmpty()) {
+	        for (FileInfoDto fileInfo : fileInfos) {
+	            fileInfo.setBoardNo(boardDto.getBoardNo());
+	            boardMapper.registerFile(fileInfo);  // 첨부파일 등록
+	        }
+	    }
 	}
-
+	
 	@Override
 	public BoardListDto getListArticle(Map<String, String> map) throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -47,7 +51,7 @@ public class BoardServiceImpl implements BoardService{
 		if ("user_id".equals(key))
 			param.put("key", key == null ? "" : "b.user_id");
 		List<BoardDto> list = boardMapper.listArticle(param);
-
+		
 		if ("user_id".equals(key))
 			param.put("key", key == null ? "" : "user_id");
 		int totalArticleCount = boardMapper.getTotalArticleCount(param);
@@ -64,8 +68,7 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public void updateHit(int articleNo) throws Exception {
-		// TODO Auto-generated method stub
-		
+		boardMapper.updateHit(articleNo);		
 	}
 
 	@Override
@@ -82,8 +85,7 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public BoardDto getArticle(int articleNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return boardMapper.getArticle(articleNo);
 	}
 
 }

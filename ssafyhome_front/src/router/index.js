@@ -6,6 +6,7 @@ import Login from "@/components/Login.vue";
 import Signup from "@/components/Signup.vue";
 import AptMapView from "@/views/AptMapView.vue";
 import BoardView from "@/views/BoardView.vue";
+import BoardWirte from "@/components/boards/BoardWirte.vue";
 
 const routes = [
   { path: "/", name: "home", component: Home },
@@ -23,15 +24,20 @@ const routes = [
         component: () => import("@/components/boards/BoardList.vue"),
       },
       {
-        path: "list/page/:page",
+        path: "list/:page",
         name: "board-list-page",
         component: () => import("@/components/boards/BoardList.vue"),
       },
       {
-        path: "view/:articleno",
+        path: "view/:page/:articleno",
         name: "article-view",
         component: () => import("@/components/boards/BoardDetail.vue"),
       },
+      {
+        path: "view/wirte/:page",
+        name: "board-write",
+        component: BoardWirte
+      }
     ]
   }
 ];

@@ -1,13 +1,20 @@
 <script setup>
-defineProps({ article: Object });
+import { ref } from 'vue';
+import { useRouter , useRoute } from 'vue-router';
+
+defineProps({ article: Object , currentPage: Number});
+
+const route = useRoute()
+const router = useRouter()
+
 </script>
 
 <template>
   <tr>
-    <!-- 번호를 클릭할 수 있도록 router-link로 감싸기 -->
+    <!-- 번호를  수 있도록 router-link로 감싸기 -->
     <td>
       <router-link
-        :to="{ name: 'article-view', params: { articleno: article.boardNo } }"
+        :to="{ name: 'article-view', params: { articleno: article.boardNo , page: currentPage} }"
         class="link-cell"
       >
         {{ article.boardNo }}
@@ -17,7 +24,7 @@ defineProps({ article: Object });
     <!-- 제목을 클릭할 수 있도록 router-link로 감싸기 -->
     <td class="text-start">
       <router-link
-        :to="{ name: 'article-view', params: { articleno: article.boardNo } }"
+        :to="{ name: 'article-view', params: { articleno: article.boardNo , page: currentPage} }"
         class="article-title"
       >
         {{ article.subject }}
@@ -27,7 +34,7 @@ defineProps({ article: Object });
     <!-- 작성자를 클릭할 수 있도록 router-link로 감싸기 -->
     <td>
       <router-link
-        :to="{ name: 'article-view', params: { articleno: article.boardNo } }"
+        :to="{ name: 'article-view', params: { articleno: article.boardNo,page: currentPage } }"
         class="link-cell"
       >
         {{ article.userNickname }}
@@ -37,7 +44,7 @@ defineProps({ article: Object });
     <!-- 조회수를 클릭할 수 있도록 router-link로 감싸기 -->
     <td>
       <router-link
-        :to="{ name: 'article-view', params: { articleno: article.boardNo } }"
+        :to="{ name: 'article-view', params: { articleno: article.boardNo ,page: currentPage} }"
         class="link-cell"
       >
         {{ article.hit }}
