@@ -306,6 +306,42 @@ console.log("selectedHouse : ", props.selectedHouse);
       </div>
     </div>
   </div>
+
+  <!-- 실거래가 히스토리 -->
+  <div class="deal-history">
+    <div class="history-header">
+      <h3>실거래가 히스토리</h3>
+      <span>총 {{ dealList.length }}건</span>
+    </div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>계약일</th>
+          <th>거래종류</th>
+          <th>층수</th>
+          <th>거래금액</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="deal in [...dealList].reverse()" :key="deal.no">
+          <td>
+            {{ deal.dealYear }}.{{
+              deal.dealMonth.toString().padStart(2, "0")
+            }}.{{ deal.dealDay.toString().padStart(2, "0") }}
+          </td>
+          <td>{{ selectedTab }}</td>
+          <td>{{ deal.floor }}</td>
+          <td>
+            {{
+              (
+                parseInt(deal.dealAmount.replace(/,/g, ""), 10) * 0.0001
+              ).toFixed(2)
+            }}억
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <style scoped>
@@ -448,5 +484,62 @@ console.log("selectedHouse : ", props.selectedHouse);
   background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
+}
+
+.deal-history {
+  margin-top: 100px;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.history-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.history-header span {
+  font-size: 14px;
+  color: #888;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+.history-table thead th {
+  background-color: #f9f9f9;
+  font-weight: bold;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.history-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.history-table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody td:last-child {
+  text-align: right;
+  font-weight: bold;
 }
 </style>
