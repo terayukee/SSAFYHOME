@@ -53,9 +53,9 @@
         FROM board b , users u
    		where b.user_no = u.user_no
 		and b.board_no = #{board_no}
-	</select>
-		
-    <!-- 게시글 등록 -->
+	</select>	
+	
+	<!-- 게시글 등록 -->
     <insert id="writeArticle" parameterType="BoardDto">
         <selectKey keyProperty="boardNo" resultType="int" order="AFTER">
         	SELECT LAST_INSERT_ID()

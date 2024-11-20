@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Category from "../views/Category.vue";
-import Favorites from "@/components/Favorites.vue";
-import Login from "@/components/Login.vue";
+import Favorites from "@/components/common/Favorites.vue";
+import Login from "@/components/users/Login.vue";
 import Signup from "@/components/Signup.vue";
 import AptMapView from "@/views/AptMapView.vue";
 import BoardView from "@/views/BoardView.vue";
@@ -14,7 +14,6 @@ const routes = [
   { path: "/map", name: "map", component: AptMapView },
   { path: "/favorites", name: "favorite", component: Favorites },
   { path: "/login", name: "login", component: Login },
-  { path: "/signup", name: "signup", component: Signup },
   { path: "/board", name: "board", component: BoardView,
     redirect: { name: "board-list"},
     children: [

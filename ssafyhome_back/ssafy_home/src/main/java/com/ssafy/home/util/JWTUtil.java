@@ -20,46 +20,54 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class JWTUtilw {
-
+public class JWTUtil {
+	
+	// 솔트
 	@Value("${jwt.salt}")
 	private String SALT;
-
+	
+	// 유효기간
 	@Value("${jwt.access-token.expiretime}")
 	private long accessTokenExpireTime;
 
+	// 리프레시 유효기간
 	@Value("${jwt.refresh-token.expiretime}")
 	private long refreshTokenExpireTime;
 
-	public String createAccessToken(String userId) {
+	// createToken 만들기 
+	public String createAccessToken(int user_no) {
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("userId", userId);
+		claims.put("userNo", user_no);
 		claims.put("tokenType", "ACCESS");
 		return generateToken(claims, "access-token", accessTokenExpireTime);
 	}
 
-//	AccessToken에 비해 유효기간을 길게 설정.
-	public String createRefreshToken(String userId) {
+	//	AccessToken에 비해 유효기간을 길게 설정.
+	public String createRefreshToken(int user_no) {
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("userId", userId);
+		claims.put("userNo", user_no);
 		claims.put("tokenType", "REFRESH");
 		return generateToken(claims, "refresh-token", refreshTokenExpireTime);
 	}
 
-//	Token 발급
-//		JWT 구성 : Header + Payload(Claim) + Signature
+	
+	//	Token 발급
+	//	JWT 구성 : Header + Payload(Claim) + Signature
 	private String generateToken(Map<String, Object> claims, String subject, long expireTime) {
 
-//		Header 설정.
+		//Header 설정.
 		Map<String, String> headers = new HashMap<>();
 		headers.put("typ", "JWT");
-
-		return Jwts.builder().header().add(headers).and().claims(claims).subject(subject)
+		
+		return Jwts.builder()
+				.header().add(headers)
+				.and().claims(claims).subject(subject)
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + expireTime)).signWith(getSigningKey()).compact();
+				.expiration(new Date(System.currentTimeMillis() + expireTime))
+				.signWith(getSigningKey()).compact();
 	}
 
-//	Signature 설정에 들어갈 key 생성.
+	//Signature 설정에 들어갈 key 생성.
 	private SecretKey getSigningKey() {
 		byte[] keyBytes = SALT.getBytes(StandardCharsets.UTF_8);
 		return Keys.hmacShaKeyFor(keyBytes);

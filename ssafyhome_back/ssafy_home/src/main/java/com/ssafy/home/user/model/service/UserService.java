@@ -19,7 +19,14 @@ public interface UserService {
 	// 유저 삭제 
 	int userDelete(UserDto userDto) throws Exception;
 	
+	// 리프레시 토큰 저장
+	void saveRefreshToken(UserDto userDto) throws Exception;
 	
+	// 리프레시 정보 받아오기
+	Object getRefreshToken(int userNo) throws Exception;
+	
+	// 리프레시 토큰 삭제
+	void deleRefreshToken(int userNo) throws Exception;
 	
 	
 }
