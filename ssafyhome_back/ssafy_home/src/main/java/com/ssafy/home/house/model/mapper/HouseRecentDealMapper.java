@@ -16,7 +16,8 @@ public interface HouseRecentDealMapper {
             @Param("swLng") double swLng,
             @Param("neLat") double neLat,
             @Param("neLng") double neLng,
-            @Param("dealCategory") String dealCategory
+            @Param("dealCategory") String dealCategory, String roomSize, 
+            String approvalDate
     );
 
     // 월세 데이터를 가져오는 메서드
@@ -24,6 +25,7 @@ public interface HouseRecentDealMapper {
             @Param("swLat") double swLat,
             @Param("swLng") double swLng,
             @Param("neLat") double neLat,
-            @Param("neLng") double neLng
+            @Param("neLng") double neLng, String roomSize, 
+            String approvalDate
     );
 }

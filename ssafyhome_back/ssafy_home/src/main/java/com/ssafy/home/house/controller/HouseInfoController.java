@@ -34,21 +34,22 @@ public class HouseInfoController {
 	@GetMapping("/bounds")
 	public List<HouseRecentDealDto> getHousesInBounds(@RequestParam("dealCategory") String type, // 매매, 전세, 월세
 			@RequestParam("swLat") double swLat, @RequestParam("swLng") double swLng,
-			@RequestParam("neLat") double neLat, @RequestParam("neLng") double neLng) {    	
+			@RequestParam("neLat") double neLat, @RequestParam("neLng") double neLng,
+			@RequestParam(value = "roomSize", required = false) String roomSize,
+			@RequestParam("approvalDate") String approvalDate) {
 
-		// 1. 월세 
+		// 1. 월세
 		if (type.equals("월세")) {
-			return houseRecentDealService.getMonthlyHousesInBounds(swLat, swLng, neLat, neLng);
+			return houseRecentDealService.getMonthlyHousesInBounds(swLat, swLng, neLat, neLng, roomSize, approvalDate);
 		}
-		// 2. 매매 or 전세 
+		// 2. 매매 or 전세
 		else {
-			List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng, type);
+			List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng,
+					type, roomSize, approvalDate);
 			for (HouseRecentDealDto result : resultList) {
 				System.out.println(result.toString());
 			}
 			return resultList;
 		}
-
-
 	}
 }

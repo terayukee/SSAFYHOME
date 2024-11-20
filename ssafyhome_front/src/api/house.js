@@ -8,10 +8,12 @@ function listHouses(param, success, fail) {
   houseInfo.get("/list", { params: param }).then(success).catch(fail);
 }
 
-function listHousesInBounds(bounds, dealCategory, success, fail) {
+function listHousesInBounds(bounds, filters, success, fail) {
   const params = {
     ...bounds, // bounds 객체 내의 swLat, swLng, neLat, neLng
-    dealCategory, // 매매, 전세, 월세
+    dealCategory: filters.dealCategory, // 필터의 거래 유형
+    roomSize: filters.roomSize, // 필터의 방 크기
+    approvalDate: filters.approvalDate,
   };
 
   houseInfo.get("/bounds", { params }).then(success).catch(fail);

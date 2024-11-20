@@ -2,93 +2,131 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper
-	namespace="com.ssafy.home.house.model.mapper.HouseRecentDealMapper">
+<mapper namespace="com.ssafy.home.house.model.mapper.HouseRecentDealMapper">
 
-	<select id="getHousesInBounds"
-        resultType="com.ssafy.home.house.model.HouseRecentDealDto">
-	    WITH ranked_deals AS (
-	        SELECT
-	            hi.apt_seq AS aptSeq,
-	            hi.apt_nm AS aptNm,
-	            hi.latitude AS latitude,
-	            hi.longitude AS longitude,
-	            hr.deal_space AS dealSpace,
-	            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
-	            hr.deal_category AS dealCategory,
-	            ROW_NUMBER() OVER (
-	                PARTITION BY hi.apt_seq
-	                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
-	            ) AS rnk
-	        FROM
-	            houseinfos hi
-	        JOIN
-	            houserecentdeals hr -- 동적으로 매매/전세 테이블 결정
-	        ON
-	            hi.apt_seq = hr.apt_seq
-	        WHERE
-	            hi.latitude BETWEEN #{swLat} AND #{neLat}
-	            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
-	            AND hr.deal_category = "${dealCategory}"
-	    )
-	    SELECT
-	        aptSeq,
-	        aptNm,
-	        latitude,
-	        longitude,
-	        dealSpace,
-	        dealCategory,
-	        avgDealAmount
-	    FROM
-	        ranked_deals
-	    WHERE
-	        rnk = 1
-	    LIMIT 2000
+  <select id="getHousesInBounds" resultType="com.ssafy.home.house.model.HouseRecentDealDto">
+    WITH ranked_deals AS (
+        SELECT
+            hi.apt_seq AS aptSeq,
+            hi.apt_nm AS aptNm,
+            hi.latitude AS latitude,
+            hi.longitude AS longitude,
+            hr.deal_space AS dealSpace,
+            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+            hr.deal_category AS dealCategory,
+            hi.build_year AS buildYear,
+            ROW_NUMBER() OVER (
+                PARTITION BY hi.apt_seq
+                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
+            ) AS rnk
+        FROM
+            houseinfos hi
+        JOIN
+            houserecentdeals hr
+        ON
+            hi.apt_seq = hr.apt_seq
+        WHERE
+            hi.latitude BETWEEN #{swLat} AND #{neLat}
+            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+            AND hr.deal_category = #{dealCategory}
+            <!-- 방 크기 필터 -->
+            <if test="roomSize != null and roomSize != '전체'">
+            AND (
+                <choose>
+                    <when test="roomSize == '10평 이하'"><![CDATA[ hr.deal_space <= 10 ]]></when>
+                    <when test="roomSize == '10~20평'"><![CDATA[ hr.deal_space BETWEEN 10 AND 20 ]]></when>
+                    <when test="roomSize == '20평 이상'"><![CDATA[ hr.deal_space > 20 ]]></when>
+                </choose>
+            )
+            </if>
+            <!-- 사용 승인일 필터 -->
+            <if test="approvalDate != null and approvalDate != '전체'">
+            AND (
+                <choose>
+                    <when test="approvalDate == '5년 이내'"><![CDATA[ hi.build_year >= YEAR(CURDATE()) - 5 ]]></when>
+                    <when test="approvalDate == '10년 이내'"><![CDATA[ hi.build_year >= YEAR(CURDATE()) - 10 ]]></when>
+                    <when test="approvalDate == '10년 이상'"><![CDATA[ hi.build_year < YEAR(CURDATE()) - 10 ]]></when>
+                </choose>
+            )
+            </if>
+    )
+    SELECT
+        aptSeq,
+        aptNm,
+        latitude,
+        longitude,
+        dealSpace,
+        dealCategory,
+        avgDealAmount
+    FROM
+        ranked_deals
+    WHERE
+        rnk = 1
+    LIMIT 2000
 	</select>
-
 	
-	<select id="getMonthlyHousesInBounds"
-        resultType="com.ssafy.home.house.model.HouseRecentDealDto">
-	    WITH ranked_monthly_deals AS (
-	        SELECT
-	            hi.apt_seq AS aptSeq,
-	            hi.apt_nm AS aptNm,
-	            hi.latitude AS latitude,
-	            hi.longitude AS longitude,
-	            hr.deal_space AS dealSpace,
-	            CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
-	            CAST(REPLACE(hr.avg_fee_amount, ',', '') AS UNSIGNED) AS avgFeeAmount,
-	            hr.deal_category AS dealCategory,
-	            ROW_NUMBER() OVER (
-	                PARTITION BY hi.apt_seq
-	                ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
-	            ) AS rnk
-	        FROM
-	            houseinfos hi
-	        JOIN
-	            houserecentdeals hr
-	        ON
-	            hi.apt_seq = hr.apt_seq
-	        WHERE
-	            hi.latitude BETWEEN #{swLat} AND #{neLat}
-	            AND hi.longitude BETWEEN #{swLng} AND #{neLng}
-	            AND hr.deal_category = "월세"
-	    )
-	    SELECT
-	        aptSeq,
-	        aptNm,
-	        latitude,
-	        longitude,
-	        dealSpace,
-	        dealCategory,
-	        avgDealAmount,
-	        avgFeeAmount
-	    FROM
-	        ranked_monthly_deals
-	    WHERE
-	        rnk = 1
-	    LIMIT 2000
-	</select>
-
+	<select id="getMonthlyHousesInBounds" resultType="com.ssafy.home.house.model.HouseRecentDealDto">
+    WITH ranked_monthly_deals AS (
+      SELECT
+        hi.apt_seq AS aptSeq,
+        hi.apt_nm AS aptNm,
+        hi.latitude AS latitude,
+        hi.longitude AS longitude,
+        hr.deal_space AS dealSpace,
+        CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) AS avgDealAmount,
+        CAST(REPLACE(hr.avg_fee_amount, ',', '') AS UNSIGNED) AS avgFeeAmount,
+        hr.deal_category AS dealCategory,
+        ROW_NUMBER() OVER (
+          PARTITION BY hi.apt_seq
+          ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
+        ) AS rnk
+      FROM
+        houseinfos hi
+      JOIN
+        houserecentdeals hr
+      ON
+        hi.apt_seq = hr.apt_seq
+      WHERE
+        hi.latitude BETWEEN #{swLat} AND #{neLat}
+        AND hi.longitude BETWEEN #{swLng} AND #{neLng}
+        AND hr.deal_category = '월세'
+        <!-- 방 크기 필터 -->
+        <if test="roomSize != null and roomSize != '전체'">
+        AND (
+            <choose>
+                <when test="roomSize == '10평 이하'"><![CDATA[ hr.deal_space <= 10 ]]></when>
+                <when test="roomSize == '10~20평'"><![CDATA[ hr.deal_space BETWEEN 10 AND 20 ]]></when>
+                <when test="roomSize == '20평 이상'"><![CDATA[ hr.deal_space > 20 ]]></when>
+            </choose>
+        )
+        </if>
+        <!-- 사용 승인일 필터 -->
+        <if test="approvalDate != null and approvalDate != '전체'">
+        AND (
+            <choose>
+                <when test="approvalDate == '5년 이내'"><![CDATA[ hi.build_year >= YEAR(CURDATE()) - 5 ]]></when>
+                <when test="approvalDate == '10년 이내'"><![CDATA[ hi.build_year >= YEAR(CURDATE()) - 10 ]]></when>
+                <when test="approvalDate == '10년 이상'"><![CDATA[ hi.build_year < YEAR(CURDATE()) - 10 ]]></when>
+            </choose>
+        )
+        </if>
+    )
+    SELECT
+      aptSeq,
+      aptNm,
+      latitude,
+      longitude,
+      dealSpace,
+      dealCategory,
+      avgDealAmount,
+      avgFeeAmount
+    FROM
+      ranked_monthly_deals
+    WHERE
+      rnk = 1
+    LIMIT 2000
+  </select>
 
 </mapper>
+  
+

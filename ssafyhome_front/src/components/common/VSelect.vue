@@ -8,7 +8,7 @@ defineProps({
   },
   placeholder: {
     type: String,
-    default: "옵션을 선택하세요",
+    default: null,
   },
 });
 
@@ -24,7 +24,9 @@ const onSelect = () => {
 <template>
   <select v-model="key" class="form-select" @change="onSelect">
     <!-- Placeholder 역할 -->
-    <option value="" disabled selected hidden>{{ placeholder }}</option>
+    <option v-if="placeholder" value="" disabled selected hidden>
+      {{ placeholder }}
+    </option>
     <!-- 옵션 목록 -->
     <option
       v-for="option in selectOption"
