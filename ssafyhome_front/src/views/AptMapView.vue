@@ -97,7 +97,7 @@ watch(
 
 // 카드 클릭 시 선택된 하우스 정보를 설정
 const onCardClick = (house) => {
-  selectedHouse.value = house; // 클릭한 하우스 정보 저장
+  selectedHouse.value = { ...house }; // 객체 복사로 Reactivity 보장
 };
 
 // 지도 클릭 시 detail nav 접기

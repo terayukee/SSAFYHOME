@@ -68,6 +68,39 @@ watch(selectedSpace, (newSpace) => {
     fetchDealsBySpace(newSpace);
   }
 });
+
+// 최고/최저 거래가를 저장할 상태
+const threeYearHighLow = ref({ maxDealAmount: "N/A", minDealAmount: "N/A" });
+
+// 최고/최저 거래가 계산 함수
+const calculateHighLow = () => {
+  if (dealList.value.length === 0) {
+    threeYearHighLow.value = { maxDealAmount: "N/A", minDealAmount: "N/A" };
+    return;
+  }
+
+  const amounts = dealList.value.map((deal) =>
+    parseInt(deal.dealAmount.replace(/,/g, ""), 10)
+  );
+
+  threeYearHighLow.value = {
+    maxDealAmount: Math.max(...amounts),
+    minDealAmount: Math.min(...amounts),
+  };
+};
+
+// `dealList` 변경 시 최고/최저 거래가 계산
+watch(dealList, calculateHighLow);
+
+// 선택된 아파트 데이터에 반응
+watch(
+  () => props.selectedHouse,
+  (newVal) => {
+    fetchDealsByAptSeq();
+    console.log("Selected house updated:", newVal);
+    // 필요하면 추가 로직 처리
+  }
+);
 </script>
 
 <template>
@@ -130,19 +163,26 @@ watch(selectedSpace, (newSpace) => {
           <div class="info-text">
             <span class="highlight red">최고 </span>
             <span class="amount">
-              {{ selectedHouse.maxDealAmount || "N/A" }}억
+              {{
+                threeYearHighLow.maxDealAmount !== "N/A"
+                  ? (threeYearHighLow.maxDealAmount * 0.0001).toFixed(2)
+                  : "N/A"
+              }}억
             </span>
           </div>
           <div class="info-text">
             <span class="highlight blue">최저 </span>
             <span class="amount">
-              {{ selectedHouse.minDealAmount || "N/A" }}억
+              {{
+                threeYearHighLow.minDealAmount !== "N/A"
+                  ? (threeYearHighLow.minDealAmount * 0.0001).toFixed(2)
+                  : "N/A"
+              }}억
             </span>
           </div>
         </div>
       </div>
     </div>
-
     <!-- Chart Section -->
     <div class="chart-container">
       <div class="chart-header">
