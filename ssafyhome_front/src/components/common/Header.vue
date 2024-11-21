@@ -26,7 +26,7 @@
     
     <div v-else>
       <!-- 로그인 후 내 정보 버튼만 표시 -->
-      <button class="btn mg-l-1" @click="navigateTo('login')">로그인</button>
+      <button class="btn mg-l-1" @click="logout">로그아웃</button>
       <button class="btn btn-primary" @click="navigateTo('profile')">내 정보</button>
     </div>
         <!-- <button class="btn" @click="navigateTo('login')">로그인</button>
@@ -46,6 +46,12 @@ import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore)
+
+const { userLogout } = userStore;
+
+const logout = () => {
+  userLogout();
+};
 
 const router = useRouter();
 

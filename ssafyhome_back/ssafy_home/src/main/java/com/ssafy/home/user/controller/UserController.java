@@ -71,9 +71,9 @@ public class UserController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 	
-	@GetMapping("/info/{userId}")
+	@GetMapping("/info/{userNo}")
 	public ResponseEntity<Map<String, Object>> getInfo(
-			@PathVariable("userId") String userId,
+			@PathVariable("userNo") String userId,
 			@RequestHeader("Authorization") String header) {
 		
 		log.debug("userId : {}, header : {} ", userId, header);
@@ -121,6 +121,21 @@ public class UserController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 	
+	
+	@GetMapping("/logout/{userNo}")
+	public ResponseEntity<?> removeToken(@PathVariable ("userNo") String userNo) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		try {
+			userService.deleRefreshToken(Integer.parseInt(userNo));
+			status = HttpStatus.OK;
+		} catch (Exception e) {
+			log.error("로그아웃 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
 	
 	
 }

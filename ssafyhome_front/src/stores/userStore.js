@@ -8,10 +8,10 @@ import { httpStatusCode } from "@/util/http-status"
 
 export const useUserStore = defineStore("memberStore", () => {
   const router = useRouter()
-
   const isLogin = ref(false)
   const isLoginError = ref(false)
-  const userInfo = ref(null)
+  // const userInfo = ref(null)
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const isValidToken = ref(false)
 
   const userLogin = async (loginUser) => {
@@ -28,8 +28,8 @@ export const useUserStore = defineStore("memberStore", () => {
           isLogin.value = true
           isLoginError.value = false
           isValidToken.value = true
-          sessionStorage.setItem("accessToken", accessToken)
-          sessionStorage.setItem("refreshToken", refreshToken)
+          localStorage.setItem("accessToken", accessToken)
+          localStorage.setItem("refreshToken", refreshToken)
         }
       },
       (error) => {
@@ -44,6 +44,7 @@ export const useUserStore = defineStore("memberStore", () => {
   }
 
   const getUserInfo = async (token) => {
+    console.log(token, "큰토")
     let decodeToken = jwtDecode(token)
     console.log("유저정보")
     console.log("디코드토큰",decodeToken.userNo)
@@ -52,6 +53,9 @@ export const useUserStore = defineStore("memberStore", () => {
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo
+          localStorage.setItem("userInfo",JSON.stringify(userInfo.value))
+          console.log(userInfo.value , "value테스트")
+          console.log(userInfo.value.userNo , "v아이디")
         } else {
           console.log("유저 정보 없음!!!!")
         }
@@ -84,7 +88,7 @@ export const useUserStore = defineStore("memberStore", () => {
         if (error.response.status === httpStatusCode.UNAUTHORIZED) {
           // 다시 로그인 전 DB에 저장된 RefreshToken 제거.
           await logout(
-            userInfo.value.userid,
+            userInfo.value.userNo,
             (response) => {
               if (response.status === httpStatusCode.OK) {
                 console.log("리프레시 토큰 제거 성공")
@@ -109,15 +113,16 @@ export const useUserStore = defineStore("memberStore", () => {
   }
 
   const userLogout = async () => {
-    console.log("로그아웃 아이디 : " + userInfo.value.userId)
+    // console.log("로그아웃 아이디 : " + userInfo.value.userId)
+    console.log("로그아웃 아이디 : " + userInfo.userNo);
     await logout(
-      userInfo.value.userId,
+      userInfo.value.userNo,
       (response) => {
         if (response.status === httpStatusCode.OK) {
           isLogin.value = false
           userInfo.value = null
           isValidToken.value = false
-
+          console.log("호")
           sessionStorage.removeItem("accessToken")
           sessionStorage.removeItem("refreshToken")
         } else {

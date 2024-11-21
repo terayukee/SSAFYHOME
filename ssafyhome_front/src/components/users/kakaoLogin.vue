@@ -41,6 +41,7 @@ import { onMounted } from 'vue';
   if (isLogin.value) {
     getUserInfo(token)
     // changeMenuState()
+    console.log("리플")
     router.replace("/")
     }
   }

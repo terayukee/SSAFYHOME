@@ -6,11 +6,11 @@ async function userConfirm(param, success, fail) {
   await local.post(`/user/login`, param).then(success).catch(fail);
 }
 
-async function findById(userid, success, fail) {
+async function findById(userNo, success, fail) {
   local.defaults.headers["Authorization"] = localStorage.getItem("accessToken");
-  console.log(userid, "확인")
-  console.log(sessionStorage.getItem("accessToken") , "gㄻㅇ나롬ㄴ아ㅓㅣ   ")
-  await local.get(`/user/info/${userid}`).then(success).catch(fail);
+  console.log(userNo, "확인")
+  console.log(sessionStorage.getItem("accessToken"))
+  await local.get(`/user/info/${userNo}`).then(success).catch(fail);
 }
 
 async function tokenRegeneration(user, success, fail) {
@@ -18,8 +18,8 @@ async function tokenRegeneration(user, success, fail) {
   await local.post(`/user/refresh`, user).then(success).catch(fail);
 }
 
-async function logout(userid, success, fail) {
-  await local.get(`/user/logout/${userid}`).then(success).catch(fail);
+async function logout(userNo, success, fail) {
+  await local.get(`/user/logout/${userNo}`).then(success).catch(fail);
 }
 
 export { userConfirm, findById, tokenRegeneration, logout };

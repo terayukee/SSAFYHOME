@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
-import KakaoLogin from './KakaoLogin.vue';
+import KakaoLogin from './kakaoLogin.vue';
 const userStore = useUserStore();
 const { isLogin, isLoginError } = storeToRefs(userStore)
 const { userLogin, getUserInfo } = useUserStore();
+const { userInfo } = useUserStore();
 const router = useRouter();
 
 const loginUser = ref({
@@ -24,7 +25,7 @@ const login = async () => {
     console.log("로그인들어왔잖아")
     getUserInfo(token)
     // changeMenuState()
-    router.replace("/")
+    // router.replace("/")
   } 
 
 }
@@ -37,6 +38,9 @@ const check = ()=>{
   console.log("ㅡㅡㅡ채집ㅡㅡㅡ")
   console.log(isLogin.value);
   console.log(sessionStorage.getItem("accessToken"))
+  const info = localStorage.getItem("userInfo")
+  const userInfoObject = JSON.parse(info);  // 문자열을 객체로 변환
+  console.log("인포 해부", userInfoObject);
   console.log("ㅡㅡ채집완료ㅡㅡ")
 }
 
