@@ -28,9 +28,9 @@ function getRecentDeals(aptSeq, success, fail) {
 }
 
 // 특정 아파트의 모든 거래 정보 가져오기
-function getDealsByAptSeq(aptSeq, dealCategory, housetype, success, fail) {
+function getDealsByAptSeq(aptSeq, dealCategory, houseType, success, fail) {
   houseDeal
-    .get(`/${aptSeq}/deals`, { params: { aptSeq, dealCategory, housetype } })
+    .get(`/${aptSeq}/deals`, { params: { aptSeq, dealCategory, houseType } })
     .then(success)
     .catch(fail);
 }
@@ -39,14 +39,14 @@ function getDealsByAptSeq(aptSeq, dealCategory, housetype, success, fail) {
 function getDealsBySpace(
   aptSeq,
   dealCategory,
-  housetype,
+  houseType,
   space,
   success,
   fail
 ) {
   houseDeal
     .get(`/${aptSeq}/deals-by-space`, {
-      params: { aptSeq, dealCategory, housetype, space },
+      params: { aptSeq, dealCategory, houseType, space },
     })
     .then(success)
     .catch(fail);

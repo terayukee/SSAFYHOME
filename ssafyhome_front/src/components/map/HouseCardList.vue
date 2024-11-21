@@ -16,6 +16,16 @@ const props = defineProps({
 function getImagePath(avgDealAmount, dealSpace, dealCategory) {
   let category = "";
 
+  // 주택 타입
+  let houseType = "";
+  if (props.selectedNav == "apartment") {
+    houseType = "apart";
+  } else if (props.selectedNav == "villa") {
+    houseType = "villa";
+  } else if (props.selectedNav == "officetel") {
+    houseType = "officetel";
+  }
+
   // 평당 가격
   let amountPerSpace = avgDealAmount / dealSpace;
 
@@ -33,8 +43,8 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
     category = "low";
   }
 
-  const randomIndex = Math.floor(Math.random() * 10) + 1; // 1~10 범위의 숫자
-  return `/assets/apart/${category}${randomIndex}.jpg`;
+  const randomIndex = Math.floor(Math.random() * 20) + 1; // 1~20 범위의 숫자
+  return `/assets/${houseType}/${category}${randomIndex}.jpg`;
 }
 
 // 부모로 이벤트를 전달하기 위한 emit 정의
