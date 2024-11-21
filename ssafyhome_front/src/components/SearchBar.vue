@@ -126,6 +126,7 @@ const handleMouseOver = (houseType) => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  position: relative; /* 검색 결과 컨테이너 위치 고정을 위한 부모 설정 */
 }
 
 /* 검색 바 영역 */
@@ -161,11 +162,16 @@ const handleMouseOver = (houseType) => {
 
 /* 검색 결과 컨테이너 */
 .search-results-container {
+  position: absolute; /* 절대 위치 지정 */
+  top: 100%; /* 부모 요소의 아래로 배치 */
+  left: 0;
+  width: 100%; /* 부모의 너비에 맞춤 */
   display: flex;
   visibility: hidden; /* 처음에는 숨김 */
   opacity: 0; /* 보이지 않게 */
   transform: translateY(-10px); /* 살짝 위로 이동 */
   transition: all 0.3s ease; /* 애니메이션 효과 */
+  z-index: 10; /* 검색 결과가 다른 요소 위로 표시되도록 설정 */
 }
 
 /* 검색 결과가 있으면 표시 */
@@ -181,7 +187,6 @@ const handleMouseOver = (houseType) => {
   flex: 1;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 8px;
   padding: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto; /* 스크롤 활성화 */
