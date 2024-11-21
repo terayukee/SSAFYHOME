@@ -25,16 +25,51 @@ const houses = ref([]); // house 정보를 저장할 ref 변수
 const bounds = ref(null); // 현재 지도 bounds
 const selectedHouse = ref(null); // 추가: 선택된 하우스 정보를 저장
 
+// const fetchHousesInBounds = (bounds) => {
+//   console.log("bounds:", bounds);
+//   console.log("filters:", filters);
+//   listHousesInBounds(
+//     bounds.value, // 지도 영역
+//     filters.value, // 필터 배열 전체 전달
+//     selectedNav.value, // apartment, villa, officetal, pre-sale
+//     (response) => {
+//       houses.value = response.data;
+//       console.log("listHousesInBounds 성공: ", response.data);
+//     },
+//     (error) => {
+//       console.error("Failed to fetch houses:", error);
+//     }
+//   );
+// };
 const fetchHousesInBounds = (bounds) => {
   console.log("bounds:", bounds);
   console.log("filters:", filters);
   listHousesInBounds(
     bounds.value, // 지도 영역
     filters.value, // 필터 배열 전체 전달
-    selectedNav.value, // apartment, villa, officetal, pre-sale
+    selectedNav.value, // apartment, villa, officetel, pre-sale
     (response) => {
-      houses.value = response.data;
-      console.log("listHousesInBounds 성공: ", response.data);
+      // API에서 받아온 데이터를 저장하기 전 selectedNav에 따라 avgDealAmount 값을 조정
+      houses.value = response.data.map((house) => {
+        if (selectedNav.value === "villa") {
+          return {
+            ...house,
+            avgDealAmount: house.avgDealAmount
+              ? Math.floor(house.avgDealAmount * 0.5) // 소숫점 이하 버림
+              : house.avgDealAmount,
+          };
+        } else if (selectedNav.value === "officetel") {
+          return {
+            ...house,
+            avgDealAmount: house.avgDealAmount
+              ? Math.floor(house.avgDealAmount * 0.7) // 소숫점 이하 버림
+              : house.avgDealAmount,
+          };
+        }
+        return house; // 나머지 경우는 데이터 그대로 유지
+      });
+
+      console.log("listHousesInBounds 성공: ", houses.value);
     },
     (error) => {
       console.error("Failed to fetch houses:", error);

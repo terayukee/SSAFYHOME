@@ -42,6 +42,9 @@ public class HouseInfoController {
 		List<HouseRecentDealDto> resultList = houseRecentDealService.getHousesInBounds(swLat, swLng, neLat, neLng,
 				dealCategory, roomSize, approvalDate, houseType);
 		
+		for(HouseRecentDealDto result : resultList) {
+			System.out.println(result.toString());
+		}
 		
 		return resultList;
 	}

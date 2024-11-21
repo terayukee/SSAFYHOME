@@ -1,11 +1,7 @@
 <template>
   <div class="home">
     <div class="top-section">
-      <input
-        type="text"
-        placeholder="지역, 지하철, 대학, 단지명 또는 매물번호를 입력해주세요."
-        class="search-bar"
-      />
+      <SearchBar />
     </div>
     <div class="content-section">
       <div class="main-category">
@@ -21,6 +17,7 @@
 <script setup>
 import MainCategory from "../components/MainCategory.vue";
 import AdBanner from "../components/AdBanner.vue";
+import SearchBar from "../components/SearchBar.vue";
 </script>
 
 <style scoped>
