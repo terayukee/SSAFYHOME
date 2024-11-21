@@ -66,6 +66,12 @@ const showRightButton = computed(
   () => cardIndex.value + visibleCards < guideCards.length
 );
 
+// 동적으로 카드 이동 스타일 계산
+const cardsStyle = computed(() => ({
+  transform: `translateX(-${cardIndex.value * 200}px)`, // 카드 크기 200px 기준으로 이동
+  transition: "transform 0.3s ease-in-out",
+}));
+
 const scrollLeft = () => {
   if (cardIndex.value > 0) {
     cardIndex.value -= 1;
@@ -104,8 +110,6 @@ const scrollRight = () => {
   gap: 16px;
   overflow: hidden;
   width: 1200px;
-  transform: translateX(calc(-200px * var(--index, 0))); /* 카드 이동 */
-  transition: transform 0.3s ease-in-out;
 }
 
 .guide-card {
