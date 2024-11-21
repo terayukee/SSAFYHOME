@@ -31,6 +31,7 @@ const fetchHousesInBounds = (bounds) => {
   listHousesInBounds(
     bounds.value, // 지도 영역
     filters.value, // 필터 배열 전체 전달
+    selectedNav.value, // apartment, villa, officetal, pre-sale
     (response) => {
       houses.value = response.data;
       console.log("listHousesInBounds 성공: ", response.data);
@@ -104,6 +105,12 @@ const onCardClick = (house) => {
 const handleMapClick = () => {
   selectedHouse.value = null;
 };
+
+// selectedNav 값 변경 감지
+watch(selectedNav, (newNav) => {
+  console.log("Navigation changed to:", newNav);
+  fetchHousesInBounds(bounds); // 지도 영역에 맞는 데이터 다시 가져오기
+});
 </script>
 
 <template>
@@ -149,7 +156,11 @@ const handleMapClick = () => {
           <div class="vertical-nav-buttons"></div>
           <div class="vertical-nav-content">
             <!-- HouseCardList 컴포넌트로 데이터 전달 -->
-            <HouseCardList :houses="houses" @cardClick="onCardClick" />
+            <HouseCardList
+              :houses="houses"
+              @cardClick="onCardClick"
+              :selectedNav="selectedNav"
+            />
           </div>
         </nav>
 
@@ -158,7 +169,10 @@ const handleMapClick = () => {
           <!-- X 버튼 -->
           <button class="close-button" @click="selectedHouse = null">X</button>
 
-          <HouseDetailCard :selectedHouse="selectedHouse" />
+          <HouseDetailCard
+            :selectedHouse="selectedHouse"
+            :selectedNav="selectedNav"
+          />
         </nav>
 
         <!-- 지도 및 결과 영역 -->
@@ -166,6 +180,7 @@ const handleMapClick = () => {
           <VKakaoMap
             :houses="houses"
             :selectedCategory="filters.dealCategory"
+            :selectedNav="selectedNav"
             @boundsChange="handleBoundsChange"
             @markerClick="onCardClick"
             @mapClick="handleMapClick"

@@ -16,6 +16,10 @@ const props = defineProps({
   selectedCategory: {
     type: String,
   },
+
+  selectedNav: {
+    type: String,
+  },
 });
 
 const emit = defineEmits(["boundsChange", "markerClick", "mapClick"]);

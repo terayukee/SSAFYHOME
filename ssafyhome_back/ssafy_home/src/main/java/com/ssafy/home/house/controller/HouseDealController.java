@@ -19,8 +19,8 @@ public class HouseDealController {
 
     // 특정 아파트의 모든 거래 정보를 가져오는 API
     @GetMapping("/{aptSeq}/deals")
-    public ResponseEntity<List<HouseDealDto>> getDealsByAptSeq(@PathVariable String aptSeq, @RequestParam String dealCategory) {
-        List<HouseDealDto> deals = houseDealService.getDealsByAptSeq(aptSeq, dealCategory);
+    public ResponseEntity<List<HouseDealDto>> getDealsByAptSeq(@PathVariable String aptSeq, @RequestParam String dealCategory, @RequestParam String houseType) {
+        List<HouseDealDto> deals = houseDealService.getDealsByAptSeq(aptSeq, dealCategory, houseType);
         return ResponseEntity.ok(deals);
     }
 
@@ -29,9 +29,10 @@ public class HouseDealController {
     public ResponseEntity<List<HouseDealDto>> getDealsBySpace(
             @PathVariable String aptSeq,
             @RequestParam("space") double space,
-            @RequestParam String dealCategory
+            @RequestParam String dealCategory,
+            @RequestParam String houseType
     ) {
-    	List<HouseDealDto> deals = houseDealService.getDealsBySpace(aptSeq, dealCategory, space);
+    	List<HouseDealDto> deals = houseDealService.getDealsBySpace(aptSeq, dealCategory, houseType, space);
 //        for(HouseDealDto deal : deals) {
 //        	System.out.println(deal.toString());
 //        }

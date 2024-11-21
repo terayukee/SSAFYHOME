@@ -8,6 +8,9 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  selectedNav: {
+    type: String,
+  },
 });
 
 function getImagePath(avgDealAmount, dealSpace, dealCategory) {

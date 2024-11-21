@@ -17,15 +17,20 @@ public interface HouseRecentDealMapper {
             @Param("neLat") double neLat,
             @Param("neLng") double neLng,
             @Param("dealCategory") String dealCategory, String roomSize, 
-            String approvalDate
+            String approvalDate,
+            String infoTableName,
+            String targetTableName
     );
 
-    // 월세 데이터를 가져오는 메서드
+    // 월세 데이터를 가져오는 공통 메서드
     List<HouseRecentDealDto> getMonthlyHousesInBounds(
             @Param("swLat") double swLat,
             @Param("swLng") double swLng,
             @Param("neLat") double neLat,
-            @Param("neLng") double neLng, String roomSize, 
-            String approvalDate
+            @Param("neLng") double neLng,
+            String roomSize, 
+            String approvalDate,
+            String infoTableName,
+            String targetTableName
     );
 }
