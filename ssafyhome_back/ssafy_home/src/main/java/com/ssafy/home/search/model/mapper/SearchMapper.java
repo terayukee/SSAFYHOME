@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SearchMapper {
@@ -23,4 +24,6 @@ public interface SearchMapper {
      * @return 주택 검색 결과 리스트
      */
     List<HouseDto> searchHouse(@Param("keyword") String keyword);
+
+	Map<String, String> getDongInfo(Map<String, String> params);
 }

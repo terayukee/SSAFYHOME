@@ -93,6 +93,8 @@ const handleMouseOver = (houseType) => {
             @mouseover="handleMouseOver(house.houseType)"
           >
             {{ house.houseType }} {{ house.aptNm }}
+            <br />
+            {{ house.sidoName }} {{ house.gugunName }} {{ house.dongName }}
           </li>
         </ul>
       </div>

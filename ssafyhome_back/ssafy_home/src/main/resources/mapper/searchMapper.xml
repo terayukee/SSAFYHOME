@@ -79,5 +79,14 @@
 	    WHERE oi.apt_nm LIKE CONCAT('%', #{keyword}, '%')
 	</select>
 
+    <!-- dongcodes 테이블에서 sido_name, gugun_name, dong_name을 조회 -->
+	<select id="getDongInfo" parameterType="map" resultType="map">
+	    SELECT 
+	        sido_name AS sidoName,
+	        gugun_name AS gugunName,
+	        dong_name AS dongName
+	    FROM dongcodes
+	    WHERE dong_code = CONCAT(#{sggCd}, #{umdCd})
+	</select>
     
 </mapper>

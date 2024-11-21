@@ -15,6 +15,10 @@ public class HouseDto {
     private String latitude;
     private String longitude;
     private String houseType;
+    private String sidoName;
+    private String gugunName;
+    private String dongName;
+    
 
     // Getters and Setters
     public String getAptSeq() {
@@ -128,24 +132,39 @@ public class HouseDto {
     public void setHouseType(String houseType) {
         this.houseType = houseType;
     }
-
-    @Override
-    public String toString() {
-        return "HouseDto{" +
-                "aptSeq='" + aptSeq + '\'' +
-                ", sggCd='" + sggCd + '\'' +
-                ", umdCd='" + umdCd + '\'' +
-                ", umdNm='" + umdNm + '\'' +
-                ", jibun='" + jibun + '\'' +
-                ", roadNmSggCd='" + roadNmSggCd + '\'' +
-                ", roadNm='" + roadNm + '\'' +
-                ", roadNmBonbun='" + roadNmBonbun + '\'' +
-                ", roadNmBubun='" + roadNmBubun + '\'' +
-                ", aptNm='" + aptNm + '\'' +
-                ", buildYear=" + buildYear +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", houseType='" + houseType + '\'' +
-                '}';
+    
+    public String getSidoName() {
+        return sidoName;
     }
+
+    public void setSidoName(String sidoName) {
+        this.sidoName = sidoName;
+    }
+
+    public String getGugunName() {
+        return gugunName;
+    }
+
+    public void setGugunName(String gugunName) {
+        this.gugunName = gugunName;
+    }
+
+    public String getDongName() {
+        return dongName;
+    }
+
+    public void setDongName(String dongName) {
+        this.dongName = dongName;
+    }
+
+	@Override
+	public String toString() {
+		return "HouseDto [aptSeq=" + aptSeq + ", sggCd=" + sggCd + ", umdCd=" + umdCd + ", umdNm=" + umdNm + ", jibun="
+				+ jibun + ", roadNmSggCd=" + roadNmSggCd + ", roadNm=" + roadNm + ", roadNmBonbun=" + roadNmBonbun
+				+ ", roadNmBubun=" + roadNmBubun + ", aptNm=" + aptNm + ", buildYear=" + buildYear + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", houseType=" + houseType + ", sidoName=" + sidoName
+				+ ", gugunName=" + gugunName + ", dongName=" + dongName + "]";
+	}
+
+    
 }
