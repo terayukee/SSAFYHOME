@@ -82,10 +82,11 @@ public class JWTUtil {
 			Jws<Claims> claims = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
 //			Claims 는 Map 구현체 형태
 			log.debug("claims: {}", claims);
-
+			
 			return true;
 		} catch (Exception e) {
 			log.error(e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}

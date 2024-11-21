@@ -12,7 +12,8 @@ import { onMounted } from 'vue';
     window.location.href = kakaoAuthUrl
 
   }
-  
+
+
   // 리다이렉트 후 인증 코드 처리
   const handleKakaoCallback = async () => {
     const urlParams = new URLSearchParams(window.location.search)
@@ -33,7 +34,7 @@ import { onMounted } from 'vue';
 
   const login = () => {
   userLogin(loginUser.value)
-  let token = sessionStorage.getItem("accessToken")
+  let token = localStorage.getItem("accessToken")
   console.log(token)
   console.log(loginUser.value)
   console.log("isLogin: " + isLogin.value)
@@ -41,8 +42,8 @@ import { onMounted } from 'vue';
     getUserInfo(token)
     // changeMenuState()
     router.replace("/")
+    }
   }
-}
 
   
   // 컴포넌트 마운트 시 콜백 처리

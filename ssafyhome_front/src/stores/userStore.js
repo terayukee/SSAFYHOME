@@ -21,6 +21,8 @@ export const useUserStore = defineStore("memberStore", () => {
         if (response.status === httpStatusCode.CREATE) {
           console.log("로그인 성공!!!!")
           let { data } = response
+          console.log(data)
+          
           let accessToken = data["access-token"]
           let refreshToken = data["refresh-token"]
           isLogin.value = true
@@ -43,9 +45,10 @@ export const useUserStore = defineStore("memberStore", () => {
 
   const getUserInfo = async (token) => {
     let decodeToken = jwtDecode(token)
-    console.log(decodeToken)
+    console.log("유저정보")
+    console.log("디코드토큰",decodeToken.userNo)
     await findById(
-      decodeToken.userId,
+      decodeToken.userNo,
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo

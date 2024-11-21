@@ -14,17 +14,19 @@ const loginUser = ref({
     userPassword: "",
 })
 
-const login = () => {
-  userLogin(loginUser.value)
-  let token = sessionStorage.getItem("accessToken")
+const login = async () => {
+  await userLogin(loginUser.value)
+  let token = localStorage.getItem("accessToken")
   console.log(token)
   console.log(loginUser.value)
   console.log("isLogin: " + isLogin.value)
   if (isLogin.value) {
+    console.log("로그인들어왔잖아")
     getUserInfo(token)
     // changeMenuState()
     router.replace("/")
-  }
+  } 
+
 }
 
 const mvUserRegister = ()=>{
@@ -34,6 +36,7 @@ const mvUserRegister = ()=>{
 const check = ()=>{
   console.log("ㅡㅡㅡ채집ㅡㅡㅡ")
   console.log(isLogin.value);
+  console.log(sessionStorage.getItem("accessToken"))
   console.log("ㅡㅡ채집완료ㅡㅡ")
 }
 

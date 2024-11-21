@@ -75,6 +75,7 @@ public class UserController {
 	public ResponseEntity<Map<String, Object>> getInfo(
 			@PathVariable("userId") String userId,
 			@RequestHeader("Authorization") String header) {
+		
 		log.debug("userId : {}, header : {} ", userId, header);
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;

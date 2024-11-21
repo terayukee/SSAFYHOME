@@ -18,10 +18,21 @@
         <li @click="navigateTo('favorites')">관심목록</li>
       </ul>
       <div class="auth-buttons">
-        <button class="btn" @click="navigateTo('login')">로그인</button>
+        
+    <div v-if="!isLogin" class="">
+      <button class="btn mg-l-1" @click="navigateTo('login')">로그인</button>
+      <button class="btn btn-primary" @click="navigateTo('signup')">회원가입</button>
+    </div>
+    
+    <div v-else>
+      <!-- 로그인 후 내 정보 버튼만 표시 -->
+      <button class="btn mg-l-1" @click="navigateTo('login')">로그인</button>
+      <button class="btn btn-primary" @click="navigateTo('profile')">내 정보</button>
+    </div>
+        <!-- <button class="btn" @click="navigateTo('login')">로그인</button>
         <button class="btn btn-primary" @click="navigateTo('signup')">
           회원가입
-        </button>
+        </button> -->
       </div>
     </nav>
   </header>
@@ -29,8 +40,12 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-
 import Logo from "@/assets/logo.jpg";
+import { useUserStore } from '@/stores/userStore';
+import { storeToRefs } from "pinia";
+
+const userStore = useUserStore();
+const { isLogin } = storeToRefs(userStore)
 
 const router = useRouter();
 
@@ -120,5 +135,9 @@ const navigateTo = (route) => {
 
 .btn-primary:hover {
   background-color: #0056b3;
+}
+
+.mg-l-1{
+  margin-right: 10px;
 }
 </style>
