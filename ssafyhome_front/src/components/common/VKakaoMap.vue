@@ -20,6 +20,18 @@ const props = defineProps({
   selectedNav: {
     type: String,
   },
+  initialLatitude: {
+    type: Number,
+    default: 37.514575,
+  },
+  initialLongitude: {
+    type: Number,
+    default: 127.0495556,
+  },
+  initialMapLevel: {
+    type: Number,
+    default: clusterLevel,
+  },
 });
 
 const emit = defineEmits(["boundsChange", "markerClick", "mapClick"]);
@@ -60,11 +72,20 @@ const loadInitialMarkers = () => {
 
 // 지도 초기화
 const initMap = () => {
+  console.log(
+    "위도, 경도 props 전달",
+    props.initialLatitude,
+    props.initialLongitude
+  );
+
   const container = document.getElementById("map");
 
   const options = {
-    center: new kakao.maps.LatLng(37.514575, 127.0495556),
-    level: clusterLevel,
+    center: new kakao.maps.LatLng(
+      props.initialLatitude,
+      props.initialLongitude
+    ),
+    level: props.initialMapLevel,
   };
 
   map = new kakao.maps.Map(container, options);
@@ -235,6 +256,22 @@ const handleMarkerClick = (house) => {
   console.log("마커 클릭, house : ", house);
   emit("markerClick", house); // 선택된 house 정보를 부모로 emit
 };
+
+// 지도의 중심을 업데이트
+const updateMapCenter = (latitude, longitude) => {
+  const center = new kakao.maps.LatLng(latitude, longitude);
+  map.setCenter(center);
+};
+
+// props의 변경을 감지하여 지도 중심 업데이트
+watch(
+  () => [props.initialLatitude, props.initialLongitude],
+  ([newLat, newLng], [oldLat, oldLng]) => {
+    if (map && (newLat !== oldLat || newLng !== oldLng)) {
+      updateMapCenter(newLat, newLng);
+    }
+  }
+);
 </script>
 
 <template>

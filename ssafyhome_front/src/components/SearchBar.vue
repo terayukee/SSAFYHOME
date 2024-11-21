@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { searchAll } from "@/api/search";
+import { useRouter } from "vue-router";
 
 const keyword = ref(""); // 검색어
 const searchResults = ref({
@@ -9,6 +10,7 @@ const searchResults = ref({
 }); // 검색 결과
 const hoverImage = ref(""); // 이미지 표시 영역에 표시될 이미지
 const isResultsVisible = ref(false); // 검색 결과 표시 여부
+const router = useRouter();
 
 // 랜덤 이미지 경로 생성
 const getRandomImage = (houseType) => {
@@ -49,6 +51,19 @@ const onSearch = () => {
 // 주택 검색결과 항목에 마우스 오버 시 이미지 변경
 const handleMouseOver = (houseType) => {
   hoverImage.value = getRandomImage(houseType);
+};
+
+// 주택 클릭 시 지도 페이지로 이동
+const handleHouseClick = (latitude, longitude) => {
+  console.log("주택 클릭, 위도 경도 ", latitude, longitude);
+  router.push({
+    name: "map",
+    query: {
+      latitude: latitude,
+      longitude: longitude,
+      maplevel: 3,
+    },
+  });
 };
 
 // 바깥 클릭 이벤트 처리
@@ -115,6 +130,7 @@ onUnmounted(() => {
             v-for="(house, index) in searchResults.houses"
             :key="`house-${index}`"
             @mouseover="handleMouseOver(house.houseType)"
+            @click="handleHouseClick(house.latitude, house.longitude)"
           >
             <div class="house-info-div">
               <span class="house-type">{{ house.houseType }}</span>
@@ -125,7 +141,7 @@ onUnmounted(() => {
               <span class="house-location"
                 >{{ house.sidoName }} {{ house.gugunName }}
                 {{ house.dongName }}</span
-              >
+              >{{ house.lo }}
             </div>
           </li>
         </ul>

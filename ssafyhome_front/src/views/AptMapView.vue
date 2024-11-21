@@ -12,6 +12,21 @@ import PreSaleIcon from "@/assets/icons/presale.png";
 import HouseCardList from "@/components/map/HouseCardList.vue";
 import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
 
+const props = defineProps({
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  },
+  maplevel: {
+    type: Number,
+    required: false,
+  },
+});
+
 // 좌측 네비게이션 항목
 const navItems = [
   { id: "apartment", label: "아파트", icon: ApartmentIcon },
@@ -25,22 +40,6 @@ const houses = ref([]); // house 정보를 저장할 ref 변수
 const bounds = ref(null); // 현재 지도 bounds
 const selectedHouse = ref(null); // 추가: 선택된 하우스 정보를 저장
 
-// const fetchHousesInBounds = (bounds) => {
-//   console.log("bounds:", bounds);
-//   console.log("filters:", filters);
-//   listHousesInBounds(
-//     bounds.value, // 지도 영역
-//     filters.value, // 필터 배열 전체 전달
-//     selectedNav.value, // apartment, villa, officetal, pre-sale
-//     (response) => {
-//       houses.value = response.data;
-//       console.log("listHousesInBounds 성공: ", response.data);
-//     },
-//     (error) => {
-//       console.error("Failed to fetch houses:", error);
-//     }
-//   );
-// };
 const fetchHousesInBounds = (bounds) => {
   console.log("bounds:", bounds);
   console.log("filters:", filters);
@@ -216,6 +215,9 @@ watch(selectedNav, (newNav) => {
             :houses="houses"
             :selectedCategory="filters.dealCategory"
             :selectedNav="selectedNav"
+            :initialLatitude="latitude"
+            :initialLongitude="longitude"
+            :initialMapLevel="maplevel"
             @boundsChange="handleBoundsChange"
             @markerClick="onCardClick"
             @mapClick="handleMapClick"

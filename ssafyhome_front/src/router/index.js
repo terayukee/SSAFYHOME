@@ -11,12 +11,24 @@ import UserRegister from "@/components/users/UserRegister.vue";
 const routes = [
   { path: "/", name: "home", component: Home },
   { path: "/category/:type", name: "category", component: Category },
-  { path: "/map", name: "map", component: AptMapView },
+  {
+    path: "/map",
+    name: "map",
+    component: AptMapView,
+    props: (route) => ({
+      latitude: parseFloat(route.query.latitude) || 37.514575,
+      longitude: parseFloat(route.query.longitude) || 127.0495556,
+      maplevel: parseFloat(route.query.maplevel) || 5,
+    }), // 쿼리 파라미터를 props로 전달
+  },
   { path: "/favorites", name: "favorite", component: Favorites },
   { path: "/login", name: "login", component: Login },
   { path: "/regist", name: "user-regist", component: UserRegister },
-  { path: "/board", name: "board", component: BoardView,
-    redirect: { name: "board-list"},
+  {
+    path: "/board",
+    name: "board",
+    component: BoardView,
+    redirect: { name: "board-list" },
     children: [
       {
         path: "list",
@@ -36,10 +48,10 @@ const routes = [
       {
         path: "view/wirte/:page",
         name: "board-write",
-        component: BoardWirte
-      }
-    ]
-  }
+        component: BoardWirte,
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
