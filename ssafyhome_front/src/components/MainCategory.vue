@@ -1,28 +1,20 @@
 <template>
   <div class="category-container">
-    <!-- 첫 번째 줄 -->
-    <div class="category-row large">
+    <div class="category-row">
       <div
-        v-for="(category, index) in categories.slice(0, 2)"
+        v-for="(category, index) in categories"
         :key="index"
-        class="category-item large-item"
+        class="category-item"
         @click="navigateToCategory(category.type)"
       >
-        <p class="category-title">{{ category.name }}</p>
-        <p class="category-description">{{ category.description }}</p>
-      </div>
-    </div>
+        <div class="category-top">
+          <p class="category-title">{{ category.name }}</p>
+          <p class="category-description">{{ category.description }}</p>
+        </div>
 
-    <!-- 두 번째 줄 -->
-    <div class="category-row small">
-      <div
-        v-for="(category, index) in categories.slice(2)"
-        :key="index"
-        class="category-item small-item"
-        @click="navigateToCategory(category.type)"
-      >
-        <p class="category-title">{{ category.name }}</p>
-        <p class="category-description">{{ category.description }}</p>
+        <div class="category-bottom">
+          <img :src="category.icon" alt="" class="category-icon" />
+        </div>
       </div>
     </div>
   </div>
@@ -31,31 +23,35 @@
 <script setup>
 import { useRouter } from "vue-router";
 
+import ApartmentIcon from "@/assets/icons/residential.png";
+import VillaIcon from "@/assets/icons/villa.png";
+import OfficetelIcon from "@/assets/icons/office.png";
+import NewsIcon from "@/assets/icons/paper.png";
+
 const categories = [
   {
-    name: "원/투룸",
-    description: "주택/빌라, 오피스텔까지 모~든 전월세 매물을 한 번에!",
-    type: "one-room",
-  },
-  {
     name: "아파트",
-    description: "가장 빠른 실거래가 알림! 풍부한 단지정보 및 실시간 랭킹까지!",
+    description: "풍부한 단지정보 및 거래 정보까지!",
     type: "apartment",
+    icon: ApartmentIcon,
   },
   {
     name: "주택/빌라",
-    description: "전월세부터 매매까지 모~든 매물!",
+    description: "전월세부터 매매까지 모~든 정보!",
     type: "villa",
+    icon: VillaIcon,
   },
   {
     name: "오피스텔",
-    description: "다양한 정보와 다양한 매물!",
+    description: "다양한 정보!",
     type: "officetel",
+    icon: OfficetelIcon,
   },
   {
-    name: "분양",
-    description: "전국의 모든 분양/입주 정보 확인 가능!",
-    type: "pre-sale",
+    name: "부동산 뉴스",
+    description: "전국의 모든 부동산 뉴스 확인 가능!",
+    type: "news",
+    icon: NewsIcon,
   },
 ];
 
@@ -69,69 +65,60 @@ const navigateToCategory = (type) => {
 <style scoped>
 .category-container {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
+  margin-left: 5%;
+  margin-top: 5%;
+  margin-right: 5%;
+  width: 600px;
+  height: 400px;
 }
 
 .category-row {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
+  justify-content: space-between;
 }
 
 .category-item {
   cursor: pointer;
   text-align: left;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #4791fe;
   border-radius: 10px;
   background-color: #fff;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s;
+  width: 40%;
+  height: 40%;
 }
 
 .category-item:hover {
   background-color: #f9f9f9;
 }
 
-/* 첫 번째 줄 (큰 아이템) */
-.large .large-item {
-  flex: 1;
-  height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.large-item:not(:last-child) {
-  margin-right: 16px;
-}
-
-/* 두 번째 줄 (작은 아이템) */
-.small {
-  margin-top: 60px;
-}
-
-.small .small-item {
-  flex: 1;
-  height: 100px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.small-item:not(:last-child) {
-  margin-right: 16px;
-}
-
 .category-title {
   font-weight: bold;
   margin-bottom: 8px;
-  font-size: 16px;
+  font-size: 22px;
+  color: rgb(79, 152, 255);
 }
 
 .category-description {
   font-size: 14px;
   color: #666;
+}
+
+.category-bottom {
+  display: flex; /* 플렉스 컨테이너로 설정 */
+  justify-content: flex-end; /* 내용물을 오른쪽 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+}
+
+.category-icon {
+  width: 50px;
+  height: 50px;
 }
 </style>

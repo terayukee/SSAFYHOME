@@ -7,7 +7,6 @@ import { listHouses, listHousesInBounds } from "@/api/house.js";
 import ApartmentIcon from "@/assets/icons/residential.png";
 import VillaIcon from "@/assets/icons/villa.png";
 import OfficetelIcon from "@/assets/icons/office.png";
-import PreSaleIcon from "@/assets/icons/presale.png";
 
 import HouseCardList from "@/components/map/HouseCardList.vue";
 import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
@@ -32,7 +31,6 @@ const navItems = [
   { id: "apartment", label: "아파트", icon: ApartmentIcon },
   { id: "villa", label: "주택/빌라", icon: VillaIcon },
   { id: "officetel", label: "오피스텔", icon: OfficetelIcon },
-  { id: "pre-sale", label: "분양", icon: PreSaleIcon },
 ];
 
 const selectedNav = ref("apartment"); // 선택 상태

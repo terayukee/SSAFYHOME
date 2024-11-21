@@ -90,11 +90,10 @@ onUnmounted(() => {
       <input
         type="text"
         v-model="keyword"
-        placeholder="지역, 지하철, 대학, 단지명 또는 매물번호를 입력해주세요."
+        placeholder="지역 또는 주택명을 입력해주세요."
         class="search-bar"
         @keyup.enter="onSearch"
       />
-      <button class="search-button" @click="onSearch">검색</button>
     </div>
 
     <!-- 검색 결과 영역 -->
@@ -180,7 +179,8 @@ onUnmounted(() => {
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 50px;
+  min-width: 300px;
 }
 
 .search-button {
