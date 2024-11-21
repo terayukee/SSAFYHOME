@@ -15,6 +15,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Guide 컴포넌트 삽입 -->
+    <Guide />
   </div>
 </template>
 
@@ -22,12 +25,14 @@
 import MainCategory from "../components/MainCategory.vue";
 import AdBanner from "../components/AdBanner.vue";
 import SearchBar from "../components/SearchBar.vue";
+import Guide from "../components/Guide.vue";
 </script>
 
 <style scoped>
 .home {
   padding: 16px;
 }
+
 .top-section {
   display: flex;
   justify-content: center;
@@ -55,15 +60,14 @@ import SearchBar from "../components/SearchBar.vue";
   width: 1300px;
 }
 
-/* MainCategory와 AdBanner의 가로 영역 비율 조정 */
 .main-category {
-  flex: 1; /* MainCategory의 너비를 50%로 설정 */
+  flex: 1;
   width: 600px;
   height: 400px;
 }
 
 .ad-banner {
-  flex: 1; /* AdBanner의 너비를 50%로 설정 */
+  flex: 1;
   width: 600px;
   height: 400px;
 }
