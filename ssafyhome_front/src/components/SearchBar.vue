@@ -11,19 +11,17 @@ const hoverImage = ref(""); // 이미지 표시 영역에 표시될 이미지
 
 // 랜덤 이미지 경로 생성
 const getRandomImage = (houseType) => {
-  // 주택 타입
   let housePath = "";
-  if (houseType == "아파트") {
+  if (houseType === "아파트") {
     housePath = "apart";
-  } else if (houseType == "빌라") {
+  } else if (houseType === "빌라") {
     housePath = "villa";
-  } else if (houseType == "오피스텔") {
+  } else if (houseType === "오피스텔") {
     housePath = "officetel";
   }
 
   const basePath = `/assets/${housePath}/`;
   const categories = ["high", "mid", "low"];
-
   const randomCategory =
     categories[Math.floor(Math.random() * categories.length)];
   const randomIndex = Math.floor(Math.random() * 20) + 1; // 1~20 중 랜덤
@@ -72,36 +70,47 @@ const handleMouseOver = (houseType) => {
     >
       <!-- 지역 검색결과 -->
       <div class="search-column">
-        <h3>지역 검색 결과</h3>
+        <h3 class="search-title">지역 검색 결과</h3>
         <ul>
           <li
             v-for="(region, index) in searchResults.regions"
             :key="`region-${index}`"
           >
-            {{ region.sidoName }} {{ region.gugunName }} {{ region.dongName }}
+            <span class="region-info"
+              >{{ region.sidoName }} {{ region.gugunName }}
+              {{ region.dongName }}</span
+            >
           </li>
         </ul>
       </div>
 
       <!-- 주택 검색결과 -->
       <div class="search-column">
-        <h3>주택 검색 결과</h3>
+        <h3 class="search-title">주택 검색 결과</h3>
         <ul>
           <li
             v-for="(house, index) in searchResults.houses"
             :key="`house-${index}`"
             @mouseover="handleMouseOver(house.houseType)"
           >
-            {{ house.houseType }} {{ house.aptNm }}
-            <br />
-            {{ house.sidoName }} {{ house.gugunName }} {{ house.dongName }}
+            <div class="house-info-div">
+              <span class="house-type">{{ house.houseType }}</span>
+              <span class="house-name">{{ house.aptNm }}</span>
+            </div>
+
+            <div class="house-location-div">
+              <span class="house-location"
+                >{{ house.sidoName }} {{ house.gugunName }}
+                {{ house.dongName }}</span
+              >
+            </div>
           </li>
         </ul>
       </div>
 
       <!-- 이미지 표시 영역 -->
       <div class="search-column image-display">
-        <h3>이미지 표시</h3>
+        <h3 class="search-title">이미지 미리보기</h3>
         <div class="image-container">
           <img v-if="hoverImage" :src="hoverImage" alt="House Preview" />
         </div>
@@ -145,6 +154,11 @@ const handleMouseOver = (houseType) => {
   cursor: pointer;
 }
 
+/* 검색 결과 타이틀 */
+.search-title {
+  color: #74acff;
+}
+
 /* 검색 결과 컨테이너 */
 .search-results-container {
   display: flex;
@@ -179,6 +193,7 @@ const handleMouseOver = (houseType) => {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .search-column ul {
@@ -199,6 +214,35 @@ const handleMouseOver = (houseType) => {
 
 .search-column li:hover {
   background-color: #f9f9f9;
+}
+
+/* 지역 정보 표시 영역 */
+.region-info {
+  color: #5c689a;
+}
+
+/* 주택 정보 표시 영역 */
+.house-info-div {
+}
+
+.house-type {
+  color: gray;
+  font-size: 15px;
+}
+
+.house-name {
+  margin-left: 10px;
+  color: #74acff;
+  font-size: 17px;
+}
+
+.house-location-div {
+  margin-top: 10px;
+}
+
+.house-location {
+  color: rgb(154, 165, 223);
+  font-size: 15px;
 }
 
 /* 이미지 표시 영역 */
