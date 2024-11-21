@@ -32,5 +32,8 @@ public interface UserMapper {
 	// 리프레시 토큰 삭제
 	void deleRefreshToken(int userNo) throws SQLException;
 	
+	int getUserCountByNickName(String userId) throws Exception;
+	
+	
 	
 }

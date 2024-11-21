@@ -36,7 +36,8 @@ public class UserController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto userDto) {
-		log.debug("login user : {}", userDto);
+		
+		// 토큰 저장
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		try {

@@ -3,9 +3,7 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
-import KakaoLogin from './kakaoLogin.vue';
-import KakaoLoginCom from './KakaoLoginCom.vue';
-
+import KakaoLogin from './KakaoLogin.vue';
 const userStore = useUserStore();
 const { isLogin, isLoginError } = storeToRefs(userStore)
 const { userLogin, getUserInfo } = useUserStore();
@@ -44,8 +42,6 @@ const check = ()=>{
 <template>
     <div class="login-container">
         <button @click="check">췌크</button>
-        <KakaoLoginCom/>
-        <KakaoLogin/>
         <div class="login-card">
             <!-- 헤더 -->
             <div class="login-header">
@@ -96,6 +92,7 @@ const check = ()=>{
                 </div>
 
                 <button type="submit" class="login-button">로그인</button>
+                <KakaoLogin/>
                 <button @click="mvUserRegister" class="login-button">회원가입</button>
             </form>
         </div>
@@ -208,7 +205,7 @@ const check = ()=>{
     background-color: #2c6bed;
     color: white;
     padding: 12px;
-    border: none;
+    border: none;   
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;

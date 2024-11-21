@@ -8,8 +8,10 @@ public interface UserService {
 
 	// 로그인
 	UserDto login(UserDto userDto) throws Exception;
+	
 	// 단일유저정보 
 	UserDto getUserInfo(String userId) throws Exception;
+	
 	// 유저 전체
 	List<UserDto> getAllUserList() throws Exception;
 	// 회원가입
@@ -28,5 +30,6 @@ public interface UserService {
 	// 리프레시 토큰 삭제
 	void deleRefreshToken(int userNo) throws Exception;
 	
+	boolean checkUserInfo(UserDto userDto) throws Exception; 
 	
 }

@@ -1,42 +1,83 @@
 <script setup>
-const KAKAO_CLIENT_ID =`4736eef2397a78d68348b4f3fdbea4ca`
-const REDIRECT_URI = 'http://localhost/home/oauth/kakao/callback'
+import axios from 'axios'
+import { onMounted } from 'vue';
 
-const loginWithKakao = () => {
-    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`
-    window.location.href = kakaoURL
+  const KAKAO_REST_API_KEY =`4736eef2397a78d68348b4f3fdbea4ca`
+  const KAKAO_REDIRECT_URI = 'http://localhost/home/oauth/kakao/callback'
+
+
+  const kakaoLogin = () => {
+
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`
+    window.location.href = kakaoAuthUrl
+
+  }
+  
+  // 리다이렉트 후 인증 코드 처리
+  const handleKakaoCallback = async () => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const code = urlParams.get('code')
+  
+    if (code) {
+      try {
+        const response = await axios.post('/api/kakao/login', { code })
+        // 로그인 성공 처리 (토큰 저장, 라우팅 등)
+        localStorage.setItem('token', response.data.token)
+        // 메인 페이지로 리다이렉트
+        router.push('/')
+      } catch (error) {
+        console.error('카카오 로그인 실패:', error)
+      }
+    }
+  }
+
+  const login = () => {
+  userLogin(loginUser.value)
+  let token = sessionStorage.getItem("accessToken")
+  console.log(token)
+  console.log(loginUser.value)
+  console.log("isLogin: " + isLogin.value)
+  if (isLogin.value) {
+    getUserInfo(token)
+    // changeMenuState()
+    router.replace("/")
+  }
 }
-</script>
 
-<template>
+  
+  // 컴포넌트 마운트 시 콜백 처리
+  onMounted(() => {
+    if (window.location.pathname === '/kakao/callback') {
+      handleKakaoCallback()
+    }
+  })
+  </script>
+  <template>
+    <!-- <div class="kakao-login-container">
+      <button 
+        @click="kakaoLogin" 
+        class="kakao-login-button">
+        카카오로 로그인
+        <img src="/src/assets/icons/kakao/kakao_login_medium_narrow.png" alt="">
+      </button>
+    </div> -->
     <div class="kakao-login-container">
-        <button @click="loginWithKakao" class="kakao-login-btn">
-            카카오 계정으로 로그인
-        </button>
+      <button @click="kakaoLogin" class="kakao-login-button">
+        <img src="/src/assets/icons/kakao/kakao_login_medium_narrow.png" alt="카카오 로그인" />
+      </button>
     </div>
 </template>
-
-<style scoped>
-.kakao-login-container {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-}
-
-.kakao-login-btn {
+  
+  <style scoped>
+  .kakao-login-button {
     background-color: #FEE500;
-    color: #000000;
+    color: black;
     border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-.kakao-login-btn:hover {
-    background-color: #FDD835;
-}
-</style>
+    justify-content: center;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+  }
+  </style>

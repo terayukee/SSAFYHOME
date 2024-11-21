@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.home.user.model.UserDto;
 import com.ssafy.home.user.model.mapper.UserMapper;
+import com.ssafy.home.util.JWTUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,19 +33,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserDto> getAllUserList() throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public UserDto joinUser(String UserDto) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
 	public int userUpdate(UserDto userDto) throws Exception {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -67,6 +65,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleRefreshToken(int userNo) throws Exception {
 		userMapper.deleRefreshToken(userNo);;
+	}
+
+	@Override
+	public boolean checkUserInfo(UserDto userDto) throws Exception {
+		// 닉네임만 
+		int userCount = userMapper.getUserCountByNickName(userDto.getUserNickname());
+		// 유저가 없으면
+		if(userCount == 0) {
+			// 리프레시 토큰 저장
+			
+		}else { // 유저가 있으면 
+			// 유저 저장 
+			saveRefreshToken(userDto);
+		}
+		
+		return false;
 	}
 
 	

@@ -34,7 +34,6 @@
 		from users
 		where user_no = #{userNo}
 	</select>
-
 	
 	<select id="getUserInfo" parameterType="String" resultMap="user" >
 		select user_no, , user_name, user_nickname, user_email, phone_number, role, register_time
@@ -47,6 +46,11 @@
 		set reusersfresh_token = #{refreshToken, jdbcType=VARCHAR}
 		where user_no = #{userNo}
 	</update>
-
+	
+	<select id="getUserCountByNickName" resultType="int">
+	    select count(*)
+	    from users
+	    where user_nickname = #{userNickname}
+	</select>
 
 </mapper>
