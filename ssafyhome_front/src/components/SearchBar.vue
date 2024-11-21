@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { searchAll } from "@/api/search";
 
 const keyword = ref(""); // 검색어
@@ -8,6 +8,7 @@ const searchResults = ref({
   houses: [],
 }); // 검색 결과
 const hoverImage = ref(""); // 이미지 표시 영역에 표시될 이미지
+const isResultsVisible = ref(false); // 검색 결과 표시 여부
 
 // 랜덤 이미지 경로 생성
 const getRandomImage = (houseType) => {
@@ -29,11 +30,15 @@ const getRandomImage = (houseType) => {
 };
 
 const onSearch = () => {
-  if (!keyword.value.trim()) return;
+  if (!keyword.value.trim()) {
+    isResultsVisible.value = false; // 검색어가 없으면 결과 숨김
+    return;
+  }
   searchAll(
     keyword.value,
     (response) => {
       searchResults.value = response.data;
+      isResultsVisible.value = true;
     },
     (error) => {
       console.error("Search failed:", error);
@@ -45,6 +50,22 @@ const onSearch = () => {
 const handleMouseOver = (houseType) => {
   hoverImage.value = getRandomImage(houseType);
 };
+
+// 바깥 클릭 이벤트 처리
+const handleClickOutside = (event) => {
+  const container = document.querySelector(".search-container");
+  if (container && !container.contains(event.target)) {
+    isResultsVisible.value = false; // 검색 결과 숨김
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
@@ -65,7 +86,9 @@ const handleMouseOver = (houseType) => {
     <div
       class="search-results-container"
       :class="{
-        active: searchResults.regions.length || searchResults.houses.length,
+        active:
+          isResultsVisible &&
+          (searchResults.regions.length || searchResults.houses.length),
       }"
     >
       <!-- 지역 검색결과 -->
@@ -166,6 +189,7 @@ const handleMouseOver = (houseType) => {
   top: 100%; /* 부모 요소의 아래로 배치 */
   left: 0;
   width: 100%; /* 부모의 너비에 맞춤 */
+  min-width: 800px;
   display: flex;
   visibility: hidden; /* 처음에는 숨김 */
   opacity: 0; /* 보이지 않게 */

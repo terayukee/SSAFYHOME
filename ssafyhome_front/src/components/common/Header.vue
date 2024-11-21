@@ -4,11 +4,7 @@
       <div class="logo" @click="goHome">
         <img :src="Logo" alt="로고" />
       </div>
-      <input
-        type="text"
-        placeholder="지역, 지하철, 대학, 단지명 또는 매물번호를 입력해주세요."
-        class="search-bar"
-      />
+      <SearchBar />
     </div>
     <nav class="header-right">
       <ul class="nav-menu">
@@ -29,7 +25,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-
+import SearchBar from "@/components/SearchBar.vue";
 import Logo from "@/assets/logo.jpg";
 
 const router = useRouter();
@@ -39,7 +35,7 @@ const goHome = () => {
 };
 
 const navigateTo = (route) => {
-  router.push({name : `${route}`});
+  router.push({ name: `${route}` });
 };
 </script>
 
@@ -62,13 +58,6 @@ const navigateTo = (route) => {
   height: 40px;
   cursor: pointer;
   margin-right: 16px;
-}
-
-.search-bar {
-  width: 400px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
 .header-right {
