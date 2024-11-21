@@ -4,6 +4,49 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.home.user.model.mapper.UserMapper">
 
+	<resultMap type="UserDto" id="user">
+		<result column="user_no" property="userNo"/>
+		<result column="user_name" property="userName"/>
+		<result column="user_password" property="userPassword"/>
+		<result column="user_email" property="email"/>
+		<result column="phone_number" property="phoneNumber"/>
+		<result column="role" property="role"/>
+		<result column="register_time" property="registerDate"/>
+		<result column="deleted" property="deleted"/>
+		<result column="deleted_at" property="deletedAt"/>
+		<result column="reusersfresh_token" property="refreshToken"/>
+	</resultMap>
+	
+	<select id="login" resultMap="user">
+		select * from users 
+		where user_email = #{email} 
+		and user_password = #{userPassword} 	
+	</select>
+	
+	<update id="saveRefreshToken" parameterType="UserDto">
+		update users
+		set reusersfresh_token = #{refreshToken}
+		where user_no = #{userNo}
+	</update>
+	
+	<select id="getRefreshToken" parameterType="string" resultType="string">
+		select reusersfresh_token
+		from users
+		where user_no = #{userNo}
+	</select>
+
+	
+	<select id="getUserInfo" parameterType="String" resultMap="user" >
+		select user_no, , user_name, user_nickname, user_email, phone_number, role, register_time
+		from members
+		where user_no = #{userNo}
+	</select>
+	
+	<update id="deleteRefreshToken" parameterType="UserDto">
+		update members
+		set reusersfresh_token = #{refreshToken, jdbcType=VARCHAR}
+		where user_no = #{userNo}
+	</update>
 
 
 </mapper>
