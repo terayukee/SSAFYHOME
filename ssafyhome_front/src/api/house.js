@@ -19,10 +19,6 @@ function listHousesInBounds(bounds, filters, success, fail) {
   houseInfo.get("/bounds", { params }).then(success).catch(fail);
 }
 
-function getPopularDealInfo(aptSeq, success, fail) {
-  houseInfo.get(`/popular`, { params: { aptSeq } }).then(success).catch(fail);
-}
-
 function getRecentDeals(aptSeq, success, fail) {
   houseDeal
     .get(`/recent`, { params: { aptSeq } })
@@ -30,4 +26,28 @@ function getRecentDeals(aptSeq, success, fail) {
     .catch(fail); // 요청 실패 시 fail 콜백 호출
 }
 
-export { listHouses, listHousesInBounds, getPopularDealInfo, getRecentDeals };
+// 특정 아파트의 모든 거래 정보 가져오기
+function getDealsByAptSeq(aptSeq, dealCategory, success, fail) {
+  houseDeal
+    .get(`/${aptSeq}/deals`, { params: { aptSeq, dealCategory } })
+    .then(success)
+    .catch(fail);
+}
+
+// 특정 평형의 거래 정보 가져오기
+function getDealsBySpace(aptSeq, dealCategory, space, success, fail) {
+  houseDeal
+    .get(`/${aptSeq}/deals-by-space`, {
+      params: { aptSeq, dealCategory, space },
+    })
+    .then(success)
+    .catch(fail);
+}
+
+export {
+  listHouses,
+  listHousesInBounds,
+  getRecentDeals,
+  getDealsByAptSeq,
+  getDealsBySpace,
+};

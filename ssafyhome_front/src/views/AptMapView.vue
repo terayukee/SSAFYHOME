@@ -10,6 +10,7 @@ import OfficetelIcon from "@/assets/icons/office.png";
 import PreSaleIcon from "@/assets/icons/presale.png";
 
 import HouseCardList from "@/components/map/HouseCardList.vue";
+import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
 
 // 좌측 네비게이션 항목
 const navItems = [
@@ -96,7 +97,7 @@ watch(
 
 // 카드 클릭 시 선택된 하우스 정보를 설정
 const onCardClick = (house) => {
-  selectedHouse.value = house; // 클릭한 하우스 정보 저장
+  selectedHouse.value = { ...house }; // 객체 복사로 Reactivity 보장
 };
 
 // 지도 클릭 시 detail nav 접기
@@ -157,12 +158,7 @@ const handleMapClick = () => {
           <!-- X 버튼 -->
           <button class="close-button" @click="selectedHouse = null">X</button>
 
-          <div class="detail-content">
-            <h3>{{ selectedHouse.aptNm }}</h3>
-            <p>거래 유형: {{ selectedHouse.dealCategory }}</p>
-            <p>평수: {{ selectedHouse.dealSpace }}평</p>
-            <p>거래 금액: {{ selectedHouse.avgDealAmount }}억</p>
-          </div>
+          <HouseDetailCard :selectedHouse="selectedHouse" />
         </nav>
 
         <!-- 지도 및 결과 영역 -->
@@ -266,7 +262,7 @@ const handleMapClick = () => {
 
 /* 두 번째 세로 네비게이션 */
 .vertical-nav-detail {
-  width: 300px;
+  width: 350px;
   background-color: #f9f9f9;
   border-right: 1px solid #e0e0e0;
   padding: 16px;
@@ -277,7 +273,7 @@ const handleMapClick = () => {
 .close-button {
   position: absolute;
   top: 190px;
-  left: 850px;
+  left: 900px;
   background-color: #ff4d4f;
   color: #fff;
   border: none;
