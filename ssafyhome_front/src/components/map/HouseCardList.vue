@@ -8,7 +8,7 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  selectedNav: {
+  houseType: {
     type: String,
   },
 });
@@ -18,11 +18,11 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
 
   // 주택 타입
   let houseType = "";
-  if (props.selectedNav == "apartment") {
+  if (props.houseType == "apartment") {
     houseType = "apart";
-  } else if (props.selectedNav == "villa") {
+  } else if (props.houseType == "villa") {
     houseType = "villa";
-  } else if (props.selectedNav == "officetel") {
+  } else if (props.houseType == "officetel") {
     houseType = "officetel";
   }
 

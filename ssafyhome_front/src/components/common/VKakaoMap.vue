@@ -17,7 +17,7 @@ const props = defineProps({
     type: String,
   },
 
-  selectedNav: {
+  houseType: {
     type: String,
   },
   initialLatitude: {

@@ -32,7 +32,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  selectedNav: {
+  houseType: {
     type: String,
   },
 });
@@ -57,7 +57,7 @@ const fetchDealsByAptSeq = () => {
   getDealsByAptSeq(
     props.selectedHouse.aptSeq,
     selectedTab.value,
-    props.selectedNav, // apartment, villa, officetal, pre-sale
+    props.houseType, // apartment, villa, officetal, pre-sale
     (response) => {
       dealList.value = response.data;
 
@@ -81,7 +81,7 @@ const fetchDealsBySpace = (space) => {
   getDealsBySpace(
     props.selectedHouse.aptSeq,
     selectedTab.value,
-    props.selectedNav, // apartment, villa, officetal, pre-sale
+    props.houseType, // apartment, villa, officetal, pre-sale
     space,
     (response) => {
       dealList.value = response.data;

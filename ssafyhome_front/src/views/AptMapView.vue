@@ -1,8 +1,8 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, watch } from "vue";
 import VKakaoMap from "@/components/common/VKakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
-import { listHouses, listHousesInBounds } from "@/api/house.js";
+import { listHousesInBounds } from "@/api/house.js";
 
 import ApartmentIcon from "@/assets/icons/residential.png";
 import VillaIcon from "@/assets/icons/villa.png";
@@ -24,6 +24,11 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  houseType: {
+    type: String,
+    required: false,
+    default: "apartment",
+  },
 });
 
 // 좌측 네비게이션 항목
@@ -33,7 +38,7 @@ const navItems = [
   { id: "officetel", label: "오피스텔", icon: OfficetelIcon },
 ];
 
-const selectedNav = ref("apartment"); // 선택 상태
+// const houseType = ref("apartment"); // 선택 상태
 const houses = ref([]); // house 정보를 저장할 ref 변수
 const bounds = ref(null); // 현재 지도 bounds
 const selectedHouse = ref(null); // 추가: 선택된 하우스 정보를 저장
@@ -44,18 +49,18 @@ const fetchHousesInBounds = (bounds) => {
   listHousesInBounds(
     bounds.value, // 지도 영역
     filters.value, // 필터 배열 전체 전달
-    selectedNav.value, // apartment, villa, officetel, pre-sale
+    props.houseType, // apartment, villa, officetel, pre-sale
     (response) => {
-      // API에서 받아온 데이터를 저장하기 전 selectedNav에 따라 avgDealAmount 값을 조정
+      // API에서 받아온 데이터를 저장하기 전 houseType에 따라 avgDealAmount 값을 조정
       houses.value = response.data.map((house) => {
-        if (selectedNav.value === "villa") {
+        if (props.houseType === "villa") {
           return {
             ...house,
             avgDealAmount: house.avgDealAmount
               ? Math.floor(house.avgDealAmount * 0.5) // 소숫점 이하 버림
               : house.avgDealAmount,
           };
-        } else if (selectedNav.value === "officetel") {
+        } else if (props.houseType === "officetel") {
           return {
             ...house,
             avgDealAmount: house.avgDealAmount
@@ -82,7 +87,7 @@ const handleBoundsChange = (newBounds) => {
 
 // 네비게이션 항목 선택 함수
 const selectNav = (id) => {
-  selectedNav.value = id;
+  props.houseType = id;
 };
 
 // 필터 데이터 및 옵션
@@ -138,8 +143,8 @@ const handleMapClick = () => {
   selectedHouse.value = null;
 };
 
-// selectedNav 값 변경 감지
-watch(selectedNav, (newNav) => {
+// houseType 값 변경 감지
+watch(props.houseType, (newNav) => {
   console.log("Navigation changed to:", newNav);
   fetchHousesInBounds(bounds); // 지도 영역에 맞는 데이터 다시 가져오기
 });
@@ -153,7 +158,7 @@ watch(selectedNav, (newNav) => {
         <li
           v-for="item in navItems"
           :key="item.id"
-          :class="{ active: selectedNav === item.id }"
+          :class="{ active: houseType === item.id }"
           @click="selectNav(item.id)"
         >
           <img :src="item.icon" alt="" class="nav-icon" />
@@ -191,7 +196,7 @@ watch(selectedNav, (newNav) => {
             <HouseCardList
               :houses="houses"
               @cardClick="onCardClick"
-              :selectedNav="selectedNav"
+              :houseType="houseType"
             />
           </div>
         </nav>
@@ -203,7 +208,7 @@ watch(selectedNav, (newNav) => {
 
           <HouseDetailCard
             :selectedHouse="selectedHouse"
-            :selectedNav="selectedNav"
+            :houseType="houseType"
           />
         </nav>
 
@@ -212,7 +217,7 @@ watch(selectedNav, (newNav) => {
           <VKakaoMap
             :houses="houses"
             :selectedCategory="filters.dealCategory"
-            :selectedNav="selectedNav"
+            :houseType="houseType"
             :initialLatitude="latitude"
             :initialLongitude="longitude"
             :initialMapLevel="maplevel"
