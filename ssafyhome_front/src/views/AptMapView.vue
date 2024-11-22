@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, reactive, watch } from "vue";
 import VKakaoMap from "@/components/common/VKakaoMap.vue";
 import VSelect from "@/components/common/VSelect.vue";
 import { listHouses, listHousesInBounds } from "@/api/house.js";
@@ -10,6 +10,7 @@ import OfficetelIcon from "@/assets/icons/office.png";
 import PreSaleIcon from "@/assets/icons/presale.png";
 
 import HouseCardList from "@/components/map/HouseCardList.vue";
+import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
 
 // 좌측 네비게이션 항목
 const navItems = [
@@ -20,22 +21,19 @@ const navItems = [
 ];
 
 const selectedNav = ref("apartment"); // 선택 상태
-const selectedCategory = ref("매매"); // 현재 선택된 타입 (매매, 전세, 월세)
-
 const houses = ref([]); // house 정보를 저장할 ref 변수
 const bounds = ref(null); // 현재 지도 bounds
-
-// 추가: 선택된 하우스 정보를 저장
-const selectedHouse = ref(null);
+const selectedHouse = ref(null); // 추가: 선택된 하우스 정보를 저장
 
 const fetchHousesInBounds = (bounds) => {
   console.log("bounds:", bounds);
+  console.log("filters:", filters);
   listHousesInBounds(
-    bounds.value,
-    selectedCategory.value,
+    bounds.value, // 지도 영역
+    filters.value, // 필터 배열 전체 전달
     (response) => {
       houses.value = response.data;
-      // console.log("listHousesInBounds 성공, ", response.data);
+      console.log("listHousesInBounds 성공: ", response.data);
     },
     (error) => {
       console.error("Failed to fetch houses:", error);
@@ -56,27 +54,26 @@ const selectNav = (id) => {
 
 // 필터 데이터 및 옵션
 const filters = ref({
-  dealCategory: "",
-  roomSize: "",
-  approvalDate: "",
-  numHouseholds: "",
-  parkingSpaces: "",
-  numRooms: "",
+  dealCategory: "매매",
+  roomSize: "전체",
+  approvalDate: "전체",
   additionalFilters: "",
 });
 
 const filterOptions = {
   dealCategory: [
-    { text: "월세", value: "월세" },
-    { text: "전세", value: "전세" },
     { text: "매매", value: "매매" },
+    { text: "전세", value: "전세" },
+    { text: "월세", value: "월세" },
   ],
   roomSize: [
+    { text: "전체", value: "전체" },
     { text: "10평 이하", value: "10평 이하" },
     { text: "10~20평", value: "10~20평" },
     { text: "20평 이상", value: "20평 이상" },
   ],
   approvalDate: [
+    { text: "전체", value: "전체" },
     { text: "5년 이내", value: "5년 이내" },
     { text: "10년 이내", value: "10년 이내" },
     { text: "10년 이상", value: "10년 이상" },
@@ -88,24 +85,19 @@ const filterOptions = {
   ],
 };
 
-const onFilterChange = (filterKey, value) => {
-  filters.value[filterKey] = value;
-  console.log("Filter Changed:", filters.value);
-};
-
-// 선택된 타입이 변경될 때 fetch 호출
-watch(selectedCategory, (newCategory) => {
-  console.log("Category changed to:", newCategory);
-  if (bounds.value) {
+// `filters` 객체의 모든 키를 감시
+watch(
+  () => filters,
+  () => {
+    console.log("Filters changed, fetching houses...");
     fetchHousesInBounds(bounds);
-  } else {
-    console.warn("Bounds are not defined yet.");
-  }
-});
+  },
+  { deep: true } // 객체 내부의 모든 속성 변경 감지
+);
 
 // 카드 클릭 시 선택된 하우스 정보를 설정
 const onCardClick = (house) => {
-  selectedHouse.value = house; // 클릭한 하우스 정보 저장
+  selectedHouse.value = { ...house }; // 객체 복사로 Reactivity 보장
 };
 
 // 지도 클릭 시 detail nav 접기
@@ -136,18 +128,18 @@ const handleMapClick = () => {
       <header class="top-nav">
         <VSelect
           :selectOption="filterOptions.dealCategory"
-          v-model="selectedCategory"
-          placeholder="매매"
+          placeholder="거래 유형"
+          v-model="filters.dealCategory"
         />
         <VSelect
           :selectOption="filterOptions.roomSize"
           placeholder="방크기"
-          @onKeySelect="(val) => onFilterChange('roomSize', val)"
+          v-model="filters.roomSize"
         />
         <VSelect
           :selectOption="filterOptions.approvalDate"
           placeholder="사용승인일"
-          @onKeySelect="(val) => onFilterChange('approvalDate', val)"
+          v-model="filters.approvalDate"
         />
       </header>
 
@@ -166,19 +158,14 @@ const handleMapClick = () => {
           <!-- X 버튼 -->
           <button class="close-button" @click="selectedHouse = null">X</button>
 
-          <div class="detail-content">
-            <h3>{{ selectedHouse.aptNm }}</h3>
-            <p>거래 유형: {{ selectedHouse.dealCategory }}</p>
-            <p>평수: {{ selectedHouse.dealSpace }}평</p>
-            <p>거래 금액: {{ selectedHouse.avgDealAmount }}억</p>
-          </div>
+          <HouseDetailCard :selectedHouse="selectedHouse" />
         </nav>
 
         <!-- 지도 및 결과 영역 -->
         <section class="map-section">
           <VKakaoMap
             :houses="houses"
-            :selectedCategory="selectedCategory"
+            :selectedCategory="filters.dealCategory"
             @boundsChange="handleBoundsChange"
             @markerClick="onCardClick"
             @mapClick="handleMapClick"
@@ -275,7 +262,7 @@ const handleMapClick = () => {
 
 /* 두 번째 세로 네비게이션 */
 .vertical-nav-detail {
-  width: 300px;
+  width: 350px;
   background-color: #f9f9f9;
   border-right: 1px solid #e0e0e0;
   padding: 16px;
@@ -286,7 +273,7 @@ const handleMapClick = () => {
 .close-button {
   position: absolute;
   top: 190px;
-  left: 850px;
+  left: 900px;
   background-color: #ff4d4f;
   color: #fff;
   border: none;

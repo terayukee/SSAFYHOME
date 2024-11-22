@@ -1,35 +1,45 @@
-@import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+/* 전체 프로젝트의 기본 스크롤 스타일 */
+html {
+  scrollbar-width: thin; /* Firefox 스크롤바 너비 */
+  scrollbar-color: #42a5f5 #e3f2fd; /* Firefox 스크롤바 색상 */
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+html::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 */
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+html::-webkit-scrollbar-track {
+  background: #e3f2fd; /* 스크롤 트랙 배경 (연한 푸른색) */
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+html::-webkit-scrollbar-thumb {
+  background: #42a5f5; /* 스크롤 핸들 (파란색) */
+  border-radius: 4px; /* 둥근 모서리 */
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+html::-webkit-scrollbar-thumb:hover {
+  background: #0d47a1; /* 스크롤 핸들 호버 시 색상 */
+}
+
+/* 모든 요소의 스크롤에 스타일 적용 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #42a5f5 #e3f2fd;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #e3f2fd;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #42a5f5;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #0d47a1;
 }

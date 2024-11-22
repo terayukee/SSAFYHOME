@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, defineEmits } from "vue";
+import "@/assets/main.css";
 
 // Props로 전달된 집 정보를 받습니다.
 const props = defineProps({
