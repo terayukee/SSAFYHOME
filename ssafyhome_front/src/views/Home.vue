@@ -1,58 +1,74 @@
 <template>
   <div class="home">
     <div class="top-section">
-      <input
-        type="text"
-        placeholder="지역, 지하철, 대학, 단지명 또는 매물번호를 입력해주세요."
-        class="search-bar"
-      />
+      <div class="search-bar">
+        <SearchBar />
+      </div>
     </div>
     <div class="content-section">
-      <div class="main-category">
-        <MainCategory />
-      </div>
-      <div class="ad-banner">
-        <AdBanner />
+      <div class="content-inside">
+        <div class="main-category">
+          <MainCategory />
+        </div>
+        <div class="ad-banner">
+          <AdBanner />
+        </div>
       </div>
     </div>
+
+    <!-- Guide 컴포넌트 삽입 -->
+    <Guide />
   </div>
 </template>
 
 <script setup>
 import MainCategory from "../components/MainCategory.vue";
 import AdBanner from "../components/AdBanner.vue";
+import SearchBar from "../components/SearchBar.vue";
+import Guide from "../components/Guide.vue";
 </script>
 
 <style scoped>
 .home {
   padding: 16px;
 }
+
 .top-section {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
-}
-.search-bar {
-  width: 60%;
-  padding: 10px 16px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  outline: none;
-}
-.content-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  background-color: #ececec;
+  height: 50px;
 }
 
-/* MainCategory와 AdBanner의 가로 영역 비율 조정 */
+.content-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 500px;
+  gap: 16px;
+  background-color: #ececec;
+}
+
+.search-bar {
+  margin-top: 20px;
+  width: 1100px;
+}
+
+.content-inside {
+  display: flex;
+  justify-content: center;
+  width: 1300px;
+}
+
 .main-category {
-  flex: 1; /* MainCategory의 너비를 50%로 설정 */
+  flex: 1;
+  width: 600px;
+  height: 400px;
 }
 
 .ad-banner {
-  flex: 1; /* AdBanner의 너비를 50%로 설정 */
+  flex: 1;
+  width: 600px;
+  height: 400px;
 }
 </style>

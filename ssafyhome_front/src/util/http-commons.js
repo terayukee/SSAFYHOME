@@ -13,12 +13,12 @@ function localAxios() {
   return instance;
 }
 
-// 폼 데이터 가져오기 
-function formAxios(){
+// 폼 데이터 가져오기
+function formAxios() {
   const instance = axios.create({
     baseURL: VITE_VUE_API_URL,
     headers: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   });
   return instance;
@@ -57,4 +57,21 @@ function houseDealAxios() {
   return instance;
 }
 
-export { localAxios, houseInfoAxios, houseDealAxios , formAxios};
+// 검색 정보 가져오기
+function houseSearchAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL + "/api/search", // Spring Boot API의 baseURL
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
+export {
+  localAxios,
+  houseInfoAxios,
+  houseDealAxios,
+  formAxios,
+  houseSearchAxios,
+};

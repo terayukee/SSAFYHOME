@@ -16,28 +16,49 @@ public class HouseDealServiceImpl implements HouseDealService {
     }
 
     @Override
-    public List<HouseDealDto> getDealsByAptSeq(String aptSeq, String dealCategory) {
-        String tableName = resolveTableName(dealCategory);
+    public List<HouseDealDto> getDealsByAptSeq(String aptSeq, String dealCategory, String houseType) {
+        String tableName = resolveTableName(dealCategory, houseType);
         return houseDealMapper.getDealsByAptSeq(aptSeq, tableName);
     }
 
     @Override
-    public List<HouseDealDto> getDealsBySpace(String aptSeq, String dealCategory, double space) {
-        String tableName = resolveTableName(dealCategory);
+    public List<HouseDealDto> getDealsBySpace(String aptSeq, String dealCategory, String houseType, double space) {
+        String tableName = resolveTableName(dealCategory, houseType);
         return houseDealMapper.getDealsBySpace(aptSeq, tableName, space);
     }
 
-    // dealCategory에 따라 테이블 이름 반환
-    private String resolveTableName(String dealCategory) {
+    // dealCategory, houseType에 따라 테이블 이름 반환
+    private String resolveTableName(String dealCategory, String houseType) {
+    	String tablePrefix = "";
+        switch (houseType) {
+            case "apartment":
+            	tablePrefix = "house";
+            	break;
+            case "villa":
+            	tablePrefix = "villa";
+            	break;
+            case "officetel":
+            	tablePrefix = "officetel";
+            	break;
+            default:
+                throw new IllegalArgumentException("Invalid houseType: " + houseType);
+        }
+    	
+    	String tableSuffix = "";
         switch (dealCategory) {
             case "매매":
-                return "housedeals";
+            	tableSuffix = "deals";
+            	break;
             case "전세":
-                return "housedeals_jeonse";
+            	tableSuffix = "deals_jeonse";
+            	break;
             case "월세":
-                return "housedeals_month";
+            	tableSuffix = "deals_month";
+            	break;
             default:
                 throw new IllegalArgumentException("Invalid dealCategory: " + dealCategory);
         }
+    	
+    	return tablePrefix + tableSuffix;
     }
 }

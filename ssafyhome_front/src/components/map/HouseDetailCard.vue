@@ -32,6 +32,9 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  selectedNav: {
+    type: String,
+  },
 });
 
 // 탭 상태 및 차트 상태
@@ -54,6 +57,7 @@ const fetchDealsByAptSeq = () => {
   getDealsByAptSeq(
     props.selectedHouse.aptSeq,
     selectedTab.value,
+    props.selectedNav, // apartment, villa, officetal, pre-sale
     (response) => {
       dealList.value = response.data;
 
@@ -77,6 +81,7 @@ const fetchDealsBySpace = (space) => {
   getDealsBySpace(
     props.selectedHouse.aptSeq,
     selectedTab.value,
+    props.selectedNav, // apartment, villa, officetal, pre-sale
     space,
     (response) => {
       dealList.value = response.data;

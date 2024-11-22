@@ -20,9 +20,9 @@
                 ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
             ) AS rnk
         FROM
-            houseinfos hi
+            ${infoTableName} hi
         JOIN
-            houserecentdeals hr
+            ${targetTableName} hr
         ON
             hi.apt_seq = hr.apt_seq
         WHERE
@@ -81,9 +81,9 @@
           ORDER BY CAST(REPLACE(hr.avg_deal_amount, ',', '') AS UNSIGNED) DESC
         ) AS rnk
       FROM
-        houseinfos hi
+        ${infoTableName} hi
       JOIN
-        houserecentdeals hr
+        ${targetTableName} hr
       ON
         hi.apt_seq = hr.apt_seq
       WHERE

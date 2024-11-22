@@ -4,11 +4,7 @@
       <div class="logo" @click="goHome">
         <img :src="Logo" alt="로고" />
       </div>
-      <input
-        type="text"
-        placeholder="지역, 지하철, 대학, 단지명 또는 매물번호를 입력해주세요."
-        class="search-bar"
-      />
+      <SearchBar />
     </div>
     <nav class="header-right">
       <ul class="nav-menu">
@@ -18,17 +14,22 @@
         <li @click="navigateTo('favorites')">관심목록</li>
       </ul>
       <div class="auth-buttons">
-        
-    <div v-if="!isLogin" class="">
-      <button class="btn mg-l-1" @click="navigateTo('login')">로그인</button>
-      <button class="btn btn-primary" @click="navigateTo('signup')">회원가입</button>
-    </div>
-    
-    <div v-else>
-      <!-- 로그인 후 내 정보 버튼만 표시 -->
-      <button class="btn mg-l-1" @click="logout">로그아웃</button>
-      <button class="btn btn-primary" @click="navigateTo('profile')">내 정보</button>
-    </div>
+        <div v-if="!isLogin" class="">
+          <button class="btn mg-l-1" @click="navigateTo('login')">
+            로그인
+          </button>
+          <button class="btn btn-primary" @click="navigateTo('signup')">
+            회원가입
+          </button>
+        </div>
+
+        <div v-else>
+          <!-- 로그인 후 내 정보 버튼만 표시 -->
+          <button class="btn mg-l-1" @click="logout">로그아웃</button>
+          <button class="btn btn-primary" @click="navigateTo('profile')">
+            내 정보
+          </button>
+        </div>
         <!-- <button class="btn" @click="navigateTo('login')">로그인</button>
         <button class="btn btn-primary" @click="navigateTo('signup')">
           회원가입
@@ -40,13 +41,15 @@
 
 <script setup>
 import { useRouter } from "vue-router";
+
+import SearchBar from "@/components/SearchBar.vue";
+
 import Logo from "@/assets/logo.jpg";
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from "@/stores/userStore";
 import { storeToRefs } from "pinia";
-  
 
 const userStore = useUserStore();
-const { isLogin } = storeToRefs(userStore)
+const { isLogin } = storeToRefs(userStore);
 
 const { userLogout } = userStore;
 
@@ -62,7 +65,7 @@ const goHome = () => {
 };
 
 const navigateTo = (route) => {
-  router.push({name : `${route}`});
+  router.push({ name: `${route}` });
 };
 </script>
 
@@ -85,13 +88,6 @@ const navigateTo = (route) => {
   height: 40px;
   cursor: pointer;
   margin-right: 16px;
-}
-
-.search-bar {
-  width: 400px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
 .header-right {
@@ -145,7 +141,7 @@ const navigateTo = (route) => {
   background-color: #0056b3;
 }
 
-.mg-l-1{
+.mg-l-1 {
   margin-right: 10px;
 }
 </style>

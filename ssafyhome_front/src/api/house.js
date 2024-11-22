@@ -8,12 +8,13 @@ function listHouses(param, success, fail) {
   houseInfo.get("/list", { params: param }).then(success).catch(fail);
 }
 
-function listHousesInBounds(bounds, filters, success, fail) {
+function listHousesInBounds(bounds, filters, houseType, success, fail) {
   const params = {
     ...bounds, // bounds 객체 내의 swLat, swLng, neLat, neLng
     dealCategory: filters.dealCategory, // 필터의 거래 유형
     roomSize: filters.roomSize, // 필터의 방 크기
     approvalDate: filters.approvalDate,
+    houseType, // apartment, villa, officetal, pre-sale
   };
 
   houseInfo.get("/bounds", { params }).then(success).catch(fail);
@@ -27,18 +28,25 @@ function getRecentDeals(aptSeq, success, fail) {
 }
 
 // 특정 아파트의 모든 거래 정보 가져오기
-function getDealsByAptSeq(aptSeq, dealCategory, success, fail) {
+function getDealsByAptSeq(aptSeq, dealCategory, houseType, success, fail) {
   houseDeal
-    .get(`/${aptSeq}/deals`, { params: { aptSeq, dealCategory } })
+    .get(`/${aptSeq}/deals`, { params: { aptSeq, dealCategory, houseType } })
     .then(success)
     .catch(fail);
 }
 
 // 특정 평형의 거래 정보 가져오기
-function getDealsBySpace(aptSeq, dealCategory, space, success, fail) {
+function getDealsBySpace(
+  aptSeq,
+  dealCategory,
+  houseType,
+  space,
+  success,
+  fail
+) {
   houseDeal
     .get(`/${aptSeq}/deals-by-space`, {
-      params: { aptSeq, dealCategory, space },
+      params: { aptSeq, dealCategory, houseType, space },
     })
     .then(success)
     .catch(fail);

@@ -7,17 +7,30 @@ import { listHouses, listHousesInBounds } from "@/api/house.js";
 import ApartmentIcon from "@/assets/icons/residential.png";
 import VillaIcon from "@/assets/icons/villa.png";
 import OfficetelIcon from "@/assets/icons/office.png";
-import PreSaleIcon from "@/assets/icons/presale.png";
 
 import HouseCardList from "@/components/map/HouseCardList.vue";
 import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
+
+const props = defineProps({
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  },
+  maplevel: {
+    type: Number,
+    required: false,
+  },
+});
 
 // 좌측 네비게이션 항목
 const navItems = [
   { id: "apartment", label: "아파트", icon: ApartmentIcon },
   { id: "villa", label: "주택/빌라", icon: VillaIcon },
   { id: "officetel", label: "오피스텔", icon: OfficetelIcon },
-  { id: "pre-sale", label: "분양", icon: PreSaleIcon },
 ];
 
 const selectedNav = ref("apartment"); // 선택 상태
@@ -31,9 +44,29 @@ const fetchHousesInBounds = (bounds) => {
   listHousesInBounds(
     bounds.value, // 지도 영역
     filters.value, // 필터 배열 전체 전달
+    selectedNav.value, // apartment, villa, officetel, pre-sale
     (response) => {
-      houses.value = response.data;
-      console.log("listHousesInBounds 성공: ", response.data);
+      // API에서 받아온 데이터를 저장하기 전 selectedNav에 따라 avgDealAmount 값을 조정
+      houses.value = response.data.map((house) => {
+        if (selectedNav.value === "villa") {
+          return {
+            ...house,
+            avgDealAmount: house.avgDealAmount
+              ? Math.floor(house.avgDealAmount * 0.5) // 소숫점 이하 버림
+              : house.avgDealAmount,
+          };
+        } else if (selectedNav.value === "officetel") {
+          return {
+            ...house,
+            avgDealAmount: house.avgDealAmount
+              ? Math.floor(house.avgDealAmount * 0.7) // 소숫점 이하 버림
+              : house.avgDealAmount,
+          };
+        }
+        return house; // 나머지 경우는 데이터 그대로 유지
+      });
+
+      console.log("listHousesInBounds 성공: ", houses.value);
     },
     (error) => {
       console.error("Failed to fetch houses:", error);
@@ -104,6 +137,12 @@ const onCardClick = (house) => {
 const handleMapClick = () => {
   selectedHouse.value = null;
 };
+
+// selectedNav 값 변경 감지
+watch(selectedNav, (newNav) => {
+  console.log("Navigation changed to:", newNav);
+  fetchHousesInBounds(bounds); // 지도 영역에 맞는 데이터 다시 가져오기
+});
 </script>
 
 <template>
@@ -149,7 +188,11 @@ const handleMapClick = () => {
           <div class="vertical-nav-buttons"></div>
           <div class="vertical-nav-content">
             <!-- HouseCardList 컴포넌트로 데이터 전달 -->
-            <HouseCardList :houses="houses" @cardClick="onCardClick" />
+            <HouseCardList
+              :houses="houses"
+              @cardClick="onCardClick"
+              :selectedNav="selectedNav"
+            />
           </div>
         </nav>
 
@@ -158,7 +201,10 @@ const handleMapClick = () => {
           <!-- X 버튼 -->
           <button class="close-button" @click="selectedHouse = null">X</button>
 
-          <HouseDetailCard :selectedHouse="selectedHouse" />
+          <HouseDetailCard
+            :selectedHouse="selectedHouse"
+            :selectedNav="selectedNav"
+          />
         </nav>
 
         <!-- 지도 및 결과 영역 -->
@@ -166,6 +212,10 @@ const handleMapClick = () => {
           <VKakaoMap
             :houses="houses"
             :selectedCategory="filters.dealCategory"
+            :selectedNav="selectedNav"
+            :initialLatitude="latitude"
+            :initialLongitude="longitude"
+            :initialMapLevel="maplevel"
             @boundsChange="handleBoundsChange"
             @markerClick="onCardClick"
             @mapClick="handleMapClick"
