@@ -30,7 +30,7 @@ public interface UserMapper {
 	Object getRefreshToken(int userNo) throws SQLException;
 	
 	// 리프레시 토큰 삭제
-	void deleRefreshToken(int userNo) throws SQLException;
+	void deleteRefreshToken(int userNo) throws SQLException;
 	
 	int getUserCountByNickName(String userId) throws Exception;
 	

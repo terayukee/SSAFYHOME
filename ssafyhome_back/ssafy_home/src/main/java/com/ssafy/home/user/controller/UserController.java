@@ -127,7 +127,7 @@ public class UserController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		try {
-			userService.deleRefreshToken(Integer.parseInt(userNo));
+			userService.deleteRefreshToken(Integer.parseInt(userNo));
 			status = HttpStatus.OK;
 		} catch (Exception e) {
 			log.error("로그아웃 실패 : {}", e);

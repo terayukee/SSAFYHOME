@@ -9,7 +9,6 @@ async function userConfirm(param, success, fail) {
 async function findById(userNo, success, fail) {
   local.defaults.headers["Authorization"] = localStorage.getItem("accessToken");
   console.log(userNo, "확인")
-  console.log(sessionStorage.getItem("accessToken"))
   await local.get(`/user/info/${userNo}`).then(success).catch(fail);
 }
 

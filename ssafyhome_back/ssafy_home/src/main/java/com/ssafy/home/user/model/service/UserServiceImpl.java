@@ -63,8 +63,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleRefreshToken(int userNo) throws Exception {
-		userMapper.deleRefreshToken(userNo);;
+	public void deleteRefreshToken(int userNo) throws Exception {
+		userMapper.deleteRefreshToken(userNo);;
 	}
 
 	@Override

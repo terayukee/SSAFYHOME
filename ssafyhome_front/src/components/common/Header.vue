@@ -43,6 +43,7 @@ import { useRouter } from "vue-router";
 import Logo from "@/assets/logo.jpg";
 import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from "pinia";
+  
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore)
@@ -51,6 +52,7 @@ const { userLogout } = userStore;
 
 const logout = () => {
   userLogout();
+  router.replace("/");
 };
 
 const router = useRouter();

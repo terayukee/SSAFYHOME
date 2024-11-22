@@ -28,7 +28,7 @@ public interface UserService {
 	Object getRefreshToken(int userNo) throws Exception;
 	
 	// 리프레시 토큰 삭제
-	void deleRefreshToken(int userNo) throws Exception;
+	void deleteRefreshToken(int userNo) throws Exception;
 	
 	boolean checkUserInfo(UserDto userDto) throws Exception; 
 	

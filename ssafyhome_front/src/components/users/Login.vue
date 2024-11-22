@@ -25,7 +25,7 @@ const login = async () => {
     console.log("로그인들어왔잖아")
     getUserInfo(token)
     // changeMenuState()
-    // router.replace("/")
+    router.replace("/")
   } 
 
 }

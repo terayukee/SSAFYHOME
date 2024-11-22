@@ -41,7 +41,7 @@
 		where user_no = #{userNo}
 	</select>
 	
-	<update id="deleteRefreshToken" parameterType="UserDto">
+	<update id="deleteRefreshToken" parameterType="int">
 		update users
 		set reusersfresh_token = #{refreshToken, jdbcType=VARCHAR}
 		where user_no = #{userNo}
