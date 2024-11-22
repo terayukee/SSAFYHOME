@@ -3,7 +3,7 @@ import { useRouter } from "vue-router"
 import { defineStore } from "pinia"
 import { jwtDecode } from "jwt-decode"
 
-import { userConfirm, findById, tokenRegeneration, logout } from "@/api/user"
+import { userConfirm, findById, tokenRegeneration, logout , registerUser } from "@/api/user"
 import { httpStatusCode } from "@/util/http-status"
 
 export const useUserStore = defineStore("memberStore", () => {
@@ -14,15 +14,6 @@ export const useUserStore = defineStore("memberStore", () => {
 
   const userInfo = ref(JSON.parse(localStorage.getItem("userInfo")) || null)
 
-  watchEffect(() => {
-    if (isLogin.value && userInfo.value) {
-      localStorage.setItem("userInfo", JSON.stringify(userInfo.value));
-      localStorage.setItem("accessToken", userStore.accessToken);  // accessToken도 저장
-    } else {
-      localStorage.removeItem("userInfo");
-      localStorage.removeItem("accessToken");
-    }
-  });
   const userLogin = async (loginUser) => {
     await userConfirm(
       loginUser,
@@ -53,6 +44,22 @@ export const useUserStore = defineStore("memberStore", () => {
     )
   }
 
+  const userRegister = async (userInfo) => {
+    await registerUser(
+      userInfo,
+      (response) => {
+        if(response.status == httpStatusCode.CREATE){
+          console.log("가입성공!")
+        }
+      },
+      (error) =>{
+        console.log("가입실패")
+        console.log(userInfo)
+      }
+    )
+  };
+
+
   const getUserInfo = async (token) => {
     let decodeToken = jwtDecode(token)
     console.log("디코드토큰", decodeToken.userNo)
@@ -78,6 +85,7 @@ export const useUserStore = defineStore("memberStore", () => {
       }
     )
   }
+
 
   const tokenRegenerate = async () => {
     await tokenRegeneration(
@@ -148,5 +156,8 @@ export const useUserStore = defineStore("memberStore", () => {
     getUserInfo,
     tokenRegenerate,
     userLogout,
+    userRegister,
   }
-})
+}, 
+{persist:true}
+)

@@ -18,7 +18,7 @@
           <button class="btn btn-shadow mg-l-1" @click="navigateTo('login')">
             로그인
           </button>
-          <button class="btn btn-gradient " @click="navigateTo('signup')">
+          <button class="btn btn-gradient " @click="navigateTo('user-regist')">
             회원가입
           </button>
         </div>

@@ -15,7 +15,7 @@ public interface UserService {
 	// 유저 전체
 	List<UserDto> getAllUserList() throws Exception;
 	// 회원가입
-	UserDto joinUser(String UserDto) throws Exception;
+	int joinUser(UserDto UserDto) throws Exception;
 	// 유저 수정
 	int userUpdate(UserDto userDto) throws Exception;
 	// 유저 삭제 

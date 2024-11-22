@@ -37,8 +37,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto joinUser(String UserDto) throws Exception {
-		return null;
+	public int joinUser(UserDto userDto) throws Exception {
+		return userMapper.joinUser(userDto);
+		
 	}
 	
 	@Override

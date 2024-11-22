@@ -52,5 +52,10 @@
 	    from users
 	    where user_nickname = #{userNickname}
 	</select>
+	
+	<insert id="joinUser" parameterType="UserDto">
+		insert into users(user_name,user_password,user_nickname,user_email,phone_number,register_time)
+		values (#{userName},#{userPassword},#{userNickname},#{email},#{phoneNumber},now());
+	</insert>
 
 </mapper>

@@ -1,9 +1,11 @@
 package com.ssafy.home.user.controller;
 
+import java.net.http.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,7 +77,6 @@ public class UserController {
 	public ResponseEntity<Map<String, Object>> getInfo(
 			@PathVariable("userNo") String userId,
 			@RequestHeader("Authorization") String header) {
-		
 		log.debug("userId : {}, header : {} ", userId, header);
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
@@ -135,6 +136,21 @@ public class UserController {
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<?> regist(@RequestBody UserDto user){
+		
+		try {
+			int no = userService.joinUser(user);
+			if(no == 1) {
+				return ResponseEntity.status(HttpStatus.CREATED).build();	
+			}else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();	
+			}
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 	
 	
