@@ -10,9 +10,10 @@
         >
           ‹
         </button>
+        <!-- 현재 화면에 표시될 카드만 렌더링 -->
         <div class="guide-cards">
           <div
-            v-for="(card, index) in guideCards"
+            v-for="(card, index) in currentCards"
             :key="index"
             class="guide-card"
           >
@@ -61,18 +62,17 @@ const guideCards = [
 ];
 
 const cardIndex = ref(0);
-const visibleCards = 5;
+const visibleCardsCount = 5;
+
+// 현재 화면에 표시될 카드 계산
+const currentCards = computed(() =>
+  guideCards.slice(cardIndex.value, cardIndex.value + visibleCardsCount)
+);
 
 const showLeftButton = computed(() => cardIndex.value > 0);
 const showRightButton = computed(
-  () => cardIndex.value + visibleCards < guideCards.length
+  () => cardIndex.value + visibleCardsCount < guideCards.length
 );
-
-// 동적으로 카드 이동 스타일 계산
-const cardsStyle = computed(() => ({
-  transform: `translateX(-${cardIndex.value * 200}px)`, // 카드 크기 200px 기준으로 이동
-  transition: "transform 0.3s ease-in-out",
-}));
 
 const scrollLeft = () => {
   if (cardIndex.value > 0) {
@@ -81,7 +81,7 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (cardIndex.value + visibleCards < guideCards.length) {
+  if (cardIndex.value + visibleCardsCount < guideCards.length) {
     cardIndex.value += 1;
   }
 };
@@ -121,7 +121,6 @@ const scrollRight = () => {
 
 .guide-card {
   flex: 0 0 200px;
-  /* width: 400px; */
   background-color: #f5f5f5;
   border-top: 2px solid blue;
   border-bottom: 1px solid #ddd;
@@ -165,7 +164,6 @@ const scrollRight = () => {
   color: #1a73e8;
 }
 
-/* 좌우 버튼 스타일 */
 .scroll-button {
   position: absolute;
   top: 50%;
