@@ -47,193 +47,210 @@ const check = ()=>{
 </script>
 
 <template>
-    <div class="login-container">
-        <button @click="check">췌크</button>
-        <div class="login-card">
-            <!-- 헤더 -->
-            <div class="login-header">
-                <h2>로그인</h2>
-                <p class="signup-text">
-                    계정이 없으신가요?
-                    <a href="#" class="link">회원가입</a>
-                </p>
-            </div>
+<div class="login-container">
+    <div class="login-card">
+      <!-- 헤더 -->
+      <div class="login-header">
+        <h2>로그인</h2>
+        <p class="signup-text">
+          계정이 없으신가요?
+          <span class="link" @click="mvUserRegister">회원가입</span>
+        </p>
+      </div>
 
-            <!-- 폼 -->
-            <form class="login-form" @submit.prevent="login">
-                <div class="form-group">
-                    <label for="email">이메일</label>
-                    <input
-                        id="email"
-                        type="email"
-                        v-model="loginUser.email"
-                        required
-                        placeholder="example@email.com"
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="userPassword">비밀번호</label>
-                    <input
-                        id="userPassword"
-                        type="password"
-                        v-model="loginUser.userPassword"
-                        required
-                        placeholder="비밀번호를 입력하세요"
-                    />
-                </div>
-                
-                
-
-                <div class="form-options">
-                    <!-- <div class="remember-me">
-                        <input
-                            id="remember-me"
-                            type="checkbox"
-                            v-model="rememberMe"
-                        />
-                        <label for="remember-me">로그인 상태 유지</label>
-                    </div> -->
-
-                    <a href="#" class="forgot-password link">비밀번호를 잊으셨나요?</a>
-                </div>
-
-                <button type="submit" class="login-button">로그인</button>
-                <KakaoLogin/>
-                <button @click="mvUserRegister" class="login-button">회원가입</button>
-            </form>
+      <!-- 폼 -->
+      <form class="login-form" @submit.prevent="login">
+        <div class="form-group">
+          <label for="email">이메일</label>
+          <input
+            id="email"
+            type="email"
+            v-model="loginUser.email"
+            required
+            placeholder="example@email.com"
+          />
         </div>
+
+        <div class="form-group">
+          <label for="userPassword">비밀번호</label>
+          <input
+            id="userPassword"
+            type="password"
+            v-model="loginUser.userPassword"
+            required
+            placeholder="비밀번호를 입력하세요"
+          />
+        </div>
+
+        <div class="form-options">
+          <a href="#" class="forgot-password link">비밀번호를 잊으셨나요?</a>
+        </div>
+
+        <button type="submit" class="primary-button">로그인</button>
+        
+        <div class="divider">
+          <span>또는</span>
+        </div>
+
+      </form>
+        <div class="mg-d-20">
+            <KakaoLogin />
+        </div>
+        
+        <button @click="mvUserRegister" class="secondary-button">
+          회원가입
+        </button>   
     </div>
+  </div>
 </template>
 
 <style scoped>
-.login-container {
+  .login-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background-color: #f5f5f5;
-}
+    background-color: #f8f9fa;
+  }
 
-.login-card {
+  .login-card {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     padding: 40px;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
 
-.login-header {
+  .login-header {
     text-align: center;
-    margin-bottom: 0px;
-}
+    margin-bottom: 32px;
+  }
 
-.login-header h2 {
+  .login-header h2 {
     margin: 0;
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 10px;
-}
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
 
-.signup-text {
-    font-size: 14px;
+  .signup-text {
+    font-size: 15px;
     color: #666;
     margin: 0;
-}
+  }
 
-.link {
-    color: #2c6bed;
+  .link {
+    color: #3182f6;
     text-decoration: none;
     font-weight: 500;
-}
+    cursor: pointer;
+  }
 
-.link:hover {
+  .link:hover {
     text-decoration: underline;
-}
+  }
 
-.login-form {
+  .login-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
+  }
 
-.form-group {
+  .form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
-}
+  }
 
-.form-group label {
-    font-size: 14px;
-    color: #333;
+  .form-group label {
+    font-size: 15px;
+    color: #1a1a1a;
     font-weight: 500;
-}
+  }
 
-.form-group input {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
+  .form-group input {
+    padding: 12px 16px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 15px;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
+    transition: all 0.2s ease;
+  }
 
-.form-group input:focus {
-    border-color: #2c6bed;
-    box-shadow: 0 0 0 3px rgba(44, 107, 237, 0.1);
-}
+  .form-group input:focus {
+    border-color: #3182f6;
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
+  }
 
-.form-options {
+  .form-group input::placeholder {
+    color: #a0a0a0;
+  }
+
+  .form-options {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
     font-size: 14px;
-}
+    margin-top: -8px;
+  }
 
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.remember-me input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: #2c6bed;
-}
-
-.forgot-password {
-    font-size: 14px;
-}
-
-.login-button {
-    background-color: #2c6bed;
-    color: white;
+  .primary-button,
+  .secondary-button {
+    width: 100%;
     padding: 12px;
     border: none;   
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
+    transition: all 0.2s ease;
+  }
 
-.login-button:hover {
-    background-color: #1a5ad1;
-}
+  .primary-button {
+    background-color: #3182f6;
+    color: white;
+  }
 
-/* 반응형 디자인 */
-/* @media (max-width: 480px) {
-    .login-card {
-        padding: 20px;
-    }
+  .primary-button:hover {
+    background-color: #2872e5;
+  }
 
-    .form-options {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
-} */
+  .secondary-button {
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+    border: 1px solid #e1e1e1;
+  }
+
+  .secondary-button:hover {
+    background-color: #f1f3f5;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 8px 0;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e1e1e1;
+  }
+
+  .divider span {
+    padding: 0 16px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .mg-d-20{
+    margin-bottom: 20px;
+  }
+
+
+
 </style>
