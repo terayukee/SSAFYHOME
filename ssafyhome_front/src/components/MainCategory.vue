@@ -58,7 +58,17 @@ const categories = [
 const router = useRouter();
 
 const navigateToCategory = (type) => {
-  router.push(`/category/${type}`);
+  if (type === "news") {
+    // "news"는 아무 작업도 하지 않음
+    return;
+  } else {
+    router.push({
+      path: "/map",
+      query: {
+        housetype: type, // category.type을 housetype으로 전달
+      },
+    });
+  }
 };
 </script>
 

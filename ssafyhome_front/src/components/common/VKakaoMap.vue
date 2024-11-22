@@ -22,11 +22,11 @@ const props = defineProps({
   },
   initialLatitude: {
     type: Number,
-    default: 37.514575,
+    // default: 37.514575,
   },
   initialLongitude: {
     type: Number,
-    default: 127.0495556,
+    // default: 127.0495556,
   },
   initialMapLevel: {
     type: Number,
