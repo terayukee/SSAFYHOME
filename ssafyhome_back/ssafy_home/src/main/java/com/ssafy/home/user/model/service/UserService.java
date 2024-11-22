@@ -1,6 +1,7 @@
 package com.ssafy.home.user.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ssafy.home.user.model.UserDto;
 
@@ -30,6 +31,6 @@ public interface UserService {
 	// 리프레시 토큰 삭제
 	void deleteRefreshToken(int userNo) throws Exception;
 	
-	boolean checkUserInfo(UserDto userDto) throws Exception; 
+	Map<String, Object> checkUserInfo(UserDto userDto) throws Exception; 
 	
 }

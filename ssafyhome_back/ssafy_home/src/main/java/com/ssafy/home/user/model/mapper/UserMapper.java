@@ -34,6 +34,7 @@ public interface UserMapper {
 	
 	int getUserCountByNickName(String userId) throws Exception;
 	
+	int getUserNumByNickName(String userName) throws Exception;
 	
 	
 }
