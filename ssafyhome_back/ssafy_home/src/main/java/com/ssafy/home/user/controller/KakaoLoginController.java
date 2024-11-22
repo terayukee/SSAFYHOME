@@ -41,7 +41,7 @@ public class KakaoLoginController {
     	this.userService = userService;
 	}
 
-	@GetMapping("/callback")
+              
     public ResponseEntity<Map<String, Object>> kakaoLogin(@RequestParam String code) {
 		// 사용자 인가코드 가져오기 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
@@ -59,7 +59,7 @@ public class KakaoLoginController {
         try {
         	
         	// Url, HttpMethod, request body, 반환 값 DataType
-        	// 토큰 가져오기 
+        	// 토큰 가져오기
         	System.out.println("확ㅁㄴㅇㅇㄴㅁ인");
             ResponseEntity<String> response = restTemplate.exchange(tokenURL, HttpMethod.POST, entity, String.class);
             System.out.println("확ㅇㄴㅁㅇㅁㄴㅇ인");
@@ -100,16 +100,16 @@ public class KakaoLoginController {
             
             log.info("User nickname: " + nickname);
             
-            
-            String clientRedirectUri = "http://localhost:5173/login"; // 클라이언트에서 처리할 URI
-            String redirectUrl = clientRedirectUri + "?access_token=" + accessToken + "&refresh_token=" + refreshToken;
-            
-            // 리다이렉트 응답
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header(HttpHeaders.LOCATION, redirectUrl)
-                    .build();
+//            
+//            String clientRedirectUri = "http://localhost:5173/login"; // 클라이언트에서 처리할 URI
+//            String redirectUrl = clientRedirectUri + "?access_token=" + accessToken + "&refresh_token=" + refreshToken;
+//            
+//            // 리다이렉트 응답
+//            return ResponseEntity.status(HttpStatus.FOUND)
+//                    .header(HttpHeaders.LOCATION, redirectUrl)
+//                    .build();
 
-//            return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+            return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("Error during token request or user info fetch: ", e);
