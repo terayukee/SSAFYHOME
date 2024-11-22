@@ -17,8 +17,8 @@ const routes = [
     component: AptMapView,
     props: (route) => ({
       latitude: parseFloat(route.query.latitude) || 37.5,
-      longitude: parseFloat(route.query.longitude) || 127.07,
-      maplevel: parseFloat(route.query.maplevel) || 5,
+      longitude: parseFloat(route.query.longitude) || 127.085,
+      maplevel: parseFloat(route.query.maplevel) || 4,
       houseType: route.query.housetype || "apartment",
     }), // 쿼리 파라미터를 props로 전달
   },

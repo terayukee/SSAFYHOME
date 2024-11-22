@@ -336,7 +336,7 @@ const kakaoMapLink = computed(() => {
     props.selectedHouse.latitude &&
     props.selectedHouse.longitude
   ) {
-    return `https://map.kakao.com/link/to/${props.selectedHouse.aptNm},${props.selectedHouse.latitude},${props.selectedHouse.longitude}`;
+    return `https://map.kakao.com/link/from/${props.selectedHouse.aptNm},${props.selectedHouse.latitude},${props.selectedHouse.longitude}`;
   }
   return "#";
 });
