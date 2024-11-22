@@ -1,34 +1,36 @@
 <template>
-  <div class="guide">
-    <h2 class="guide-title">SSAFYHOME이 알려주는 부동산 가이드</h2>
-    <div class="guide-cards-container">
-      <button
-        v-if="showLeftButton"
-        class="scroll-button left"
-        @click="scrollLeft"
-      >
-        ‹
-      </button>
-      <div class="guide-cards">
-        <div
-          v-for="(card, index) in guideCards"
-          :key="index"
-          class="guide-card"
+  <div class="guide-area">
+    <div class="guide">
+      <h2 class="guide-title">SSAFYHOME이 알려주는 부동산 가이드</h2>
+      <div class="guide-cards-container">
+        <button
+          v-if="showLeftButton"
+          class="scroll-button left"
+          @click="scrollLeft"
         >
-          <p class="guide-category">{{ card.category }}</p>
-          <p class="guide-content">{{ card.content }}</p>
-          <div class="guide-bottom">
-            <span class="guide-icon">></span>
+          ‹
+        </button>
+        <div class="guide-cards">
+          <div
+            v-for="(card, index) in guideCards"
+            :key="index"
+            class="guide-card"
+          >
+            <p class="guide-category">{{ card.category }}</p>
+            <p class="guide-content">{{ card.content }}</p>
+            <div class="guide-bottom">
+              <span class="guide-icon">></span>
+            </div>
           </div>
         </div>
+        <button
+          v-if="showRightButton"
+          class="scroll-button right"
+          @click="scrollRight"
+        >
+          ›
+        </button>
       </div>
-      <button
-        v-if="showRightButton"
-        class="scroll-button right"
-        @click="scrollRight"
-      >
-        ›
-      </button>
     </div>
   </div>
 </template>
@@ -86,6 +88,11 @@ const scrollRight = () => {
 </script>
 
 <style scoped>
+.guide-area {
+  display: flex;
+  justify-content: center;
+}
+
 .guide {
   margin-top: 40px;
   padding: 40px 150px;
