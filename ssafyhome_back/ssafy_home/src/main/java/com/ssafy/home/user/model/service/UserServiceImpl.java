@@ -15,10 +15,12 @@ import com.ssafy.home.util.JWTUtil;
 public class UserServiceImpl implements UserService {
 	
 	private final UserMapper userMapper;
+	private final JWTUtil jwtUtil;
 	
-	public UserServiceImpl(UserMapper userMapper) {
+	public UserServiceImpl(UserMapper userMapper, JWTUtil jwtUtil) {
 		super();
 		this.userMapper = userMapper;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@Override
@@ -37,8 +39,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto joinUser(String UserDto) throws Exception {
-		return null;
+	public int joinUser(UserDto userDto) throws Exception {
+		return userMapper.joinUser(userDto);
+		
 	}
 	
 	@Override
@@ -66,21 +69,46 @@ public class UserServiceImpl implements UserService {
 	public void deleteRefreshToken(int userNo) throws Exception {
 		userMapper.deleteRefreshToken(userNo);;
 	}
-
+	
+	// 닉네임만 쓰다보니 정말 멀리 돌아감
 	@Override
-	public boolean checkUserInfo(UserDto userDto) throws Exception {
-		// 닉네임만 
-		int userCount = userMapper.getUserCountByNickName(userDto.getUserNickname());
-		// 유저가 없으면
-		if(userCount == 0) {
-			// 리프레시 토큰 저장
-			
-		}else { // 유저가 있으면 
-			// 유저 저장 
-			saveRefreshToken(userDto);
-		}
+	public Map<String, Object> checkUserInfo(UserDto userDto) throws Exception {
 		
-		return false;
+		// 토큰 저장용
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// 닉네임이 있으면 회원가입 
+		int userCount = userMapper.getUserCountByNickName(userDto.getUserNickname());
+		// 회원가입
+		if(userCount == 0) {
+			// 회원가입 
+			userMapper.joinUser(userDto);
+			// 가입한 유저 번호 
+			int userNum = userMapper.getUserNumByNickName(userDto.getUserNickname());
+			// 토큰 생성
+			String accessToken = jwtUtil.createAccessToken(userNum);
+			String refreshToken = jwtUtil.createRefreshToken(userNum);
+			// 토큰저장 
+			userDto.setRefreshToken(refreshToken);
+			saveRefreshToken(userDto);
+			
+			resultMap.put("access-token", accessToken);
+			resultMap.put("refresh-token", refreshToken);
+			
+			return resultMap;
+			
+		}else { // 기존 정보로
+			int userNum = userMapper.getUserNumByNickName(userDto.getUserNickname());
+			String accessToken = jwtUtil.createAccessToken(userNum);
+			String refreshToken = jwtUtil.createRefreshToken(userNum);
+			// 토큰저장 
+			userDto.setRefreshToken(refreshToken);
+			saveRefreshToken(userDto);
+			
+			resultMap.put("access-token", accessToken);
+			resultMap.put("refresh-token", refreshToken);
+			return resultMap;
+		}
 	}
 
 	

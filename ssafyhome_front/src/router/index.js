@@ -8,6 +8,9 @@ import AptMapView from "@/views/AptMapView.vue";
 import BoardView from "@/views/BoardView.vue";
 import BoardWirte from "@/components/boards/BoardWirte.vue";
 import UserRegister from "@/components/users/UserRegister.vue";
+
+
+
 const routes = [
   { path: "/", name: "home", component: Home },
   { path: "/category/:type", name: "category", component: Category },

@@ -17,8 +17,12 @@ async function tokenRegeneration(user, success, fail) {
   await local.post(`/user/refresh`, user).then(success).catch(fail);
 }
 
+async function registerUser(user, success, fail){
+  await local.post('/user/register',user).then(success).catch(fail)
+}
+
 async function logout(userNo, success, fail) {
   await local.get(`/user/logout/${userNo}`).then(success).catch(fail);
 }
 
-export { userConfirm, findById, tokenRegeneration, logout };
+export { userConfirm, findById, tokenRegeneration, logout , registerUser };

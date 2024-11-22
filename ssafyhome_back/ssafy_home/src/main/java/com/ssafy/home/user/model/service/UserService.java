@@ -1,6 +1,7 @@
 package com.ssafy.home.user.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ssafy.home.user.model.UserDto;
 
@@ -15,7 +16,7 @@ public interface UserService {
 	// 유저 전체
 	List<UserDto> getAllUserList() throws Exception;
 	// 회원가입
-	UserDto joinUser(String UserDto) throws Exception;
+	int joinUser(UserDto UserDto) throws Exception;
 	// 유저 수정
 	int userUpdate(UserDto userDto) throws Exception;
 	// 유저 삭제 
@@ -30,6 +31,6 @@ public interface UserService {
 	// 리프레시 토큰 삭제
 	void deleteRefreshToken(int userNo) throws Exception;
 	
-	boolean checkUserInfo(UserDto userDto) throws Exception; 
+	Map<String, Object> checkUserInfo(UserDto userDto) throws Exception; 
 	
 }

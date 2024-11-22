@@ -17,7 +17,7 @@ public interface UserMapper {
 	// 유저 전체
 	List<UserDto> getAllUserList() throws SQLException;
 	// 회원가입
-	UserDto joinUser(String UserDto) throws SQLException;
+	int joinUser(UserDto UserDto) throws SQLException;
 	// 유저 수정
 	int userUpdate(UserDto userDto) throws SQLException;
 	// 유저 삭제 
@@ -34,6 +34,7 @@ public interface UserMapper {
 	
 	int getUserCountByNickName(String userId) throws Exception;
 	
+	int getUserNumByNickName(String userName) throws Exception;
 	
 	
 }
