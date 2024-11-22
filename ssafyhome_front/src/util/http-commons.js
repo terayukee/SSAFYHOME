@@ -68,10 +68,22 @@ function houseSearchAxios() {
   return instance;
 }
 
+// article (뉴스, 가이드 등) 정보
+function articleAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL + "/api/article", // Spring Boot API의 baseURL
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
 export {
   localAxios,
   houseInfoAxios,
   houseDealAxios,
   formAxios,
   houseSearchAxios,
+  articleAxios,
 };

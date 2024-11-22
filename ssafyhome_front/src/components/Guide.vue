@@ -17,11 +17,13 @@
             :key="index"
             class="guide-card"
           >
-            <p class="guide-category">{{ card.category }}</p>
-            <p class="guide-content">{{ card.content }}</p>
-            <div class="guide-bottom">
-              <span class="guide-icon">></span>
-            </div>
+            <a :href="card.url" target="_blank" class="guide-link">
+              <p class="guide-category">{{ card.category }}</p>
+              <p class="guide-content">{{ card.content }}</p>
+              <div class="guide-bottom">
+                <span class="guide-icon">></span>
+              </div>
+            </a>
           </div>
         </div>
         <button
@@ -37,41 +39,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { getGuides } from "@/api/article";
 
-const guideCards = [
-  { category: "다방 이야기", content: "다방 허위매물 예방 5계명" },
-  {
-    category: "다방 이야기",
-    content: "다방앱으로 나에게 꼭 맞는 방 찾는 방법",
-  },
-  {
-    category: "다방 이야기",
-    content: "다방앱으로 아파트 청약 정보 한번에 보기!",
-  },
-  {
-    category: "부동산 상식",
-    content: "알아두면 좋은 부동산 용어, 행복주택 기본용어!",
-  },
-  {
-    category: "부동산 상식",
-    content: "임대차 계약서 작성 시 이것만 알아두세요~",
-  },
-  { category: "부동산 상식", content: "추가 카드 예시 1" },
-  { category: "부동산 상식", content: "추가 카드 예시 2" },
-];
+const guideCards = ref([]);
 
 const cardIndex = ref(0);
 const visibleCardsCount = 5;
 
 // 현재 화면에 표시될 카드 계산
 const currentCards = computed(() =>
-  guideCards.slice(cardIndex.value, cardIndex.value + visibleCardsCount)
+  guideCards.value.slice(cardIndex.value, cardIndex.value + visibleCardsCount)
 );
 
 const showLeftButton = computed(() => cardIndex.value > 0);
 const showRightButton = computed(
-  () => cardIndex.value + visibleCardsCount < guideCards.length
+  () => cardIndex.value + visibleCardsCount < guideCards.value.length
 );
 
 const scrollLeft = () => {
@@ -81,10 +64,27 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (cardIndex.value + visibleCardsCount < guideCards.length) {
+  if (cardIndex.value + visibleCardsCount < guideCards.value.length) {
     cardIndex.value += 1;
   }
 };
+
+// 가이드 카드 데이터 불러오기
+const fetchGuides = () => {
+  getGuides(
+    (response) => {
+      guideCards.value = response.data;
+    },
+    (error) => {
+      console.error("Failed to fetch guides:", error);
+    }
+  );
+};
+
+// 컴포넌트 마운트 시 데이터 가져오기
+onMounted(() => {
+  fetchGuides();
+});
 </script>
 
 <style scoped>
@@ -134,6 +134,11 @@ const scrollRight = () => {
   border-top: 2px solid rgb(183, 0, 255);
   transform: translateY(4px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.guide-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .guide-category {
