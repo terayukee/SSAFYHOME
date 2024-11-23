@@ -1,9 +1,9 @@
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 // Props로 전달된 집 정보를 받습니다.
 const props = defineProps({
-  houses: {
+  realestates: {
     type: Array,
     default: () => [],
   },
@@ -15,43 +15,39 @@ const props = defineProps({
 // 부모로 이벤트를 전달하기 위한 emit 정의
 const emit = defineEmits(["cardClick"]);
 
+// 랜덤 인덱스를 추가한 로컬 상태
+const realestatesWithRandomIndex = ref([]);
+
+// 랜덤 인덱스 추가 함수
+const initializeRealestates = () => {
+  realestatesWithRandomIndex.value = props.realestates.map((realestate) => ({
+    ...realestate,
+    randomIndex: Math.floor(Math.random() * 20) + 1, // 1~20 범위의 랜덤 값 추가
+  }));
+};
+
+// `props.realestates` 변경 감지
+watch(
+  () => props.realestates,
+  (newRealestates) => {
+    initializeRealestates(newRealestates); // 새롭게 랜덤 인덱스 추가
+  },
+  { immediate: true } // 초기화 시점에도 실행
+);
+
+// 초기화
+onMounted(() => {
+  initializeRealestates();
+});
+
 // 카드 클릭 핸들러
-const handleCardClick = (house) => {
-  emit("cardClick", house); // 선택된 house 정보를 부모로 emit
+const handleCardClick = (realestate) => {
+  emit("cardClick", { realestate, randomIndex: realestate.randomIndex }); // randomIndex 추가
 };
 
 // 이미지 경로 생성 함수
-function getImagePath(avgDealAmount, dealSpace, dealCategory) {
-  let category = "";
-
-  // 주택 타입
-  let houseType = "";
-  if (props.houseType === "아파트") {
-    houseType = "apart";
-  } else if (props.houseType === "빌라") {
-    houseType = "villa";
-  } else if (props.houseType === "오피스텔") {
-    houseType = "officetel";
-  }
-
-  // 평당 가격 계산
-  let amountPerSpace = avgDealAmount / dealSpace;
-
-  if (dealCategory === "월세") {
-    amountPerSpace *= 10;
-  }
-
-  // 가격 기준으로 카테고리 설정
-  if (amountPerSpace > 3000) {
-    category = "high";
-  } else if (amountPerSpace > 1000) {
-    category = "mid";
-  } else {
-    category = "low";
-  }
-
-  const randomIndex = Math.floor(Math.random() * 20) + 1; // 1~20 범위의 숫자
-  return `/assets/${houseType}/${category}${randomIndex}.jpg`;
+function getImagePath(randomIndex) {
+  return `/assets/interior/livingroom/${randomIndex}.jpg`;
 }
 </script>
 
@@ -59,37 +55,31 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
   <div class="vertical-nav-content">
     <div
       class="house-card"
-      v-for="house in houses"
-      :key="house.aptSeq"
-      @click="handleCardClick(house)"
+      v-for="realestate in realestatesWithRandomIndex"
+      :key="realestate.aptSeq"
+      @click="handleCardClick(realestate)"
     >
       <div class="house-image">
         <img
-          :src="
-            getImagePath(
-              house.dealAmount || 0,
-              house.excluUseAr || 1,
-              house.dealCategory
-            )
-          "
+          :src="getImagePath(realestate.randomIndex)"
           alt="House"
           class="image"
         />
       </div>
       <div class="house-info">
-        <h3>{{ house.aptNm }}</h3>
-        <p class="deal-space">{{ house.excluUseAr }}㎡</p>
+        <h3>{{ realestate.aptNm }}</h3>
+        <p class="deal-space">{{ realestate.excluUseAr }}㎡</p>
         <p class="avg-deal-amount">
-          <span v-if="house.dealCategory === '월세'">
-            보증금 {{ house.dealAmount || "N/A" }}만 / 월세
-            {{ house.avgFeeAmount || "N/A" }}만
+          <span v-if="realestate.dealCategory === '월세'">
+            보증금 {{ realestate.dealAmount || "N/A" }}만 / 월세
+            {{ realestate.feeAmount || "N/A" }}만
           </span>
           <span v-else>
-            {{ house.dealCategory }}
+            {{ realestate.dealCategory }}
             {{
-              (parseFloat(house.dealAmount.replace(/,/g, "")) * 0.0001).toFixed(
-                2
-              ) || "N/A"
+              (
+                parseFloat(realestate.dealAmount.replace(/,/g, "")) * 0.0001
+              ).toFixed(2) || "N/A"
             }}억
           </span>
         </p>

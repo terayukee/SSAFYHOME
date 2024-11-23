@@ -26,7 +26,8 @@ public class RealEstateController {
     public List<RealEstateInfoDto> fetchRealEstateInfos(
             @RequestParam("aptSeq") String aptSeq,
             @RequestParam("space") String space,
-            @RequestParam("dealCategory") String dealCategory) {
+            @RequestParam("dealCategory") String dealCategory,
+            @RequestParam("houseType") String houseType) {
 
         // Debug log for incoming parameters
         logger.info("Received request with aptSeq: {}, space: {}, dealCategory: {}", aptSeq, space, dealCategory);
@@ -43,7 +44,7 @@ public class RealEstateController {
         }
 
         // Fetch real estate infos
-        List<RealEstateInfoDto> realestateList = realEstateService.fetchRealEstateInfos(space, dealCategory, aptSeq);
+        List<RealEstateInfoDto> realestateList = realEstateService.fetchRealEstateInfos(space, dealCategory, aptSeq, houseType);
 
         // Debug log for the response
         if (realestateList == null || realestateList.isEmpty()) {

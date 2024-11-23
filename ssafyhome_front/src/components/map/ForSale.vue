@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 import { fetchRealEstateInfos } from "@/api/realestate.js";
 
 import ForSaleCardList from "./ForSaleCardList.vue";
+import ForSaleDetailCard from "./ForSaleDetailCard.vue";
 
 // Props
 const props = defineProps({
@@ -14,26 +15,34 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  houseType: {
+    type: String,
+    required: true,
+  },
 });
 
 // State
 const selectedSpace = ref(props.spaceOptions[0]?.value || null); // 초기 선택된 공간
 const selectedCategory = ref("매매"); // 초기 선택된 거래 유형
-const houses = ref([]); // 조회된 매물 리스트
-const selectedCard = ref(null); // 선택된 카드의 세부 정보
+const realestates = ref([]); // 조회된 매물 리스트
+const selectedCard = ref(null); // 선택된 부동산 카드의 세부 정보
+
+const selectedRandomIndex = ref(); // 선택한 카드의 랜덤 인덱스
 
 // Fetch real estate infos
-const fetchHouses = () => {
+const fetchRealestates = () => {
+  console.log("fetchRealestates 실행", props.houseType);
   if (props.selectedHouse.aptSeq) {
     fetchRealEstateInfos(
       {
         aptSeq: props.selectedHouse.aptSeq,
         space: selectedSpace.value,
         dealCategory: selectedCategory.value,
+        houseType: props.houseType,
       },
       (response) => {
-        houses.value = response.data;
-        console.log("가져온 집 정보 : ", houses);
+        realestates.value = response.data;
+        console.log("가져온 부동산 매물 정보 : ", realestates);
       },
       (error) => {
         console.error("Failed to fetch real estate infos:", error);
@@ -43,11 +52,13 @@ const fetchHouses = () => {
 };
 
 // Watchers for fetch triggers
-watch([selectedSpace, selectedCategory], fetchHouses, { immediate: true });
+watch([selectedSpace, selectedCategory], fetchRealestates, { immediate: true });
 
 // 카드 클릭 핸들러
-const handleCardClick = (house) => {
-  selectedCard.value = house; // 클릭한 카드의 정보를 저장
+const handleCardClick = ({ realestate, randomIndex }) => {
+  console.log("부동산 선택 매물 realestate : ", realestate);
+  selectedCard.value = realestate; // 클릭한 카드의 정보를 저장
+  selectedRandomIndex.value = randomIndex;
 };
 </script>
 
@@ -55,24 +66,30 @@ const handleCardClick = (house) => {
   <div class="forsale-container">
     <!-- Top 영역 -->
     <div class="top-section">
-      <div class="filters">
-        <!-- SpaceOptions SelectBox -->
-        <select v-model="selectedSpace" class="custom-select">
-          <option
-            v-for="option in spaceOptions"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ option.text }}
-          </option>
-        </select>
+      <!-- 타이틀 -->
+      <div class="forsale-title">
+        <span class="house-aptNm">{{ selectedHouse.aptNm }}</span>
+      </div>
+      <div class="select-options">
+        <div class="filters">
+          <!-- SpaceOptions SelectBox -->
+          <select v-model="selectedSpace" class="custom-select">
+            <option
+              v-for="option in spaceOptions"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.text }}
+            </option>
+          </select>
 
-        <!-- DealCategory SelectBox -->
-        <select v-model="selectedCategory" class="custom-select">
-          <option value="매매">매매</option>
-          <option value="전세">전세</option>
-          <option value="월세">월세</option>
-        </select>
+          <!-- DealCategory SelectBox -->
+          <select v-model="selectedCategory" class="custom-select">
+            <option value="매매">매매</option>
+            <option value="전세">전세</option>
+            <option value="월세">월세</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -81,8 +98,9 @@ const handleCardClick = (house) => {
       <!-- 좌측: 매물 리스트 -->
       <div class="vertical-nav">
         <ForSaleCardList
-          :houses="houses"
+          :realestates="realestates"
           :houseType="selectedCategory"
+          :randomIndex="randomIndex"
           @cardClick="handleCardClick"
         />
       </div>
@@ -90,16 +108,17 @@ const handleCardClick = (house) => {
       <!-- 우측: 세부 정보 -->
       <div class="vertical-nav-detail">
         <template v-if="selectedCard">
-          <h2>세부 정보</h2>
-          <p><strong>아파트 이름:</strong> {{ selectedCard.aptNm }}</p>
-          <p><strong>거래 유형:</strong> {{ selectedCard.dealCategory }}</p>
-          <p><strong>전용 면적:</strong> {{ selectedCard.excluUseAr }}㎡</p>
-          <p><strong>거래 금액:</strong> {{ selectedCard.dealAmount }}</p>
-          <p><strong>월세:</strong> {{ selectedCard.feeAmount }}</p>
-          <p><strong>관리비:</strong> {{ selectedCard.maintenanceCost }}</p>
+          <ForSaleDetailCard
+            :realestates="realestates"
+            :houseType="selectedCategory"
+            :selectedCard="selectedCard"
+            :randomIndex="selectedRandomIndex"
+          />
         </template>
         <template v-else>
-          <p>매물을 선택하면 세부 정보가 여기에 표시됩니다.</p>
+          <div class="no-selection">
+            <p>매물을 선택하면 세부 정보가 여기에 표시됩니다.</p>
+          </div>
         </template>
       </div>
     </div>
@@ -117,6 +136,21 @@ const handleCardClick = (house) => {
 .top-section {
   background-color: #f9f9f9;
   padding: 16px;
+}
+
+.forsale-title {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.forsale-title .house-aptNm {
+  color: #4285f4;
+  font-size: 23px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.select-options {
   border-bottom: 1px solid #ddd;
   display: flex;
   gap: 16px;
@@ -179,5 +213,15 @@ const handleCardClick = (house) => {
 .vertical-nav-detail p {
   font-size: 14px;
   margin-bottom: 8px;
+}
+
+.no-selection {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.no-selection p {
+  font-size: 25px;
+  color: #0ea242;
 }
 </style>

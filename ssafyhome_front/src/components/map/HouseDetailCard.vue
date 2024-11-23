@@ -549,6 +549,7 @@ console.log("selectedHouse : ", props.selectedHouse);
           <ForSale
             :selectedHouse="selectedHouse"
             :spaceOptions="spaceOptions"
+            :houseType="houseType"
           />
         </template>
       </div>

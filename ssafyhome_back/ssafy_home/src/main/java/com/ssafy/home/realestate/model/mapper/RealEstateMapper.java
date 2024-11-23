@@ -8,7 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface RealEstateMapper {
-    List<RealEstateInfoDto> selectRealEstateInfos(@Param("space") String space, 
-                                                  @Param("dealCategory") String dealCategory, 
-                                                  @Param("aptSeq") String aptSeq);
+    List<RealEstateInfoDto> selectRealEstateInfos(String space, String dealCategory, String aptSeq, String houseType);
 }
+

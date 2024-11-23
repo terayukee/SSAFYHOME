@@ -40,8 +40,10 @@
 	        exclu_use_ar = #{space}
 	        AND deal_category = #{dealCategory}
 	        AND apt_seq = #{aptSeq}
+	        AND house_type = #{houseType} <!-- houseType 조건 추가 -->
 	    ORDER BY register_year DESC, register_month DESC, register_day DESC
 	</select>
+
 
 
 </mapper>
