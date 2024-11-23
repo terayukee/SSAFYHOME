@@ -1,8 +1,11 @@
 <script setup>
 import { onMounted } from 'vue';
-import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
-const { getUserInfo, userLogin } = useUserStore();
+import { storeToRefs } from "pinia"
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
+const { getUserInfo } = useUserStore();
+const { isLogin, isLoginError, isValidToken } = storeToRefs(userStore)
 const router = useRouter();
 
 // 카카오 REST API 키와 리디렉션 URI 설정
@@ -24,13 +27,13 @@ onMounted(() => {
     if (error) {
       console.error('카카오 로그인 오류:', error);
     } else {
-      // 토큰을 localStorage에 저장
-      // localStorage.setItem('accessToken', accessToken);
-      // localStorage.setItem('refreshToken', refreshToken);
       console.log(accessToken)
+      console.log(refreshToken)
       // 액세스 토큰으로 사용자 정보 가져오기
       getUserInfo(accessToken).then(() => {
-        // 로그인 후 메인 페이지로 리디렉션
+        isLogin.value = true
+        isLoginError.value = false
+        isValidToken.value = true
         router.replace('/');
       }).catch((error) => {
         console.error("사용자 정보 가져오기 실패:", error);

@@ -93,11 +93,19 @@ public class KakaoLoginController {
             user.setUserPassword("1234");
             user.setEmail("aaa@aaa");
             
+            System.out.println("카카오 접근"+accessToken);
+            System.out.println("카카오 리프레시"+refreshToken);
+            
             
             Map<String, Object> resultMap = userService.checkUserInfo(user);
+            String jwtAccessToken = (String) resultMap.get("access-token");
+            String jwtRefreshToken = (String) resultMap.get("refresh-token");
+
+//            System.out.println("jwt : "+accessToken);
+//            System.out.println("jwt : "+refreshToken);
 
             // 카카오 로그인 후 반환될 URL을 설정하여 callback.html로 전달
-            String callbackUrl = "http://localhost/home/callback.html?access_token=" + accessToken + "&refresh_token=" + refreshToken;
+            String callbackUrl = "http://localhost/home/callback.html?access_token=" + jwtAccessToken + "&refresh_token=" + jwtRefreshToken;
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header(HttpHeaders.LOCATION, callbackUrl)
                     .build();

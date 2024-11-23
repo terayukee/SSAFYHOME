@@ -5,9 +5,8 @@ import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
 import KakaoLogin from './kakaoLogin.vue';
 const userStore = useUserStore();
-const { isLogin, isLoginError } = storeToRefs(userStore)
+const { isLogin, accessToken , userInfo } = storeToRefs(userStore)
 const { userLogin, getUserInfo } = useUserStore();
-const { userInfo } = useUserStore();
 const router = useRouter();
 
 const loginUser = ref({
@@ -17,15 +16,12 @@ const loginUser = ref({
 
 const login = async () => {
   await userLogin(loginUser.value)
-  let token = localStorage.getItem("accessToken")
-  console.log(token)
-  console.log(loginUser.value)
+  const token = accessToken.value;
   console.log("isLogin: " + isLogin.value)
   if (isLogin.value) {
-    console.log("로그인들어왔잖아")
+    console.log("acessToken값 유저인포 전달" , token)
     getUserInfo(token)
-    // changeMenuState()
-    router.replace("/")
+    // router.replace("/")
   } 
 }
 
@@ -36,16 +32,17 @@ const mvUserRegister = ()=>{
 const check = ()=>{
   console.log("ㅡㅡㅡ채집ㅡㅡㅡ")
   console.log(isLogin.value);
-  console.log(sessionStorage.getItem("accessToken"))
-  const info = localStorage.getItem("userInfo")
-  const userInfoObject = JSON.parse(info);  // 문자열을 객체로 변환
-  console.log("인포 해부", userInfoObject);
+  console.log(accessToken)
+  console.log("유저",userInfo.value);
+  // const userInfoObject = JSON.parse(info);  // 문자열을 객체로 변환
+  // console.log("인포 해부", userInfoObject);
   console.log("ㅡㅡ채집완료ㅡㅡ")
 }
 
 </script>
 
 <template>
+  <button @click="check">체크</button>
 <div class="login-container">
     <div class="login-card">
       <!-- 헤더 -->

@@ -1,14 +1,17 @@
 import { localAxios } from "@/util/http-commons";
-
 const local = localAxios();
+
+// import { useUserStore } from '@/stores/userStore';
+// const userStore = useUserStore();
+// const { accessToken } = storeToRefs(userStore)
+// import { storeToRefs } from "pinia"
 
 async function userConfirm(param, success, fail) {
   await local.post(`/user/login`, param).then(success).catch(fail);
 }
 
-async function findById(userNo, success, fail) {
-  local.defaults.headers["Authorization"] = localStorage.getItem("accessToken");
-  console.log(userNo, "확인")
+async function findById(userNo , accessTokentoken, success, fail) {
+  local.defaults.headers["Authorization"] = accessTokentoken;
   await local.get(`/user/info/${userNo}`).then(success).catch(fail);
 }
 

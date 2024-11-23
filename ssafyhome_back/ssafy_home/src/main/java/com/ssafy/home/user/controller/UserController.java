@@ -57,6 +57,9 @@ public class UserController {
 				//JSON 으로 token 전달.
 				resultMap.put("access-token", accessToken);
 				resultMap.put("refresh-token", refreshToken);
+				
+				System.out.println(accessToken);
+				System.out.println(refreshToken);
 				status = HttpStatus.CREATED;
 				System.out.println("정상실행");
 			} else {

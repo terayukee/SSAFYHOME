@@ -8,32 +8,29 @@ import { httpStatusCode } from "@/util/http-status"
 
 export const useUserStore = defineStore("memberStore", () => {
   const router = useRouter()
+
   const isLogin = ref(false)
   const isLoginError = ref(false)
   const isValidToken = ref(false)
   const accessToken = ref(null)
   const refreshToken = ref(null)
-  
-  const userInfo = ref(JSON.parse(localStorage.getItem("userInfo")) || null)
+  const userInfo = ref(null);
+
+  // const userInfo = ref(JSON.parse(localStorage.getItem("userInfo")) || null)
 
   const userLogin = async (loginUser) => {
-    console.log
     await userConfirm(
       loginUser,
       (response) => {
         if (response.status === httpStatusCode.CREATE) {
           console.log("로그인 성공!!!!")
           let { data } = response
-          // let accessToken = data["access-token"]
-          // let refreshToken = data["refresh-token"]
           isLogin.value = true
           isLoginError.value = false
           isValidToken.value = true
-          // localStorage.setItem("accessToken", accessToken)
-          // localStorage.setItem("refreshToken", refreshToken)
 
-          // 로그인 성공 시 userInfo를 로컬 스토리지에서 가져와 업데이트
-          getUserInfo(accessToken)
+          accessToken.value = data["access-token"];
+          accessToken.value = data["refresh-token"];
         }
       },
       (error) => {
@@ -64,11 +61,12 @@ export const useUserStore = defineStore("memberStore", () => {
 
 
   const getUserInfo = async (token) => {
+    console.log("디코드 토큰!",token)
     let decodeToken = jwtDecode(token)
-    console.log("디코드토큰", decodeToken.userNo)
+    console.log("디코드 토큰 쌩으로 ", decodeToken)
     
     await findById(
-      decodeToken.userNo,
+      decodeToken.userNo, token,
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo
@@ -136,9 +134,9 @@ export const useUserStore = defineStore("memberStore", () => {
           isLogin.value = false
           userInfo.value = null
           isValidToken.value = false
-          localStorage.removeItem("accessToken")
-          localStorage.removeItem("refreshToken")
-          localStorage.removeItem("userInfo")
+
+          refreshToken.value="";
+          accessToken.value="";
           console.log("로그아웃")
         } else {
           console.error("유저 정보 없음!!!!")
@@ -160,6 +158,8 @@ export const useUserStore = defineStore("memberStore", () => {
     tokenRegenerate,
     userLogout,
     userRegister,
+    accessToken,
+    refreshToken,
   }
 }, 
 {persist:true}

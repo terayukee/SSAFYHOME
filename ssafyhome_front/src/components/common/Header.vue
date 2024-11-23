@@ -46,7 +46,7 @@ import SearchBar from "@/components/SearchBar.vue";
 
 import Logo from "@/assets/logo.jpg";
 import { useUserStore } from "@/stores/userStore";
-import { storeToRefs } from "pinia";
+import { storeToRefs } from "pinia"
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore);
