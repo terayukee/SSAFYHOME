@@ -53,6 +53,11 @@ const routes = [
         name: "board-write",
         component: BoardWirte,
       },
+      // {
+      //   path: "view/edit/:articleno",  // 수정 페이지 경로 추가
+      //   name: "board-edit",
+      //   component: BoardUpdate,
+      // },
     ],
   },
 ];

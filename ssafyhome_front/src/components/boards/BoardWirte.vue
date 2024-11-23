@@ -31,9 +31,11 @@ const removeFile = (index) => {
   selectedFiles.value.splice(index, 1);
 };
 
+
+
 const submitPost = () => {
   const formData = new FormData();
-  
+
   // 유저 정보 출력 (디버그용)
   console.log("userNo:", userInfo.value.userNo);
 
@@ -44,10 +46,10 @@ const submitPost = () => {
 
   // userNo 값을 명시적으로 설정
   article.value.userNo = userInfo.value.userNo;
-  
+
   // 글 데이터를 formData에 추가 (JSON으로 변환)
   formData.append('article', JSON.stringify(article.value));
-  
+
   // formData 로그 (디버깅용)
   for (const [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
@@ -60,8 +62,6 @@ const submitPost = () => {
       let msg = "글등록이 완료되었습니다.";
       if (response.status === 201) {
         alert(msg);
-
-        // 현재 페이지로 다시 이동 (마지막 페이지가 아닌)
         router.push({ name: "board-list-page", params: { page: currentPage.value } });
       }
     },

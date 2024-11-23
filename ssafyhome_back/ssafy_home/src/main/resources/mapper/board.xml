@@ -13,6 +13,12 @@
 		<result column="hit" property="hit"/>
 		<result column="register_time" property="registerTime"/>
 		<result column="user_nickname" property="userNickname"/> 
+		<collection property="fileInfos" ofType="FileInfoDto">
+	        <result column="file_name" property="fileName"/>
+	        <result column="file_size" property="fileSize"/>
+	        <result column="file_type" property="fileType"/>
+	        <result column="file_path" property="filePath"/>
+	    </collection>
 	</resultMap>
 	
 
@@ -45,19 +51,26 @@
 	</update>
 	
 	<select id="getArticle" parameterType="int" resultMap="board">
-	 SELECT 
-            b.board_no, 
-            b.user_no, 
-            b.subject, 
-            b.content, 
-            b.hit, 
-            b.register_time, 
-            u.user_nickname
-        FROM board b , users u
-   		where b.user_no = u.user_no
-		and b.board_no = #{board_no}
-	</select>	
-	
+	    SELECT 
+	        b.board_no, 
+	        b.user_no, 
+	        b.subject, 
+	        b.content, 
+	        b.hit, 
+	        b.register_time, 
+	        u.user_nickname,
+	        a.attachment_id, 
+	        a.file_name, 
+	        a.file_size, 
+	        a.file_type, 
+	        a.file_path, 
+	        a.created_at
+	    FROM board b
+	    LEFT JOIN users u ON b.user_no = u.user_no
+	    LEFT JOIN attachments a ON b.board_no = a.board_no
+	    WHERE b.board_no = #{board_no}
+	</select>
+
 	<!-- 게시글 등록 -->
     <insert id="writeArticle" parameterType="BoardDto">
         <selectKey keyProperty="boardNo" resultType="int" order="AFTER">
@@ -68,8 +81,15 @@
     </insert>
 
 	<insert id="registerFile" parameterType="FileInfoDto">
-    INSERT INTO attachments (board_no, file_name, file_size, file_type, file_path, created_at)
-    VALUES (#{boardNo}, #{fileName}, #{fileSize}, #{fileType}, #{filePath}, NOW());
-	</insert>		
+	    INSERT INTO attachments (board_no, file_name, file_size, file_type, file_path, created_at)
+	    VALUES (#{boardNo}, #{fileName}, #{fileSize}, #{fileType}, #{filePath}, NOW());
+	</insert>	
+	
+	<update id="modifyArticle" parameterType="BoardDto">
+	    UPDATE board
+	    SET subject = #{subject},
+	        content = #{content}
+	    WHERE board_no = #{boardNo}
+	</update>	
 	
 </mapper>
