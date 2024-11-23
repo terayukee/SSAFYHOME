@@ -160,17 +160,44 @@ public class BoardController {
 	    }
 	}
 	
-	@PutMapping("/{boardNo}")
-	public ResponseEntity<?> modifyArticle(@PathVariable("boardNo") int boardNo, @RequestBody BoardDto boardDto) throws Exception {
-	    try {
-	        boardDto.setBoardNo(boardNo); // 게시글 번호 설정
-	        boardService.modifyArticle(boardDto); // 수정 서비스 호출
-	        return new ResponseEntity<>(HttpStatus.OK); // 수정 성공
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 오류 발생 시
+	@PutMapping
+	public ResponseEntity<?> modifyArticle(
+	    @RequestPart("article") String boardDtoJson,
+	    @RequestPart(value = "files", required = false) List<MultipartFile> files
+	) throws Exception {
+	    // JSON 파싱
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    BoardDto boardDto = objectMapper.readValue(boardDtoJson, BoardDto.class);
+
+	    // 파일 저장 로직 추가
+	    if (files != null && !files.isEmpty()) {
+	        // 기존 업로드 로직 재활용
+	        String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
+	        String saveFolder = uploadDir + File.separator + today;
+	        File folder = new File(saveFolder);
+	        if (!folder.exists()) folder.mkdirs();
+
+	        List<FileInfoDto> fileInfos = new ArrayList<>();
+	        for (MultipartFile file : files) {
+	            String originalFileName = file.getOriginalFilename();
+	            String extension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+	            String saveFileName = UUID.randomUUID().toString() + extension;
+	            String filePath = saveFolder + File.separator + saveFileName;
+
+	            file.transferTo(new File(filePath));
+	            FileInfoDto fileInfo = new FileInfoDto();
+	            fileInfo.setFileName(originalFileName);
+	            fileInfo.setFilePath(filePath);
+	            fileInfo.setFileSize((int) file.getSize());
+	            fileInfos.add(fileInfo);
+	        }
+	        boardDto.setFileInfos(fileInfos);
 	    }
+
+	    boardService.modifyArticle(boardDto);
+	    return new ResponseEntity<>(HttpStatus.OK);
 	}
+
 
 	
 	

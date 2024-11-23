@@ -3,11 +3,11 @@ import Home from "../views/Home.vue";
 import Category from "../views/Category.vue";
 import Favorites from "@/components/common/Favorites.vue";
 import Login from "@/components/users/Login.vue";
-import Signup from "@/components/Signup.vue";
 import AptMapView from "@/views/AptMapView.vue";
 import BoardView from "@/views/BoardView.vue";
 import BoardWirte from "@/components/boards/BoardWirte.vue";
 import UserRegister from "@/components/users/UserRegister.vue";
+import BoardEdit from "@/components/boards/BoardEdit.vue";
 
 
 
@@ -54,10 +54,15 @@ const routes = [
         component: BoardWirte,
       },
       // {
-      //   path: "view/edit/:articleno",  // 수정 페이지 경로 추가
+      //   path: "view/edit/:page/:articleno", 
       //   name: "board-edit",
-      //   component: BoardUpdate,
+      //   component: BoardEdit,
       // },
+      {
+        path: "view/edit/:page/:articleno",
+        name: "board-edit",
+        component: BoardEdit,  // Edit 컴포넌트
+      },
     ],
   },
 ];

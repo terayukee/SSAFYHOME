@@ -14,7 +14,7 @@ import lombok.ToString;
 public class BoardDto {
 	
 	private int BoardNo;
-	private int 	userNo;
+	private int userNo;
 	private String userNickname;
 	private String subject;
 	private String content;

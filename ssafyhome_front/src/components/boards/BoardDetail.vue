@@ -76,15 +76,14 @@ const goToList = () => {
   });
 };
 
-// 수정 페이지로 이동 (상태로 데이터 전달)
+
 const goToUpdate = () => {
   router.push({
     name: 'board-edit',
-    state: { article: article.value } // 게시글 데이터 전달
+    params: { articleno: articleno.value },
+    query: { page: currentPage.value }
   });
 };
-
-
 onMounted(getArticle);
 </script>
 
