@@ -6,7 +6,7 @@ import { detailArticle, modifyArticle } from '@/api/board';
 const route = useRoute();
 const router = useRouter();
 
-const articleno = ref(route.params.articleno);
+const boardNo = ref(route.params.boardNo);
 const currentPage = ref(route.query.page || 1);
 const isLoading = ref(false);
 const errorMessage = ref('');
@@ -15,11 +15,13 @@ const errorMessage = ref('');
 const article = ref({
   subject: '',
   content: '',
-  attachments: []
+  fileInfos: []
 });
 
 // 새로 추가할 파일들
 const newFiles = ref([]);
+// 삭제된 파일들의 정보를 추적
+const deletedFiles = ref([]);
 
 // 게시글 불러오기
 const getArticle = () => {
@@ -27,11 +29,11 @@ const getArticle = () => {
   errorMessage.value = '';
   
   detailArticle(
-    articleno.value,
+    boardNo.value,
     ({ data }) => {
       article.value = {
         ...data,
-        attachments: data.fileInfos || []
+        fileInfos: data.fileInfos || []
       };
       isLoading.value = false;
     },
@@ -46,12 +48,14 @@ const getArticle = () => {
 // 파일 추가
 const handleFileInput = (event) => {
   const files = event.target.files;
-  newFiles.value = [...newFiles.value, ...files];
+  newFiles.value = [...newFiles.value, ...Array.from(files)];
 };
 
 // 기존 첨부파일 삭제
 const removeExistingFile = (index) => {
-  article.value.attachments = article.value.attachments.filter((_, i) => i !== index);
+  // 삭제된 파일 정보 저장
+  deletedFiles.value.push(article.value.fileInfos[index]);
+  article.value.fileInfos = article.value.fileInfos.filter((_, i) => i !== index);
 };
 
 // 새로 추가된 파일 삭제
@@ -59,47 +63,6 @@ const removeNewFile = (index) => {
   newFiles.value = newFiles.value.filter((_, i) => i !== index);
 };
 
-// 게시글 수정
-// const submitUpdate = () => {
-//   if (!article.value.subject.trim() || !article.value.content.trim()) {
-//     errorMessage.value = '제목과 내용을 모두 입력해주세요.';
-//     return;
-//   }
-
-//   isLoading.value = true;
-//   errorMessage.value = '';
-
-//   const formData = new FormData();
-//   formData.append('articleno', articleno.value);
-//   formData.append('subject', article.value.subject);
-//   formData.append('content', article.value.content);
-  
-//   // 기존 파일 정보
-//   formData.append('remainingFiles', JSON.stringify(article.value.attachments));
-  
-//   // 새로운 파일들 추가
-//   newFiles.value.forEach(file => {
-//     formData.append('files', file);
-//   });
-
-//   modifyArticle(
-//     formData,
-//     ({ data }) => {
-//       router.push({
-//         name: 'board-detail',
-//         params: { 
-//           articleno: articleno.value,
-//           page: currentPage.value
-//         }
-//       });
-//     },
-//     (error) => {
-//       console.error('게시글 수정 중 오류:', error);
-//       errorMessage.value = '게시글 수정 중 오류가 발생했습니다.';
-//       isLoading.value = false;
-//     }
-//   );
-// };
 const submitUpdate = () => {
   if (!article.value.subject.trim() || !article.value.content.trim()) {
     errorMessage.value = '제목과 내용을 모두 입력해주세요.';
@@ -110,21 +73,28 @@ const submitUpdate = () => {
   errorMessage.value = '';
 
   const formData = new FormData();
+  // 게시글 정보
   formData.append('article', JSON.stringify({
-    articleno: articleno.value,
+    boardNo: boardNo.value,
     subject: article.value.subject,
     content: article.value.content,
-    attachments: article.value.attachments, // 남아있는 첨부파일 정보
+    fileInfos: article.value.fileInfos, // 남아있는 첨부파일 정보
   }));
-
-  newFiles.value.forEach(file => formData.append('files', file)); // 새 파일들 추가
+  
+  // 새 파일들 추가
+  newFiles.value.forEach(file => formData.append('files', file));
+  
+  // 삭제된 파일 정보 추가
+  if (deletedFiles.value.length > 0) {
+    formData.append('deletedFiles', JSON.stringify(deletedFiles.value));
+  }
 
   modifyArticle(
     formData,
     () => {
       router.push({
-        name: 'board-detail',
-        params: { articleno: articleno.value, page: currentPage.value }
+        name: 'board-view',
+        params: { boardNo: boardNo.value }
       });
     },
     (error) => {
@@ -135,15 +105,11 @@ const submitUpdate = () => {
   );
 };
 
-
-// 취소
 const cancelEdit = () => {
   router.push({
-    name: 'board-detail',
-    params: { 
-      articleno: articleno.value,
-      page: currentPage.value
-    }
+    name: 'board-view',
+    params: { boardNo: boardNo.value },
+    query: { page: currentPage.value }
   });
 };
 
@@ -187,10 +153,10 @@ onMounted(getArticle);
       </div>
 
       <!-- 기존 첨부파일 목록 -->
-      <div v-if="article.attachments.length > 0" class="attachments">
+      <div v-if="article.fileInfos.length > 0" class="attachments">
         <h3>기존 첨부파일</h3>
         <ul>
-          <li v-for="(file, index) in article.attachments" 
+          <li v-for="(file, index) in article.fileInfos" 
               :key="index"
               class="attachment-item">
             {{ file.fileName }}

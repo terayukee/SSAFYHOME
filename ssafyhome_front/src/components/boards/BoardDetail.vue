@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { detailArticle } from '@/api/board';
+import { detailArticle, deleteArticle } from '@/api/board';
 
 const route = useRoute();
 const router = useRouter();
 
 // 상태 관리
 const currentPage = ref(route.params.page || 1);
-const articleno = ref(route.params.articleno);
+const boardNo = ref(route.params.boardNo);
 const isLoading = ref(false);
 const errorMessage = ref('');
 
@@ -43,7 +43,7 @@ const getArticle = () => {
   errorMessage.value = '';
   
   detailArticle(
-    articleno.value,
+    boardNo.value,
     ({ data }) => {
       article.value = {
         ...data,
@@ -76,14 +76,40 @@ const goToList = () => {
   });
 };
 
-
+// 게시글 수정 페이지로 이동
 const goToUpdate = () => {
   router.push({
     name: 'board-edit',
-    params: { articleno: articleno.value },
+    params: { boardNo: boardNo.value },
     query: { page: currentPage.value }
   });
 };
+
+// 게시글 삭제
+const deletePost = async () => {
+  if (confirm('정말 이 게시글을 삭제하시겠습니까?')) {
+    try {
+      await deleteArticle(
+        boardNo.value,
+        () => {
+          alert('게시글이 삭제되었습니다.');
+          router.push({ 
+            name: 'board-list-page', 
+            params: { page: currentPage.value }
+          });
+        },
+        (error) => {
+          console.error('게시글 삭제 중 오류:', error);
+          alert('게시글 삭제 중 오류가 발생했습니다.');
+        }
+      );
+    } catch (error) {
+      console.error('게시글 삭제 중 오류:', error);
+      alert('게시글 삭제 중 오류가 발생했습니다.');
+    }
+  }
+};
+
 onMounted(getArticle);
 </script>
 
@@ -133,12 +159,19 @@ onMounted(getArticle);
 
       <!-- 버튼 영역 -->
       <div class="button-area">
-        <button @click="goToList" class="list-button">
-          목록으로
-        </button>
-        <button @click="goToUpdate" class="edit-button">
-          수정
-        </button>
+        <div class="left-buttons">
+          <button @click="goToList" class="list-button">
+            목록으로
+          </button>
+        </div>
+        <div class="right-buttons">
+          <button @click="goToUpdate" class="edit-button">
+            수정
+          </button>
+          <button @click="deletePost" class="delete-button">
+            삭제
+          </button>
+        </div>
       </div>
     </template>
   </div>
@@ -227,10 +260,20 @@ onMounted(getArticle);
 
 .button-area {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid #eaeaea;
+}
+
+.left-buttons {
+  /* 왼쪽 버튼 그룹 */
+}
+
+.right-buttons {
+  /* 오른쪽 버튼 그룹 */
+  display: flex;
+  gap: 10px;  /* 버튼 사이 간격 */
 }
 
 .list-button {
@@ -256,10 +299,24 @@ onMounted(getArticle);
   color: white;
   font-size: 14px;
   cursor: pointer;
-  margin-left: 10px;
 }
 
 .edit-button:hover {
   background-color: #0056b3;
+}
+
+.delete-button {
+  padding: 8px 20px;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
 }
 </style>

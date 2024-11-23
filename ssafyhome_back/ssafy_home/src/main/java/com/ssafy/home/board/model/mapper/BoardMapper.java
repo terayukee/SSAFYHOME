@@ -3,6 +3,7 @@ package com.ssafy.home.board.model.mapper;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -31,5 +32,9 @@ public interface BoardMapper {
 	void registerFile(FileInfoDto fileDto) throws SQLException;
 	
 	List<FileInfoDto> fileInfoList(int articleNo) throws SQLException;
+	
+	FileInfoDto getFileInfo(int attachmentId) throws SQLException;
+	
+	Optional<FileInfoDto> getFileInfoByPath(String filePath) throws SQLException;
 	
 }

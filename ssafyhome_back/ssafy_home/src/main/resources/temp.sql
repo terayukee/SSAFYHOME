@@ -35,11 +35,10 @@ CREATE TABLE IF NOT EXISTS `home`.`board` (
   `content` VARCHAR(2000) DEFAULT '',
   `hit` INT NULL DEFAULT '0',
   `register_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-   FOREIGN KEY (`user_no`) REFERENCES users(`user_no`));
+  FOREIGN KEY (`user_no`) REFERENCES users(`user_no`)
+);
 
--- -----------------------------------------------------
--- Table `home`.`attachments`
--- -----------------------------------------------------
+-- 첨부파일 테이블
 CREATE TABLE IF NOT EXISTS `home`.`attachments` (
   `attachment_id` INT NOT NULL AUTO_INCREMENT,
   `board_no` INT NOT NULL,
@@ -49,8 +48,11 @@ CREATE TABLE IF NOT EXISTS `home`.`attachments` (
   `file_path` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`attachment_id`),
-  FOREIGN KEY (`board_no`) REFERENCES `home`.`board` (`board_no`));
-
+  CONSTRAINT `fk_board_attachments` 
+  FOREIGN KEY (`board_no`) 
+  REFERENCES `home`.`board` (`board_no`)
+  ON DELETE CASCADE
+);
 
 -- -----------------------------------------------------
 -- Table `home`.`sidocode`

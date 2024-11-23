@@ -1,7 +1,9 @@
 package com.ssafy.home.board.controller;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.home.board.model.BoardDto;
 import com.ssafy.home.board.model.BoardListDto;
@@ -134,71 +138,104 @@ public class BoardController {
 	@GetMapping("/file/download")
 	public ResponseEntity<Resource> downloadFile(@RequestParam String filePath) {
 	    try {
-	        // 경로 중복 방지를 위해 filePath를 상대 경로로 처리하도록 수정
-	        Path path = Paths.get(uploadDir).resolve(filePath).normalize();  // 경로 결합 및 정상화
-
+	        // 파일 경로 정규화
+	        Path path = Paths.get(uploadDir).resolve(filePath).normalize();
 	        Resource resource = new FileSystemResource(path);
 
 	        if (!resource.exists()) {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	        }
 
-	        // 파일 이름
-	        String fileName = resource.getFilename();
-
-	        // 파일 응답 헤더 설정
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-	        headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path));
+	        // DB에서 원본 파일명 조회
+	        String originalFileName = boardService.getOriginalFileName(filePath);  // 실제 파일명을 DB에서 가져오는 메서드 필요
+	        
+	        // 파일명 인코딩 처리
+	        String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8.toString())
+	            .replaceAll("\\+", "%20");  // 공백 처리
 
 	        return ResponseEntity.ok()
-	                .headers(headers)
-	                .body(resource);
-	    } catch (Exception e) {	
+	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
+	            .body(resource);
+	    } catch (Exception e) {
 	        log.error("Error during file download: ", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
 	
+	
 	@PutMapping
 	public ResponseEntity<?> modifyArticle(
 	    @RequestPart("article") String boardDtoJson,
-	    @RequestPart(value = "files", required = false) List<MultipartFile> files
+	    @RequestPart(value = "files", required = false) List<MultipartFile> files,
+	    @RequestPart(value = "deletedFiles", required = false) String deletedFilesJson
 	) throws Exception {
 	    // JSON 파싱
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    BoardDto boardDto = objectMapper.readValue(boardDtoJson, BoardDto.class);
+	    
+	    // 1. 게시글 정보 수정
+	    boardService.modifyArticle(boardDto);
+	    
+	    // 2. 삭제된 파일 처리
+	    if (deletedFilesJson != null && !deletedFilesJson.isEmpty()) {
+	        List<FileInfoDto> deletedFiles = objectMapper.readValue(
+	            deletedFilesJson,
+	            new TypeReference<List<FileInfoDto>>() {}
+	        );
+	        for (FileInfoDto fileInfo : deletedFiles) {
+	            boardService.deleteFile(fileInfo.getAttachmentId());
+	        }
+	    }
 
-	    // 파일 저장 로직 추가
+	    // 3. 새로운 파일 처리
 	    if (files != null && !files.isEmpty()) {
-	        // 기존 업로드 로직 재활용
 	        String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
 	        String saveFolder = uploadDir + File.separator + today;
 	        File folder = new File(saveFolder);
 	        if (!folder.exists()) folder.mkdirs();
 
-	        List<FileInfoDto> fileInfos = new ArrayList<>();
 	        for (MultipartFile file : files) {
 	            String originalFileName = file.getOriginalFilename();
-	            String extension = originalFileName.substring(originalFileName.lastIndexOf('.'));
-	            String saveFileName = UUID.randomUUID().toString() + extension;
-	            String filePath = saveFolder + File.separator + saveFileName;
+	            if (originalFileName != null && !originalFileName.isEmpty()) {
+	                String extension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+	                String saveFileName = UUID.randomUUID().toString() + extension;
+	                String filePath = saveFolder + File.separator + saveFileName;
 
-	            file.transferTo(new File(filePath));
-	            FileInfoDto fileInfo = new FileInfoDto();
-	            fileInfo.setFileName(originalFileName);
-	            fileInfo.setFilePath(filePath);
-	            fileInfo.setFileSize((int) file.getSize());
-	            fileInfos.add(fileInfo);
+	                // 파일 저장
+	                file.transferTo(new File(filePath));
+	                
+	                // 파일 정보 생성 및 DB 저장
+	                FileInfoDto fileInfo = new FileInfoDto();
+	                fileInfo.setBoardNo(boardDto.getBoardNo());
+	                fileInfo.setFileName(originalFileName);
+	                fileInfo.setFilePath(filePath);
+	                fileInfo.setFileSize((int) file.getSize());
+	                fileInfo.setFileType(file.getContentType());
+	                
+	                boardService.registerFile(fileInfo);
+	            }
 	        }
-	        boardDto.setFileInfos(fileInfos);
 	    }
-
-	    boardService.modifyArticle(boardDto);
+	    
 	    return new ResponseEntity<>(HttpStatus.OK);
 	}
-
-
 	
-	
+	// BoardController.java
+	@DeleteMapping("/{boardNo}")
+	public ResponseEntity<?> deleteArticle(@PathVariable int boardNo) throws Exception {
+	    try {
+	        // 게시글 존재 여부 확인
+	        BoardDto article = boardService.getArticle(boardNo);
+	        if (article == null) {
+	            return new ResponseEntity<>("게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+	        }
+	        // 게시글 삭제 수행
+	        boardService.deleteArticle(boardNo);
+	        System.out.println("삭제완료?");
+	        return new ResponseEntity<>("삭제가 완료되었습니다.", HttpStatus.OK);
+	    } catch (Exception e) {
+	        return new ResponseEntity<>("게시글 삭제 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 }

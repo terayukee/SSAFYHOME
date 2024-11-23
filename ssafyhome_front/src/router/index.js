@@ -44,8 +44,8 @@ const routes = [
         component: () => import("@/components/boards/BoardList.vue"),
       },
       {
-        path: "view/:page/:articleno",
-        name: "article-view",
+        path: "view/:page/:boardNo",
+        name: "board-view",
         component: () => import("@/components/boards/BoardDetail.vue"),
       },
       {
@@ -53,15 +53,10 @@ const routes = [
         name: "board-write",
         component: BoardWirte,
       },
-      // {
-      //   path: "view/edit/:page/:articleno", 
-      //   name: "board-edit",
-      //   component: BoardEdit,
-      // },
       {
-        path: "view/edit/:page/:articleno",
+        path: "view/edit/:page/:boardNo",
         name: "board-edit",
-        component: BoardEdit,  // Edit 컴포넌트
+        component: BoardEdit,  
       },
     ],
   },

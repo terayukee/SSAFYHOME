@@ -1,5 +1,7 @@
 package com.ssafy.home.board.model.service;
 
+import java.io.File;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +80,23 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public void deleteArticle(int articleNo) throws Exception {
-		// TODO Auto-generated method stub
-		
+	@Transactional
+	public void deleteArticle(int boardNo) throws Exception {
+        // 1. 게시글에 첨부된 파일 정보 조회
+        BoardDto article = boardMapper.getArticle(boardNo);
+        
+        if (article != null && article.getFileInfos() != null) {
+            // 2. 실제 파일 삭제
+            for (FileInfoDto fileInfo : article.getFileInfos()) {
+                File file = new File(fileInfo.getFilePath());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
+        System.out.println("확인");
+        // 3. DB에서 게시글 삭제 (첨부파일은 FK cascade로 자동 삭제)
+        boardMapper.deleteArticle(boardNo);
 	}
 
 	@Override
@@ -88,4 +104,34 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.getArticle(articleNo);
 	}
 
+	
+	@Override
+	@Transactional
+    public void deleteFile(int attachmentId) throws Exception {
+        // 파일 정보 조회
+        FileInfoDto fileInfo = boardMapper.getFileInfo(attachmentId);
+        if (fileInfo != null) {
+            // 실제 파일 삭제
+            File file = new File(fileInfo.getFilePath());
+            if (file.exists()) {
+                file.delete();
+            }
+            // DB에서 파일 정보 삭제
+            boardMapper.deleteFile(attachmentId);
+        }
+	}
+	
+
+	@Transactional
+    @Override
+    public void registerFile(FileInfoDto fileInfoDto) throws Exception {
+        boardMapper.registerFile(fileInfoDto);
+    }
+	
+	public String getOriginalFileName(String filePath) throws Exception {
+	    return boardMapper.getFileInfoByPath(filePath)
+	        .map(FileInfoDto::getFileName)
+	        .orElse(new File(filePath).getName());  // DB에서 못 찾으면 파일 시스템의 이름 사용
+	}
+ 
 }
