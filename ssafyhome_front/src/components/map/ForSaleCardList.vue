@@ -67,8 +67,8 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
         <img
           :src="
             getImagePath(
-              house.avgDealAmount || 0,
-              house.dealSpace || 1,
+              house.dealAmount || 0,
+              house.excluUseAr || 1,
               house.dealCategory
             )
           "
@@ -78,15 +78,19 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
       </div>
       <div class="house-info">
         <h3>{{ house.aptNm }}</h3>
-        <p class="deal-space">{{ house.dealSpace }}㎡</p>
+        <p class="deal-space">{{ house.excluUseAr }}㎡</p>
         <p class="avg-deal-amount">
           <span v-if="house.dealCategory === '월세'">
-            보증금 {{ house.avgDealAmount || "N/A" }}만 / 월세
+            보증금 {{ house.dealAmount || "N/A" }}만 / 월세
             {{ house.avgFeeAmount || "N/A" }}만
           </span>
           <span v-else>
             {{ house.dealCategory }}
-            {{ (house.avgDealAmount * 0.0001).toFixed(2) || "N/A" }}억
+            {{
+              (parseFloat(house.dealAmount.replace(/,/g, "")) * 0.0001).toFixed(
+                2
+              ) || "N/A"
+            }}억
           </span>
         </p>
       </div>

@@ -13,9 +13,7 @@ const props = defineProps({
   },
 });
 
-function getImagePath(avgDealAmount, dealSpace, dealCategory) {
-  let category = "";
-
+function getImagePath() {
   // 주택 타입
   let houseType = "";
   if (props.houseType == "apartment") {
@@ -26,25 +24,8 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
     houseType = "officetel";
   }
 
-  // 평당 가격
-  let amountPerSpace = avgDealAmount / dealSpace;
-
-  if (dealCategory == "월세") {
-    amountPerSpace = amountPerSpace * 10;
-    console.log("amountPerSpace : ", amountPerSpace);
-  }
-
-  // 아파트 가격 기준으로 카테고리 설정
-  if (amountPerSpace > 3000) {
-    category = "high";
-  } else if (amountPerSpace > 1000) {
-    category = "mid";
-  } else {
-    category = "low";
-  }
-
   const randomIndex = Math.floor(Math.random() * 20) + 1; // 1~20 범위의 숫자
-  return `/assets/${houseType}/${category}${randomIndex}.jpg`;
+  return `/assets/interior/${houseType}/${randomIndex}.jpg`;
 }
 
 // 부모로 이벤트를 전달하기 위한 emit 정의
@@ -65,17 +46,7 @@ const handleCardClick = (house) => {
       @click="handleCardClick(house)"
     >
       <div class="house-image">
-        <img
-          :src="
-            getImagePath(
-              house.avgDealAmount,
-              house.dealSpace,
-              house.dealCategory
-            )
-          "
-          alt="House"
-          class="image"
-        />
+        <img :src="getImagePath()" alt="House" class="image" />
       </div>
       <div class="house-info">
         <h3>{{ house.aptNm }}</h3>
