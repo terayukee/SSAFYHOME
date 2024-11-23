@@ -43,10 +43,9 @@ const props = defineProps({
 const tabs = ["매매", "전세", "월세"];
 const selectedTab = ref("매매");
 
-// 평형 옵션
-const spaceOptions = ref([]);
-const selectedSpace = ref(null);
-const dealList = ref([]);
+const spaceOptions = ref([]); // 평형 옵션
+const selectedSpace = ref(null); // 평형 옵션 중 선택한 평형
+const dealList = ref([]); // 해당 주택의 거래정보 리스트
 
 // 평당가 계산 함수
 const calculatePerPyeong = (dealAmount, space) => {
@@ -547,7 +546,10 @@ console.log("selectedHouse : ", props.selectedHouse);
           ></iframe>
         </template>
         <template v-else-if="modalContent === 'for-sale'">
-          <ForSale />
+          <ForSale
+            :selectedHouse="selectedHouse"
+            :spaceOptions="spaceOptions"
+          />
         </template>
       </div>
     </div>
