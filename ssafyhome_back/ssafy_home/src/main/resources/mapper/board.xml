@@ -14,6 +14,8 @@
 		<result column="register_time" property="registerTime"/>
 		<result column="user_nickname" property="userNickname"/> 
 	</resultMap>
+	
+
 
 	<select id="listArticle" parameterType="map" resultMap="board">
         SELECT 
@@ -29,6 +31,7 @@
 		ORDER BY b.board_no ASC  
 		LIMIT #{start}, #{listsize} 
 	</select>
+	
 	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(board_no)
@@ -60,8 +63,8 @@
         <selectKey keyProperty="boardNo" resultType="int" order="AFTER">
         	SELECT LAST_INSERT_ID()
    		</selectKey>
-        INSERT INTO board(subject, content, register_time)
-        VALUES (#{subject}, #{content}, NOW());
+        INSERT INTO board(subject, content, user_no, register_time)
+        VALUES (#{subject}, #{content}, #{userNo}, NOW());
     </insert>
 
 	<insert id="registerFile" parameterType="FileInfoDto">

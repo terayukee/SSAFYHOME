@@ -51,7 +51,6 @@ public class BoardController {
 		String boardJson = mRequest.getParameter("article");
 		ObjectMapper objectMapper = new ObjectMapper();
 		BoardDto boardDto = objectMapper.readValue(boardJson, BoardDto.class);
-		
 		// 파일 추출
 		List<MultipartFile> files = mRequest.getFiles("files");
 	    if (files != null && !files.isEmpty()) {
@@ -87,7 +86,6 @@ public class BoardController {
 	        }
 	        boardDto.setFileInfos(fileInfos);
 	    }
-	    System.out.println("보드 " +boardDto);
 	    boardService.writeArticle(boardDto);
 	    
 	    return new ResponseEntity<Void>(HttpStatus.CREATED);
@@ -115,3 +113,4 @@ public class BoardController {
 	
 	
 }
+

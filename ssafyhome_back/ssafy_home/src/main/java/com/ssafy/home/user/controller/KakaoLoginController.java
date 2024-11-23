@@ -101,8 +101,8 @@ public class KakaoLoginController {
             String jwtAccessToken = (String) resultMap.get("access-token");
             String jwtRefreshToken = (String) resultMap.get("refresh-token");
 
-//            System.out.println("jwt : "+accessToken);
-//            System.out.println("jwt : "+refreshToken);
+            System.out.println("jwt : "+accessToken);
+            System.out.println("jwt : "+refreshToken);
 
             // 카카오 로그인 후 반환될 URL을 설정하여 callback.html로 전달
             String callbackUrl = "http://localhost/home/callback.html?access_token=" + jwtAccessToken + "&refresh_token=" + jwtRefreshToken;

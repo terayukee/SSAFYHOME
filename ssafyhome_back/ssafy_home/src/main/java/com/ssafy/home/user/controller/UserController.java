@@ -88,6 +88,7 @@ public class UserController {
 			try {
 				UserDto memberDto = userService.getUserInfo(userId);
 				resultMap.put("userInfo", memberDto);
+				System.out.println(memberDto);
 				status = HttpStatus.OK;
 			} catch (Exception e) {
 				log.error("정보조회 실패 : {}", e);

@@ -21,7 +21,7 @@ const login = async () => {
   if (isLogin.value) {
     console.log("acessToken값 유저인포 전달" , token)
     getUserInfo(token)
-    // router.replace("/")
+    router.replace("/")
   } 
 }
 

@@ -2,19 +2,23 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { registArticle } from '@/api/board';
-
+import { useUserStore } from '@/stores/userStore';
+import { storeToRefs } from 'pinia';
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore)
 const router = useRouter();
 const route = useRoute();
 
 const selectedFiles = ref([]);
 const currentPage = ref(route.params.page || 1);
 
+
 const article = ref({
   boardNo: 0,
   subject: "",
   content: "",
-  userNo: "",
-  userNickname: "",
+  userNo: userInfo.value.userNo,
+  userNickname: userInfo.value.userNickname,
   registerTime: "",
 });
 
@@ -30,24 +34,34 @@ const removeFile = (index) => {
 const submitPost = () => {
   const formData = new FormData();
   
-  // 파일 추가
+  // 유저 정보 출력 (디버그용)
+  console.log("userNo:", userInfo.value.userNo);
+
+  // 선택한 파일들 formData에 추가
   selectedFiles.value.forEach((file) => {
     formData.append('files', file);
   });
+
+  // userNo 값을 명시적으로 설정
+  article.value.userNo = userInfo.value.userNo;
   
-  // 게시글 데이터 추가
+  // 글 데이터를 formData에 추가 (JSON으로 변환)
   formData.append('article', JSON.stringify(article.value));
   
+  // formData 로그 (디버깅용)
   for (const [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
   }
+
+  // API 호출
   registArticle(
     formData,
     (response) => {
       let msg = "글등록이 완료되었습니다.";
       if (response.status === 201) {
         alert(msg);
-        console.log(formData)
+
+        // 현재 페이지로 다시 이동 (마지막 페이지가 아닌)
         router.push({ name: "board-list-page", params: { page: currentPage.value } });
       }
     },
@@ -58,14 +72,19 @@ const submitPost = () => {
   );
 };
 
+
 const cancelWriting = () => {
   router.push({ name: "board-list-page", params: { page: currentPage.value } });
 };
 
+const ck = () => {
+  console.log(userInfo.value.userNickname)
+}
 </script>
 
 <template>
   <div class="write-container">
+    <button @click="ck">체크</button>
     <h1 class="page-title">글쓰기</h1>
     
     <div class="write-form">
