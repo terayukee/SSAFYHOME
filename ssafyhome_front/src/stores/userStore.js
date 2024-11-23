@@ -11,23 +11,26 @@ export const useUserStore = defineStore("memberStore", () => {
   const isLogin = ref(false)
   const isLoginError = ref(false)
   const isValidToken = ref(false)
-
+  const accessToken = ref(null)
+  const refreshToken = ref(null)
+  
   const userInfo = ref(JSON.parse(localStorage.getItem("userInfo")) || null)
 
   const userLogin = async (loginUser) => {
+    console.log
     await userConfirm(
       loginUser,
       (response) => {
         if (response.status === httpStatusCode.CREATE) {
           console.log("로그인 성공!!!!")
           let { data } = response
-          let accessToken = data["access-token"]
-          let refreshToken = data["refresh-token"]
+          // let accessToken = data["access-token"]
+          // let refreshToken = data["refresh-token"]
           isLogin.value = true
           isLoginError.value = false
           isValidToken.value = true
-          localStorage.setItem("accessToken", accessToken)
-          localStorage.setItem("refreshToken", refreshToken)
+          // localStorage.setItem("accessToken", accessToken)
+          // localStorage.setItem("refreshToken", refreshToken)
 
           // 로그인 성공 시 userInfo를 로컬 스토리지에서 가져와 업데이트
           getUserInfo(accessToken)

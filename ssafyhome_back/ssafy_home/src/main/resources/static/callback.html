@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kakao Login Callback</title>
+  <script>
+    window.onload = async function () {
+      // URL에서 액세스 토큰과 리프레시 토큰 추출
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessToken = urlParams.get('access_token');
+      const refreshToken = urlParams.get('refresh_token');
+
+      if (accessToken && refreshToken) {
+        try {
+          // 부모 창으로 토큰만 전송
+          window.opener.postMessage({
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          }, 'http://localhost:5173');  // 보안을 위해 URL을 정확히 명시
+        } catch (error) {
+          window.opener.postMessage({
+            error: 'Failed to send tokens',
+          }, 'http://localhost:5173');
+        }
+      } else {
+        window.opener.postMessage({
+          error: 'Failed to obtain access tokens',
+        }, 'http://localhost:5173');
+      }
+
+      // 팝업 창 닫기
+      window.close();
+    };
+  </script>
+</head>
+<body>
+</body>
+</html>

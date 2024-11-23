@@ -76,7 +76,6 @@ public class UserServiceImpl implements UserService {
 		
 		// 토큰 저장용
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		
 		// 닉네임이 있으면 회원가입 
 		int userCount = userMapper.getUserCountByNickName(userDto.getUserNickname());
 		// 회원가입
