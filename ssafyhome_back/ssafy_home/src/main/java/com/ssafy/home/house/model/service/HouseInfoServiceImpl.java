@@ -23,4 +23,9 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     public List<HouseInfoDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng) {
         return houseInfoMapper.getHousesInBounds(swLat, swLng, neLat, neLng);
     }
+
+    @Override
+    public HouseInfoDto getHousesInfo(String aptSeq) {
+        return houseInfoMapper.getHousesInfo(aptSeq);
+    }
 }

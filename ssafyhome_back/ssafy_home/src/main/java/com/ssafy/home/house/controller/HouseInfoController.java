@@ -48,4 +48,10 @@ public class HouseInfoController {
 		
 		return resultList;
 	}
+	
+	// apt_seq로 집 정보 조회
+    @GetMapping("/getbyseq")
+    public HouseInfoDto getHouseInfoBySeq(@RequestParam("aptSeq") String aptSeq) {
+        return houseInfoService.getHousesInfo(aptSeq);
+    }
 }

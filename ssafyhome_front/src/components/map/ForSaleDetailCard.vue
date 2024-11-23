@@ -1,5 +1,6 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, ref, onMounted } from "vue";
+import { getBySeq } from "@/api/house.js";
 
 // Props
 const props = defineProps({
@@ -21,10 +22,34 @@ const props = defineProps({
   },
 });
 
+// HouseInfo 데이터 상태
+const houseInfo = ref(null); // houseInfo를 저장할 ref
+
+// aptSeq로 houseInfo 조회
+const fetchHouseInfo = () => {
+  if (props.selectedCard && props.selectedCard.aptSeq) {
+    getBySeq(
+      { aptSeq: props.selectedCard.aptSeq },
+      (response) => {
+        houseInfo.value = response.data; // 성공 시 houseInfo 업데이트
+        console.log("HouseInfo fetched successfully:", houseInfo.value);
+      },
+      (error) => {
+        console.error("Failed to fetch houseInfo:", error);
+      }
+    );
+  }
+};
+
 import House from "@/assets/icons/realestate/house.png";
 import Ruler from "@/assets/icons/realestate/3d-printer.png";
 import Elevator from "@/assets/icons/realestate/elevator.png";
 import Money from "@/assets/icons/realestate/money-bag.png";
+
+// 컴포넌트 마운트 시 houseInfo 가져오기
+onMounted(() => {
+  fetchHouseInfo();
+});
 </script>
 
 <template>
@@ -80,25 +105,50 @@ import Money from "@/assets/icons/realestate/money-bag.png";
     <!-- 매물 정보 테이블 -->
     <div class="table-section">
       <h2>매물 정보</h2>
+
       <table class="details-table">
-        <thead>
-          <tr>
-            <th>계약 날짜</th>
-            <th>거래 금액</th>
-            <th>월세</th>
-            <th>층수</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
+            <th>건축 연도</th>
+            <td>{{ houseInfo?.buildYear || "정보 없음" }}</td>
+          </tr>
+          <tr>
+            <th>계약 날짜</th>
             <td>
               {{ selectedCard.registerYear }}-{{
                 selectedCard.registerMonth
               }}-{{ selectedCard.registerDay }}
             </td>
-            <td>{{ selectedCard.dealAmount || "N/A" }}원</td>
-            <td>{{ selectedCard.feeAmount || "N/A" }}원</td>
-            <td>{{ selectedCard.thisFloor || "N/A" }}층</td>
+          </tr>
+          <tr>
+            <th>거래 금액</th>
+            <td>
+              <template v-if="selectedCard.dealCategory === '월세'">
+                {{ selectedCard.dealAmount || "N/A" }}만원
+              </template>
+              <template v-else>
+                {{
+                  selectedCard.dealAmount
+                    ? (
+                        parseFloat(selectedCard.dealAmount.replace(/,/g, "")) *
+                        0.0001
+                      ).toFixed(2) + "억"
+                    : "N/A"
+                }}
+              </template>
+            </td>
+          </tr>
+          <!-- 월세일 경우에만 월세 정보 추가 -->
+          <tr v-if="selectedCard.dealCategory === '월세'">
+            <th>월세</th>
+            <td>{{ selectedCard.feeAmount || "N/A" }}만원</td>
+          </tr>
+          <tr>
+            <th>층수</th>
+            <td>
+              {{ selectedCard.thisFloor || "N/A" }}층 /
+              {{ selectedCard.maxFloor || "N/A" }}층
+            </td>
           </tr>
         </tbody>
       </table>
@@ -165,26 +215,52 @@ import Money from "@/assets/icons/realestate/money-bag.png";
 
 .table-section {
   margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-section h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2c3e50; /* 어두운 파란색 */
 }
 
 .details-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.details-table th,
-.details-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
+  font-size: 16px;
+  color: #34495e; /* 어두운 회색 */
 }
 
 .details-table th {
-  background-color: #f9f9f9;
+  text-align: left;
+  padding: 15px;
+  width: 150px;
+  background-color: #f4f6f9; /* 연한 회색 배경 */
+  border-bottom: 2px solid #ecf0f1;
   font-weight: bold;
+  color: #2c3e50;
 }
 
-.details-table tbody tr:nth-child(odd) {
-  background-color: #f9f9f9;
+.details-table td {
+  padding: 15px;
+  border-bottom: 1px solid #ecf0f1;
+  color: #7f8c8d; /* 회색 */
+}
+
+.details-table tr:hover td {
+  background-color: #f9f9f9; /* 테이블 행 호버 효과 */
+}
+
+.details-table td:first-child {
+  font-weight: bold;
+  color: #34495e;
+}
+
+.details-table tr:last-child td {
+  border-bottom: none; /* 마지막 행의 테두리 제거 */
 }
 </style>

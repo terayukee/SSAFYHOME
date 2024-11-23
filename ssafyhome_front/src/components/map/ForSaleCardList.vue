@@ -71,8 +71,8 @@ function getImagePath(randomIndex) {
         <p class="deal-space">{{ realestate.excluUseAr }}㎡</p>
         <p class="avg-deal-amount">
           <span v-if="realestate.dealCategory === '월세'">
-            보증금 {{ realestate.dealAmount || "N/A" }}만 / 월세
-            {{ realestate.feeAmount || "N/A" }}만
+            보증금 {{ realestate.dealAmount || "N/A" }}만 <br />
+            월세 {{ realestate.feeAmount || "N/A" }}만
           </span>
           <span v-else>
             {{ realestate.dealCategory }}

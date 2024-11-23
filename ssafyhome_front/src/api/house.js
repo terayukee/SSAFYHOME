@@ -20,6 +20,10 @@ function listHousesInBounds(bounds, filters, houseType, success, fail) {
   houseInfo.get("/bounds", { params }).then(success).catch(fail);
 }
 
+function getBySeq(param, success, fail) {
+  houseInfo.get("/getbyseq", { params: param }).then(success).catch(fail);
+}
+
 function getRecentDeals(aptSeq, success, fail) {
   houseDeal
     .get(`/recent`, { params: { aptSeq } })
@@ -55,6 +59,7 @@ function getDealsBySpace(
 export {
   listHouses,
   listHousesInBounds,
+  getBySeq,
   getRecentDeals,
   getDealsByAptSeq,
   getDealsBySpace,
