@@ -18,7 +18,7 @@
           <button class="btn btn-shadow mg-l-1" @click="navigateTo('login')">
             로그인
           </button>
-          <button class="btn btn-gradient " @click="navigateTo('user-regist')">
+          <button class="btn btn-gradient" @click="navigateTo('user-regist')">
             회원가입
           </button>
         </div>
@@ -42,7 +42,7 @@ import SearchBar from "@/components/SearchBar.vue";
 
 import Logo from "@/assets/logo.jpg";
 import { useUserStore } from "@/stores/userStore";
-import { storeToRefs } from "pinia"
+import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore);
@@ -73,6 +73,7 @@ const navigateTo = (route) => {
   padding: 16px 24px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
+  min-width: 900px;
 }
 
 .header-left {
