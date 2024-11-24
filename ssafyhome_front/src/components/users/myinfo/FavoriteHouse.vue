@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, reactive } from "vue";
+import { ref, computed, onMounted, reactive, watch } from "vue";
 import { fetchUserFavoriteHouses } from "@/api/favorite";
 import { getBySeq } from "@/api/house";
 import { useUserStore } from "@/stores/userStore";
@@ -10,6 +10,8 @@ const houseTypes = ["apartment", "villa", "officetel"];
 const userStore = useUserStore();
 const userNo = userStore.userInfo.userNo;
 
+const groupedByType = reactive({ apartment: [], villa: [], officetel: [] });
+
 // 관심 단지 데이터 상태
 const favoriteHouses = ref({
   apartment: [],
@@ -18,48 +20,49 @@ const favoriteHouses = ref({
 });
 
 // 카드 인덱스 상태
-const cardIndexes = ref({
+const cardIndexes = reactive({
   apartment: 0,
   villa: 0,
   officetel: 0,
 });
 
-const visibleCardsCount = 5; // 한 번에 보여줄 카드 개수
-
-// 현재 화면에 표시될 카드 계산
-const currentCards = (type) =>
-  computed(() =>
-    favoriteHouses.value[type].slice(
-      cardIndexes.value[type],
-      cardIndexes.value[type] + visibleCardsCount
-    )
-  ).value;
+const visibleCardsCount = 4; // 한 번에 보여줄 카드 개수
+const currentCards = reactive({ apartment: [], villa: [], officetel: [] });
+watch(
+  [() => groupedByType, () => cardIndexes],
+  () => {
+    setTimeout(() => {
+      houseTypes.forEach((type) => {
+        currentCards[type] = groupedByType[type].slice(
+          cardIndexes[type],
+          cardIndexes[type] + visibleCardsCount
+        );
+      });
+    }, 1000); // 1초 대기 후 업데이트
+  },
+  { immediate: true, deep: true }
+);
 
 // 좌측 스크롤 버튼 표시 여부
-const showLeftButton = (type) => cardIndexes.value[type] > 0;
+const showLeftButton = (type) => cardIndexes[type] > 0;
 
 // 우측 스크롤 버튼 표시 여부
 const showRightButton = (type) =>
-  cardIndexes.value[type] + visibleCardsCount <
-  favoriteHouses.value[type].length;
+  cardIndexes[type] + visibleCardsCount < groupedByType[type].length;
 
 // 좌측 스크롤
 const scrollLeft = (type) => {
-  if (cardIndexes.value[type] > 0) {
-    cardIndexes.value[type] -= 1;
+  if (cardIndexes[type] > 0) {
+    cardIndexes[type] -= 1;
   }
 };
 
 // 우측 스크롤
 const scrollRight = (type) => {
-  if (
-    cardIndexes.value[type] + visibleCardsCount <
-    favoriteHouses.value[type].length
-  ) {
-    cardIndexes.value[type] += 1;
+  if (cardIndexes[type] + visibleCardsCount < groupedByType[type].length) {
+    cardIndexes[type] += 1;
   }
 };
-const groupedByType = reactive({ apartment: [], villa: [], officetel: [] });
 
 // 관심 단지 데이터 가져오기
 const fetchFavorites = () => {
@@ -127,6 +130,15 @@ const fetchFavorites = () => {
 onMounted(() => {
   fetchFavorites();
   // console.log("유저의 관심 주택 목록: ", favoriteHouses);
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  (async () => {
+    await sleep(1000); // 1초 대기
+    console.log("cardIndexes", cardIndexes);
+    console.log(groupedByType["apartment"].length);
+    console.log(groupedByType["villa"].length);
+    console.log(groupedByType["officetel"].length);
+  })();
 });
 </script>
 
@@ -147,7 +159,15 @@ onMounted(() => {
             : "오피스텔"
         }}
       </h3>
-      <div v-if="houses.length > 0" class="cards">
+      <!-- 좌측 스크롤 버튼 -->
+      <button
+        v-if="showLeftButton(type)"
+        class="scroll-button left"
+        @click="scrollLeft(type)"
+      >
+        ‹
+      </button>
+      <div class="cards">
         <div v-for="(house, index) in houses" :key="index" class="card">
           <div class="card-image">
             <img :src="house.image" alt="House Image" />
@@ -158,9 +178,14 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div v-else>
-        <p>해당 유형의 관심 단지가 없습니다.</p>
-      </div>
+      <!-- 우측 스크롤 버튼 -->
+      <button
+        v-if="showRightButton(type)"
+        class="scroll-button right"
+        @click="scrollRight(type)"
+      >
+        ›
+      </button>
     </div>
   </div>
 </template>
@@ -178,12 +203,15 @@ onMounted(() => {
 
 .house-section {
   margin-bottom: 40px;
+  padding: 20px;
+  background-color: aliceblue;
 }
 
 .type-title {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: blue;
 }
 
 .card-container {

@@ -39,8 +39,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     		tableName = "officetelinfos";
     		break;
     	}
-    	System.out.println("houseType : "+houseType);
-    	System.out.println("tableName : "+tableName);
+
         return houseInfoMapper.getHousesInfo(aptSeq, tableName);
     }
 }
