@@ -48,6 +48,19 @@ const onSearch = () => {
   );
 };
 
+// 지역 클릭 시 지도 페이지로 이동
+const handleRegionClick = (latitude, longitude) => {
+  console.log("지역 클릭, 위도 경도 ", latitude, longitude);
+  router.push({
+    name: "map",
+    query: {
+      latitude: latitude,
+      longitude: longitude,
+      maplevel: 3,
+    },
+  });
+};
+
 // 주택 검색결과 항목에 마우스 오버 시 이미지 변경
 const handleMouseOver = (houseType) => {
   hoverImage.value = getRandomImage(houseType);
@@ -106,12 +119,14 @@ onUnmounted(() => {
       }"
     >
       <!-- 지역 검색결과 -->
+      <!-- 지역 검색결과 -->
       <div class="search-column">
         <h3 class="search-title">지역 검색 결과</h3>
         <ul>
           <li
             v-for="(region, index) in searchResults.regions"
             :key="`region-${index}`"
+            @click="handleRegionClick(region.latitude, region.longitude)"
           >
             <span class="region-info"
               >{{ region.sidoName }} {{ region.gugunName }}

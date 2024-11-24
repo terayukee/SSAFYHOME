@@ -6,9 +6,10 @@ import com.ssafy.home.house.model.HouseInfoDto;
 
 public interface HouseInfoService {
 
-    // 모든 집 정보를 가져오는 메서드
     List<HouseInfoDto> getAllHouses();
 
-    // 특정 범위 내의 집 정보를 가져오는 메서드
     List<HouseInfoDto> getHousesInBounds(double swLat, double swLng, double neLat, double neLng);
+
+    // apt_seq로 특정 집 정보 조회
+    HouseInfoDto getHousesInfo(String aptSeq);
 }

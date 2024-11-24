@@ -58,7 +58,17 @@ const categories = [
 const router = useRouter();
 
 const navigateToCategory = (type) => {
-  router.push(`/category/${type}`);
+  if (type === "news") {
+    // "news"는 아무 작업도 하지 않음
+    return;
+  } else {
+    router.push({
+      path: "/map",
+      query: {
+        housetype: type, // category.type을 housetype으로 전달
+      },
+    });
+  }
 };
 </script>
 
@@ -96,7 +106,9 @@ const navigateToCategory = (type) => {
 }
 
 .category-item:hover {
-  background-color: #f9f9f9;
+  border: 1px solid rgb(52, 217, 151);
+  transform: translateY(4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .category-title {

@@ -9,5 +9,6 @@ public class RegionDto {
 	private String sidoName;
 	private String gugunName;
 	private String dongName;
-
+	private String latitude;
+	private String longitude;
 }

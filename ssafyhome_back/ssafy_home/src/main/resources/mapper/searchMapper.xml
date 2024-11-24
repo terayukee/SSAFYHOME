@@ -8,13 +8,17 @@
 	    SELECT
 	        sido_name AS sidoName,
 	        gugun_name AS gugunName,
-	        dong_name AS dongName
+	        dong_name AS dongName,
+	        latitude AS latitude,
+	        longitude AS longitude
 	    FROM
 	        dongcodes
 	    WHERE
 	        sido_name LIKE CONCAT('%', #{keyword}, '%')
 	        OR gugun_name LIKE CONCAT('%', #{keyword}, '%')
 	        OR dong_name LIKE CONCAT('%', #{keyword}, '%')
+	   	ORDER BY
+	   		sido_name, gugun_name, dong_name
 	</select>
 
 

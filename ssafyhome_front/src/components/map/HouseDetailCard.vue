@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch, computed } from "vue";
 import { getDealsByAptSeq, getDealsBySpace } from "@/api/house.js";
+import ForSale from "@/components/map/ForSale.vue";
+
 import {
   Chart as ChartJS,
   Title,
@@ -32,7 +34,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  selectedNav: {
+  houseType: {
     type: String,
   },
 });
@@ -41,10 +43,9 @@ const props = defineProps({
 const tabs = ["매매", "전세", "월세"];
 const selectedTab = ref("매매");
 
-// 평형 옵션
-const spaceOptions = ref([]);
-const selectedSpace = ref(null);
-const dealList = ref([]);
+const spaceOptions = ref([]); // 평형 옵션
+const selectedSpace = ref(null); // 평형 옵션 중 선택한 평형
+const dealList = ref([]); // 해당 주택의 거래정보 리스트
 
 // 평당가 계산 함수
 const calculatePerPyeong = (dealAmount, space) => {
@@ -57,7 +58,7 @@ const fetchDealsByAptSeq = () => {
   getDealsByAptSeq(
     props.selectedHouse.aptSeq,
     selectedTab.value,
-    props.selectedNav, // apartment, villa, officetal, pre-sale
+    props.houseType, // apartment, villa, officetal, pre-sale
     (response) => {
       dealList.value = response.data;
 
@@ -81,7 +82,7 @@ const fetchDealsBySpace = (space) => {
   getDealsBySpace(
     props.selectedHouse.aptSeq,
     selectedTab.value,
-    props.selectedNav, // apartment, villa, officetal, pre-sale
+    props.houseType, // apartment, villa, officetal, pre-sale
     space,
     (response) => {
       dealList.value = response.data;
@@ -328,6 +329,7 @@ watch(
 
 // 모달 상태 관리
 const isModalOpen = ref(false);
+const modalContent = ref("kakao"); // 'kakao' 또는 'for-sale'로 설정
 
 // 카카오 지도 링크 생성
 const kakaoMapLink = computed(() => {
@@ -336,13 +338,14 @@ const kakaoMapLink = computed(() => {
     props.selectedHouse.latitude &&
     props.selectedHouse.longitude
   ) {
-    return `https://map.kakao.com/link/to/${props.selectedHouse.aptNm},${props.selectedHouse.latitude},${props.selectedHouse.longitude}`;
+    return `https://map.kakao.com/link/from/${props.selectedHouse.aptNm},${props.selectedHouse.latitude},${props.selectedHouse.longitude}`;
   }
   return "#";
 });
 
 // 모달 열기/닫기 함수
-const openModal = () => {
+const openModal = (content) => {
+  modalContent.value = content; // 'kakao' 또는 'for-sale'
   isModalOpen.value = true;
 };
 
@@ -372,11 +375,17 @@ console.log("selectedHouse : ", props.selectedHouse);
       <h3 class="house-name">{{ selectedHouse.aptNm }}</h3>
     </div>
 
-    <!-- 카카오 길찾기 버튼 -->
-    <div class="kakao-map-container">
-      <button class="kakao-map-button" @click="openModal">
+    <div class="button-container">
+      <!-- 카카오 길찾기 버튼 -->
+      <button class="kakao-map-button" @click="openModal('kakao')">
         <span class="kakao">KaKao</span>
         <span class="path">길찾기</span>
+      </button>
+
+      <!-- 부동산 매물 버튼 -->
+      <button class="for-sale-button" @click="openModal('for-sale')">
+        <span class="real-estate">부동산</span>
+        <span class="for-sale">매물</span>
       </button>
     </div>
 
@@ -527,13 +536,22 @@ console.log("selectedHouse : ", props.selectedHouse);
     <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal">
         <button class="modal-close" @click="closeModal">닫기</button>
-        <iframe
-          :src="kakaoMapLink"
-          width="100%"
-          height="800px"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
+        <template v-if="modalContent === 'kakao'">
+          <iframe
+            :src="kakaoMapLink"
+            width="100%"
+            height="800px"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </template>
+        <template v-else-if="modalContent === 'for-sale'">
+          <ForSale
+            :selectedHouse="selectedHouse"
+            :spaceOptions="spaceOptions"
+            :houseType="houseType"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -759,7 +777,7 @@ console.log("selectedHouse : ", props.selectedHouse);
   color: #0d47a1;
 }
 
-.kakao-map-container {
+.button-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
@@ -796,6 +814,40 @@ console.log("selectedHouse : ", props.selectedHouse);
 }
 
 .kakao-map-button:hover span.kakao {
+  color: #fff; /* 호버 시 노란색 글씨도 흰색으로 변경 */
+}
+
+.for-sale-button {
+  background-color: transparent; /* 버튼 배경 투명 */
+  border: 2px solid #4f7eff; /* 주황색 테두리 */
+  margin: 10px 0px 40px 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px; /* 글씨 간격 */
+}
+
+.for-sale-button span.real-estate {
+  color: #39aaf0;
+}
+
+.for-sale-button span.for-sale {
+  color: #000;
+}
+
+.for-sale-button:hover {
+  background-color: #9eddff; /* 호버 시 주황색 배경 */
+  color: #fff; /* 호버 시 글씨 흰색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.for-sale-button:hover span.real-estate {
   color: #fff; /* 호버 시 노란색 글씨도 흰색으로 변경 */
 }
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssafy.home.realestate.model.mapper.RealEstateMapper">
+
+    <resultMap id="RealEstateInfoMap" type="com.ssafy.home.realestate.model.RealEstateInfoDto">
+	    <result column="apt_seq" property="aptSeq" />
+	    <result column="max_floor" property="maxFloor" />
+	    <result column="this_floor" property="thisFloor" />
+	    <result column="register_year" property="registerYear" />
+	    <result column="register_month" property="registerMonth" />
+	    <result column="register_day" property="registerDay" />
+	    <result column="exclu_use_ar" property="excluUseAr" />
+	    <result column="deal_amount" property="dealAmount" />
+	    <result column="fee_amount" property="feeAmount" />
+	    <result column="maintenance_cost" property="maintenanceCost" />
+	    <result column="deal_category" property="dealCategory" />
+	    <result column="house_type" property="houseType" />
+	</resultMap>
+	
+	<select id="selectRealEstateInfos" resultMap="RealEstateInfoMap">
+	    SELECT 
+	        apt_seq,
+	        max_floor,
+	        this_floor,
+	        register_year,
+	        register_month,
+	        register_day,
+	        exclu_use_ar,
+	        deal_amount,
+	        fee_amount,
+	        maintenance_cost,
+	        deal_category,
+	        house_type
+	    FROM 
+	        realestateinfos
+	    WHERE 
+	        exclu_use_ar = #{space}
+	        AND deal_category = #{dealCategory}
+	        AND apt_seq = #{aptSeq}
+	        AND house_type = #{houseType} <!-- houseType 조건 추가 -->
+	    ORDER BY register_year DESC, register_month DESC, register_day DESC
+	</select>
+
+
+
+</mapper>
