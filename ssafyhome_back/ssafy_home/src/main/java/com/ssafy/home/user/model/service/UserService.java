@@ -20,7 +20,7 @@ public interface UserService {
 	// 유저 수정
 	int userUpdate(UserDto userDto) throws Exception;
 	// 유저 삭제 
-	int userDelete(UserDto userDto) throws Exception;
+	boolean withdrawUser(int userNo) throws Exception;
 	
 	// 리프레시 토큰 저장
 	void saveRefreshToken(UserDto userDto) throws Exception;
@@ -33,4 +33,7 @@ public interface UserService {
 	
 	Map<String, Object> checkUserInfo(UserDto userDto) throws Exception; 
 	
+	UserDto getDeletedUserByEmail(String email) throws Exception;
+	
+	boolean restoreUser(int userNo) throws Exception;
 }

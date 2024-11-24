@@ -1,11 +1,6 @@
 import { localAxios } from "@/util/http-commons";
 const local = localAxios();
 
-// import { useUserStore } from '@/stores/userStore';
-// const userStore = useUserStore();
-// const { accessToken } = storeToRefs(userStore)
-// import { storeToRefs } from "pinia"
-
 async function userConfirm(param, success, fail) {
   await local.post(`/user/login`, param).then(success).catch(fail);
 }
@@ -28,4 +23,20 @@ async function logout(userNo, success, fail) {
   await local.get(`/user/logout/${userNo}`).then(success).catch(fail);
 }
 
-export { userConfirm, findById, tokenRegeneration, logout , registerUser };
+async function updateUser(userData, accessToken, success, fail) {
+  local.defaults.headers["Authorization"] = accessToken;
+  await local.put(`/user/update`, userData).then(success).catch(fail);
+}
+
+async function deleteUser(userNo, accessToken, success, fail) {
+  local.defaults.headers["Authorization"] = accessToken;
+  console.log(userNo)
+  console.log(accessToken)
+  const response = await local.delete(`/user/withdraw/${userNo}`).then(success).catch(fail);
+}
+
+async function userRestore(userNo, success, fail) {
+  await local.post(`/user/restore`, { userNo }).then(success).catch(fail);
+}
+
+export { userConfirm, findById, tokenRegeneration, logout , registerUser, updateUser, deleteUser , userRestore};

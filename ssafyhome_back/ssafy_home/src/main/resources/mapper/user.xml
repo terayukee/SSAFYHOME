@@ -65,4 +65,35 @@
 		where user_nickname = #{userName}
 	</select>
 
+ 	<update id="userUpdate" parameterType="UserDto">
+        update users
+        set user_nickname = #{userNickname}
+        where user_no = #{userNo}
+        and deleted = false
+    </update>
+    
+	<update id="withdrawUser" parameterType="int">
+	    update users
+	    set deleted = true,
+	        deleted_at = now(),
+	        reusersfresh_token = null
+	    where user_no = #{userNo}
+	    and deleted = false
+	</update>
+	
+	<select id="getDeletedUserByEmail" parameterType="string" resultMap="user">
+	    SELECT *
+	    FROM users
+	    WHERE user_email = #{email}
+	    AND deleted = true
+	</select>
+	
+	<update id="restoreUser" parameterType="int">
+	    UPDATE users
+	    SET deleted = false,
+	        deleted_at = null
+	    WHERE user_no = #{userNo}
+	</update>
+
+
 </mapper>

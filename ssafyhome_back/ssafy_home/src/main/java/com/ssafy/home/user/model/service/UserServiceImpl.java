@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.home.user.model.UserDto;
 import com.ssafy.home.user.model.mapper.UserMapper;
@@ -46,13 +47,19 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public int userUpdate(UserDto userDto) throws Exception {
-		return 0;
+		return userMapper.userUpdate(userDto);
 	}
 
 	@Override
-	public int userDelete(UserDto userDto) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	@Transactional
+	public boolean withdrawUser(int userNo) throws Exception {
+	    try {
+	        int result = userMapper.withdrawUser(userNo);
+	        System.out.println("결과 확인" + result);
+	        return result > 0;
+	    } catch (Exception e) {
+	        throw new Exception("회원 탈퇴 처리 중 오류가 발생했습니다.");
+	    }
 	}
 
 	@Override
@@ -110,6 +117,17 @@ public class UserServiceImpl implements UserService {
 			return resultMap;
 		}
 	}
+	
+	@Override
+	public UserDto getDeletedUserByEmail(String email) throws Exception {
+	    return userMapper.getDeletedUserByEmail(email);
+	}
 
+	@Override
+	@Transactional
+	public boolean restoreUser(int userNo) throws Exception {
+	    return userMapper.restoreUser(userNo) > 0;
+	}
+	
 	
 }
