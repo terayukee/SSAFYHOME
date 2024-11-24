@@ -56,10 +56,10 @@ const categories = [
 ];
 
 const router = useRouter();
-
+   router.push({})
 const navigateToCategory = (type) => {
   if (type === "news") {
-    // "news"는 아무 작업도 하지 않음
+    router.push({name: type})
     return;
   } else {
     router.push({
