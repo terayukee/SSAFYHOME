@@ -302,7 +302,7 @@ const updateMonthlyChartData = () => {
 
   // 월세
   const rentData = dealList.value.map((deal) => {
-    console.log("월세 deal 객체 : ", deal);
+    // console.log("월세 deal 객체 : ", deal);
     const fee = parseInt(deal.feeAmount.replace(/,/g, ""), 10);
     return fee; // 만원 단위
   });

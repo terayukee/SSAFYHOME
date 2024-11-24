@@ -31,6 +31,7 @@ import Guide from "../components/Guide.vue";
 <style scoped>
 .home {
   padding: 16px;
+  min-width: 1400px;
 }
 
 .top-section {
