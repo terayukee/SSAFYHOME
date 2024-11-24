@@ -6,6 +6,7 @@
 <mapper namespace="com.ssafy.home.realestate.model.mapper.RealEstateMapper">
 
     <resultMap id="RealEstateInfoMap" type="com.ssafy.home.realestate.model.RealEstateInfoDto">
+    	<result column="id" property="id" />
 	    <result column="apt_seq" property="aptSeq" />
 	    <result column="max_floor" property="maxFloor" />
 	    <result column="this_floor" property="thisFloor" />
@@ -22,6 +23,7 @@
 	
 	<select id="selectRealEstateInfos" resultMap="RealEstateInfoMap">
 	    SELECT 
+	    	id,
 	        apt_seq,
 	        max_floor,
 	        this_floor,

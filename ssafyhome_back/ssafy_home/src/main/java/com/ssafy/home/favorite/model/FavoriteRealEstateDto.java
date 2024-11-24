@@ -9,8 +9,11 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class FavoriteHouseDto {
+public class FavoriteRealEstateDto {
+    private int id;
+    private int realestateId;
     private int userNo;
-    private String aptSeq;
+    private String dealCategory;
     private String houseType;
+    
 }
