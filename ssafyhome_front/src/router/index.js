@@ -8,6 +8,7 @@ import BoardView from "@/views/BoardView.vue";
 import BoardWirte from "@/components/boards/BoardWirte.vue";
 import UserRegister from "@/components/users/UserRegister.vue";
 import BoardEdit from "@/components/boards/BoardEdit.vue";
+import MyInfo from "@/components/users/MyInfo.vue";
 
 
 
@@ -27,6 +28,8 @@ const routes = [
   { path: "/favorites", name: "favorite", component: Favorites },
   { path: "/login", name: "login", component: Login },
   { path: "/regist", name: "user-regist", component: UserRegister },
+  { path: "/userinfo", name: "user-info", component: MyInfo }
+  ,
   {
     path: "/board",
     name: "board",

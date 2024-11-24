@@ -34,8 +34,6 @@ const check = ()=>{
   console.log(isLogin.value);
   console.log(accessToken)
   console.log("유저",userInfo.value);
-  // const userInfoObject = JSON.parse(info);  // 문자열을 객체로 변환
-  // console.log("인포 해부", userInfoObject);
   console.log("ㅡㅡ채집완료ㅡㅡ")
 }
 

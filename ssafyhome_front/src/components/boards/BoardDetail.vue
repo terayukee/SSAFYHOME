@@ -266,10 +266,6 @@ onMounted(getArticle);
   border-top: 1px solid #eaeaea;
 }
 
-.left-buttons {
-  /* 왼쪽 버튼 그룹 */
-}
-
 .right-buttons {
   /* 오른쪽 버튼 그룹 */
   display: flex;
