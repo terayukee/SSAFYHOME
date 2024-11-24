@@ -131,7 +131,6 @@ const handleCardClick = (realestate) => {
         />
       </div>
       <div class="house-info">
-        <h3>{{ realestate.aptNm }}</h3>
         <p class="deal-space">{{ realestate.excluUseAr }}㎡</p>
         <p class="avg-deal-amount">
           <span v-if="realestate.dealCategory === '월세'">

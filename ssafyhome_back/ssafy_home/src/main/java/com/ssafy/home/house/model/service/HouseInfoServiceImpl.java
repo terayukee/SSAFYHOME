@@ -25,7 +25,22 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public HouseInfoDto getHousesInfo(String aptSeq) {
-        return houseInfoMapper.getHousesInfo(aptSeq);
+    public HouseInfoDto getHousesInfo(String aptSeq, String houseType) {
+    	String tableName = "";
+    	
+    	switch(houseType) {
+    	case "apartment" :
+    		tableName = "houseinfos";
+    		break;
+    	case "villa" :
+    		tableName = "villainfos";
+    		break;
+    	case "officetel" :
+    		tableName = "officetelinfos";
+    		break;
+    	}
+    	System.out.println("houseType : "+houseType);
+    	System.out.println("tableName : "+tableName);
+        return houseInfoMapper.getHousesInfo(aptSeq, tableName);
     }
 }

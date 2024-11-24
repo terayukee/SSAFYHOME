@@ -37,13 +37,13 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
     }
 
-    // RealEstate
+
     @Override
     public boolean isFavoriteHouse(int userNo, String aptSeq, String houseType) {
         return favoriteMapper.isFavoriteHouse(userNo, aptSeq, houseType) > 0;
     }
 
-    
+    // RealEstate
     @Override
     public List<FavoriteRealEstateDto> getFavoriteRealEstateByUser(int userNo) {
         return favoriteMapper.getFavoriteRealEstateByUser(userNo);

@@ -68,7 +68,7 @@
             latitude,
             longitude
 		FROM
-			houseinfos
+			${tableName}
 		WHERE
 			apt_seq = #{aptSeq}
 	</select>

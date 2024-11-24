@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, onMounted } from "vue";
+import { defineProps, ref, onMounted, computed } from "vue";
 import { getBySeq } from "@/api/house.js";
 
 // Props
@@ -29,7 +29,7 @@ const houseInfo = ref(null); // houseInfo를 저장할 ref
 const fetchHouseInfo = () => {
   if (props.selectedCard && props.selectedCard.aptSeq) {
     getBySeq(
-      { aptSeq: props.selectedCard.aptSeq },
+      { aptSeq: props.selectedCard.aptSeq, houseType: props.houseType },
       (response) => {
         houseInfo.value = response.data; // 성공 시 houseInfo 업데이트
         console.log("HouseInfo fetched successfully:", houseInfo.value);
@@ -40,6 +40,17 @@ const fetchHouseInfo = () => {
     );
   }
 };
+
+const houseTypeMap = {
+  apartment: "아파트",
+  villa: "빌라",
+  officetel: "오피스텔",
+};
+
+// Props로 전달된 houseType을 변환
+const displayHouseType = computed(
+  () => houseTypeMap[props.houseType] || "알 수 없음"
+);
 
 import House from "@/assets/icons/realestate/house.png";
 import Ruler from "@/assets/icons/realestate/3d-printer.png";
@@ -80,7 +91,7 @@ onMounted(() => {
       <div class="info-row">
         <div class="info-item">
           <img :src="House" alt="" />
-          <span class="info-value">{{ houseType }}</span>
+          <span class="info-value">{{ displayHouseType }}</span>
         </div>
         <div class="info-item">
           <img :src="Ruler" alt="" />

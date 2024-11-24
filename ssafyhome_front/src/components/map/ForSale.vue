@@ -99,7 +99,7 @@ const handleCardClick = ({ realestate, randomIndex }) => {
       <div class="vertical-nav">
         <ForSaleCardList
           :realestates="realestates"
-          :houseType="selectedCategory"
+          :houseType="houseType"
           :randomIndex="randomIndex"
           @cardClick="handleCardClick"
         />
@@ -110,7 +110,7 @@ const handleCardClick = ({ realestate, randomIndex }) => {
         <template v-if="selectedCard">
           <ForSaleDetailCard
             :realestates="realestates"
-            :houseType="selectedCategory"
+            :houseType="houseType"
             :selectedCard="selectedCard"
             :randomIndex="selectedRandomIndex"
           />

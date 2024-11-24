@@ -1,49 +1,14 @@
-<template>
-  <div class="favorite-house">
-    <h2 class="title">관심단지</h2>
-    <div v-for="type in houseTypes" :key="type" class="house-section">
-      <h3 class="type-title">{{ type }}</h3>
-      <div class="card-container">
-        <button
-          v-if="showLeftButton(type)"
-          class="scroll-button left"
-          @click="scrollLeft(type)"
-        >
-          ‹
-        </button>
-        <div class="cards">
-          <div
-            v-for="(card, index) in currentCards(type)"
-            :key="index"
-            class="card"
-          >
-            <div class="card-image">
-              <img :src="card.image" alt="House" />
-            </div>
-            <div class="card-info">
-              <h4>{{ card.aptNm }}</h4>
-              <p>{{ card.location }}</p>
-            </div>
-          </div>
-        </div>
-        <button
-          v-if="showRightButton(type)"
-          class="scroll-button right"
-          @click="scrollRight(type)"
-        >
-          ›
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { fetchUserFavorites } from "@/api/favorite";
+import { ref, computed, onMounted, reactive } from "vue";
+import { fetchUserFavoriteHouses } from "@/api/favorite";
+import { getBySeq } from "@/api/house";
+import { useUserStore } from "@/stores/userStore";
 
 // 집 타입들
 const houseTypes = ["apartment", "villa", "officetel"];
+
+const userStore = useUserStore();
+const userNo = userStore.userInfo.userNo;
 
 // 관심 단지 데이터 상태
 const favoriteHouses = ref({
@@ -94,25 +59,66 @@ const scrollRight = (type) => {
     cardIndexes.value[type] += 1;
   }
 };
+const groupedByType = reactive({ apartment: [], villa: [], officetel: [] });
 
 // 관심 단지 데이터 가져오기
 const fetchFavorites = () => {
-  fetchUserFavorites(
-    { userNo: 1 }, // 여기에 로그인한 사용자의 ID를 넣어야 합니다.
+  fetchUserFavoriteHouses(
+    { userNo }, // 로그인한 사용자의 ID를 전달
     (response) => {
-      // 타입별로 데이터 분류
-      const groupedByType = { apartment: [], villa: [], officetel: [] };
-      response.data.forEach((favorite) => {
-        groupedByType[favorite.houseType].push({
-          aptNm: favorite.aptNm,
-          location: favorite.location,
-          image: favorite.image || `/assets/houses/${favorite.houseType}.jpg`,
+      try {
+        // 타입별로 데이터 분류
+        // const groupedByType = { apartment: [], villa: [], officetel: [] };
+
+        // API 응답 처리
+        response.data.forEach((favorite) => {
+          // houseType 값을 기준으로 데이터 분류
+          const houseType =
+            favorite.houseType === "apartment"
+              ? "apart"
+              : favorite.houseType === "villa"
+              ? "villa"
+              : "officetel";
+
+          // 랜덤 인덱스 생성
+          const randomIndex = Math.floor(Math.random() * 20) + 1; // 1~20 범위
+
+          // getBySeq를 통해 주택 정보 가져오기
+          getBySeq(
+            { aptSeq: favorite.aptSeq, houseType: favorite.houseType },
+            (houseResponse) => {
+              if (houseResponse && houseResponse.data) {
+                console.log("houseResponse : ", houseResponse);
+                groupedByType[favorite.houseType].push({
+                  aptNm: houseResponse.data.aptNm || "알 수 없음", // 가져온 주택 이름
+                  location: houseResponse.data.jibun || "위치 정보 없음", // 가져온 위치 정보
+                  image: `/assets/${houseType}/high${randomIndex}.jpg`,
+                });
+              } else {
+                console.warn(
+                  `Invalid response for aptSeq ${favorite.aptSeq}:`,
+                  houseResponse
+                );
+              }
+            },
+            (error) => {
+              console.error(
+                `Failed to fetch details for aptSeq ${favorite.aptSeq}:`,
+                error
+              );
+            }
+          );
         });
-      });
-      favoriteHouses.value = groupedByType;
+
+        favoriteHouses.value = groupedByType; // 관심 단지 상태 업데이트
+        console.log("Updated favorite houses:", favoriteHouses.value);
+        console.log("groupedByType : ", groupedByType);
+      } catch (error) {
+        console.error("Error while processing favorite houses:", error);
+      }
     },
     (error) => {
-      console.error("Failed to fetch favorites:", error);
+      console.error("Failed to fetch favorite houses:", error);
     }
   );
 };
@@ -120,8 +126,44 @@ const fetchFavorites = () => {
 // 컴포넌트 마운트 시 데이터 가져오기
 onMounted(() => {
   fetchFavorites();
+  // console.log("유저의 관심 주택 목록: ", favoriteHouses);
 });
 </script>
+
+<template>
+  <div class="favorite-house">
+    <!-- <h2 class="title">관심단지</h2> -->
+    <div
+      v-for="(houses, type) in groupedByType"
+      :key="type"
+      class="house-section"
+    >
+      <h3 class="type-title">
+        {{
+          type === "apartment"
+            ? "아파트"
+            : type === "villa"
+            ? "빌라"
+            : "오피스텔"
+        }}
+      </h3>
+      <div v-if="houses.length > 0" class="cards">
+        <div v-for="(house, index) in houses" :key="index" class="card">
+          <div class="card-image">
+            <img :src="house.image" alt="House Image" />
+          </div>
+          <div class="card-info">
+            <h4>{{ house.aptNm }}</h4>
+            <!-- <p>{{ house.location }}</p> -->
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <p>해당 유형의 관심 단지가 없습니다.</p>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .favorite-house {
