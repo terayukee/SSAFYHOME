@@ -113,7 +113,7 @@ onMounted(() => {
             <td>{{ houseInfo?.buildYear || "정보 없음" }}</td>
           </tr>
           <tr>
-            <th>계약 날짜</th>
+            <th>등록 날짜</th>
             <td>
               {{ selectedCard.registerYear }}-{{
                 selectedCard.registerMonth
@@ -121,7 +121,7 @@ onMounted(() => {
             </td>
           </tr>
           <tr>
-            <th>거래 금액</th>
+            <th>등록 금액</th>
             <td>
               <template v-if="selectedCard.dealCategory === '월세'">
                 {{ selectedCard.dealAmount || "N/A" }}만원
