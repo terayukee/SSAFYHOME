@@ -11,7 +11,7 @@ async function findById(userNo , accessTokentoken, success, fail) {
 }
 
 async function tokenRegeneration(user, success, fail) {
-  local.defaults.headers["refreshToken"] = sessionStorage.getItem("refreshToken"); //axios header에 refresh-token 셋팅
+  local.defaults.headers["refreshToken"] = sessionStorage.getItem("refreshToken"); 
   await local.post(`/user/refresh`, user).then(success).catch(fail);
 }
 
