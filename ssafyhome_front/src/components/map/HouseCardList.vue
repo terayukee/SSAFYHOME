@@ -1,6 +1,8 @@
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, ref, onMounted, watch } from "vue";
 import "@/assets/main.css";
+import { useUserStore } from "@/stores/userStore";
+import { fetchUserFavorites, toggleFavorite } from "@/api/favorite"; // API 호출
 
 // Props로 전달된 집 정보를 받습니다.
 const props = defineProps({
@@ -49,11 +51,71 @@ function getImagePath(avgDealAmount, dealSpace, dealCategory) {
 
 // 부모로 이벤트를 전달하기 위한 emit 정의
 const emit = defineEmits(["cardClick"]);
+const userStore = useUserStore();
+
+const favoriteAptSeqs = ref(new Set());
+const alertMessage = ref(null);
 
 // 카드 클릭 핸들러
 const handleCardClick = (house) => {
   emit("cardClick", house); // 선택된 house 정보를 부모로 emit
 };
+
+// 관심 단지 불러오기
+const fetchFavorites = async () => {
+  if (userStore.isLogin) {
+    const userNo = userStore.userInfo.userNo;
+    await fetchUserFavorites({ userNo }, (response) => {
+      favoriteAptSeqs.value = new Set(
+        response.data
+          .filter((item) => item.houseType === props.houseType)
+          .map((item) => item.aptSeq)
+      );
+    });
+  }
+};
+
+// 하트 클릭 핸들러
+const handleFavoriteClick = async (house, event) => {
+  event.stopPropagation();
+
+  if (!userStore.isLogin) {
+    showAlert("관심 단지 선택은 로그인 후 가능합니다.");
+    return;
+  }
+
+  const param = {
+    userNo: userStore.userInfo.userNo,
+    aptSeq: house.aptSeq,
+    houseType: props.houseType,
+  };
+  await toggleFavorite(param, (response) => {
+    const isFavorite = response.data.isFavorite;
+    if (isFavorite) favoriteAptSeqs.value.add(house.aptSeq);
+    else favoriteAptSeqs.value.delete(house.aptSeq);
+  });
+};
+
+// 알림 메시지 표시
+const showAlert = (message) => {
+  alertMessage.value = message;
+  setTimeout(() => {
+    alertMessage.value = null;
+  }, 3000);
+};
+
+// 컴포넌트 마운트 시 관심 단지 불러오기
+onMounted(() => {
+  fetchFavorites();
+});
+
+// props.houseType이 변경될 때 fetchFavorites 실행
+watch(
+  () => props.houseType,
+  () => {
+    fetchFavorites();
+  }
+);
 </script>
 
 <template>
@@ -91,6 +153,21 @@ const handleCardClick = (house) => {
           </span>
         </p>
       </div>
+      <div class="house-favorite">
+        <font-awesome-icon
+          :icon="
+            favoriteAptSeqs.has(house.aptSeq)
+              ? ['fas', 'heart']
+              : ['far', 'heart']
+          "
+          class="heart-icon"
+          :class="{ red: favoriteAptSeqs.has(house.aptSeq) }"
+          @click="handleFavoriteClick(house, $event)"
+        ></font-awesome-icon>
+      </div>
+    </div>
+    <div v-if="alertMessage" class="alert-message">
+      {{ alertMessage }}
     </div>
   </div>
 </template>
@@ -98,11 +175,13 @@ const handleCardClick = (house) => {
 <style scoped>
 .house-card {
   display: flex;
-  margin-bottom: 16px;
+  position: relative;
   padding: 10px;
   background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .house-image {
@@ -145,5 +224,32 @@ const handleCardClick = (house) => {
   font-size: 14px;
   font-weight: bold;
   color: #3498db; /* 밝은 파란색 */
+}
+
+.house-favorite {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.house-favorite i {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.house-favorite .red {
+  color: #e74c3c;
+}
+
+.alert-message {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

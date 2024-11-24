@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+	<!DOCTYPE mapper
+	  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.home.favorite.model.mapper.FavoriteMapper">
+
+    <!-- Check if favorite exists -->
+    <select id="isFavorite" resultType="int">
+        SELECT COUNT(*)
+        FROM favorite_house
+        WHERE user_no = #{userNo} AND apt_seq = #{aptSeq} AND house_type = #{houseType}
+    </select>
+
+    <!-- Add to favorites -->
+    <insert id="addFavorite">
+        INSERT INTO favorite_house (user_no, apt_seq, house_type)
+        VALUES (#{userNo}, #{aptSeq}, #{houseType})
+    </insert>
+
+    <!-- Remove from favorites -->
+    <delete id="removeFavorite">
+        DELETE FROM favorite_house
+        WHERE user_no = #{userNo} AND apt_seq = #{aptSeq} AND house_type = #{houseType}
+    </delete>
+
+    <!-- Fetch all favorites for a user -->
+    <select id="getFavoritesByUser" resultType="com.ssafy.home.favorite.model.FavoriteHouseDto">
+        SELECT apt_seq AS aptSeq, house_type AS houseType
+        FROM favorite_house
+        WHERE user_no = #{userNo}
+    </select>
+
+</mapper>
