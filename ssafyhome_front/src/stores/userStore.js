@@ -39,7 +39,6 @@ export const useUserStore = defineStore("memberStore", () => {
         isLogin.value = false
         isLoginError.value = true
         isValidToken.value = false
-        console.error(error)
       }
     )
   }

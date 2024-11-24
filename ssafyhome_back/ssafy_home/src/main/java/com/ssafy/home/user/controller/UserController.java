@@ -68,9 +68,7 @@ public class UserController {
 				status = HttpStatus.CREATED;
 				System.out.println("정상실행");
 			} else {
-				System.out.println("없음");
-				resultMap.put("message", "아이디 또는 패스워드를 확인해 주세요.");
-				status = HttpStatus.UNAUTHORIZED;
+				status = HttpStatus.OK;
 			} 
 		} catch (Exception e) {
 			log.debug("로그인 에러 발생 : {}", e);

@@ -14,6 +14,8 @@ const loginUser = ref({
     userPassword: "",
 })
 
+const isLoginFail = ref(false);
+
 const login = async () => {
   await userLogin(loginUser.value)
   const token = accessToken.value;
@@ -22,19 +24,14 @@ const login = async () => {
     console.log("acessToken값 유저인포 전달" , token)
     getUserInfo(token)
     router.replace("/")
-  } 
+  } else {
+    isLoginFail.value = true;
+    loginUser.value.userPassword = "";
+  }
 }
 
 const mvUserRegister = ()=>{
     router.push({name : `user-regist`});
-}
-
-const check = ()=>{
-  console.log("ㅡㅡㅡ채집ㅡㅡㅡ")
-  console.log(isLogin.value);
-  console.log(accessToken)
-  console.log("유저",userInfo.value);
-  console.log("ㅡㅡ채집완료ㅡㅡ")
 }
 
 </script>
@@ -75,10 +72,13 @@ const check = ()=>{
             placeholder="비밀번호를 입력하세요"
           />
         </div>
-
-        <div class="form-options">
-          <a href="#" class="forgot-password link">비밀번호를 잊으셨나요?</a>
+        <div>
+          <p v-if="isLoginFail" class="login-failed-message">로그인 실패! 이메일 또는 비밀번호를 확인해주세요.</p>
         </div>
+
+        <!-- <div class="form-options">
+          <a href="#" class="forgot-password link">비밀번호를 잊으셨나요?</a>
+        </div> -->
 
         <button type="submit" class="primary-button">로그인</button>
         
@@ -99,6 +99,7 @@ const check = ()=>{
 </template>
 
 <style scoped>
+/* 로그인 실패 메시지 스타일 */
   .login-container {
     min-height: 100vh;
     display: flex;
@@ -245,6 +246,12 @@ const check = ()=>{
     margin-bottom: 20px;
   }
 
-
+/* 로그인 실패 메시지 스타일 */
+  .login-failed-message {
+    color: red;
+    margin-top: 4px;
+    font-weight: bold;
+    font-size: 12px;
+  }
 
 </style>

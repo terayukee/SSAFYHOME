@@ -32,7 +32,7 @@ async function deleteUser(userNo, accessToken, success, fail) {
   local.defaults.headers["Authorization"] = accessToken;
   console.log(userNo)
   console.log(accessToken)
-  const response = await local.delete(`/user/withdraw/${userNo}`).then(success).catch(fail);
+  await local.delete(`/user/withdraw/${userNo}`).then(success).catch(fail);
 }
 
 async function userRestore(userNo, success, fail) {
