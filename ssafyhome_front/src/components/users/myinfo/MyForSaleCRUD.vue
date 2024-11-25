@@ -303,28 +303,50 @@ const submitForm = async () => {
 .real-estate-upload {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 30px;
+  background-color: #ffffff;
+  border: 1px solid #e3f2fd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Roboto", Arial, sans-serif;
 }
 
 h1 {
   text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
+  font-size: 28px;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e3f2fd;
+  padding-bottom: 10px;
 }
 
 .search-box {
   margin-bottom: 20px;
 }
 
+.search-box label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+}
+
 input,
 select,
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
+  font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
 }
 
 .search-results {
@@ -341,29 +363,33 @@ button {
 
 .result-column h3 {
   margin-bottom: 10px;
-  font-size: 16px;
-  color: #555;
+  font-size: 18px;
+  color: #007bff;
 }
 
 .result-column select {
   height: 40px;
-  border: 1px solid rgb(114, 170, 255);
-}
-
-.form-group label {
-  width: 70px;
-}
-
-.form-group input {
-  width: 200px;
 }
 
 .selected-house {
   background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
+  border: 1px solid #e3f2fd;
+  border-radius: 10px;
+  padding: 20px;
   margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.selected-house h3 {
+  font-size: 20px;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.selected-house p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #333;
 }
 
 .form-details {
@@ -376,24 +402,49 @@ button {
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  width: 775px;
+}
+
+.form-group label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.radio-group {
+  display: flex;
+  gap: 30px;
 }
 
 .radio-group label {
-  display: inline-block;
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #555;
+}
+
+.radio-group input[type="radio"] {
+  margin-right: 8px;
+  accent-color: #007bff;
+  width: 20px;
 }
 
 button {
   background-color: #007bff;
   color: #fff;
-  padding: 10px 15px;
+  padding: 12px 15px;
+  font-size: 18px;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
   background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 </style>
