@@ -4,6 +4,9 @@ import { fetchUserFavoriteHouses } from "@/api/favorite";
 import { getBySeq } from "@/api/house";
 import { useUserStore } from "@/stores/userStore";
 
+// 컴포넌트
+import HouseDetailCard from "@/components/map/HouseDetailCard.vue";
+
 // 집 타입들
 const houseTypes = ["apartment", "villa", "officetel"];
 
@@ -18,51 +21,6 @@ const favoriteHouses = ref({
   villa: [],
   officetel: [],
 });
-
-// 카드 인덱스 상태
-const cardIndexes = reactive({
-  apartment: 0,
-  villa: 0,
-  officetel: 0,
-});
-
-const visibleCardsCount = 4; // 한 번에 보여줄 카드 개수
-const currentCards = reactive({ apartment: [], villa: [], officetel: [] });
-watch(
-  [() => groupedByType, () => cardIndexes],
-  () => {
-    setTimeout(() => {
-      houseTypes.forEach((type) => {
-        currentCards[type] = groupedByType[type].slice(
-          cardIndexes[type],
-          cardIndexes[type] + visibleCardsCount
-        );
-      });
-    }, 1000); // 1초 대기 후 업데이트
-  },
-  { immediate: true, deep: true }
-);
-
-// 좌측 스크롤 버튼 표시 여부
-const showLeftButton = (type) => cardIndexes[type] > 0;
-
-// 우측 스크롤 버튼 표시 여부
-const showRightButton = (type) =>
-  cardIndexes[type] + visibleCardsCount < groupedByType[type].length;
-
-// 좌측 스크롤
-const scrollLeft = (type) => {
-  if (cardIndexes[type] > 0) {
-    cardIndexes[type] -= 1;
-  }
-};
-
-// 우측 스크롤
-const scrollRight = (type) => {
-  if (cardIndexes[type] + visibleCardsCount < groupedByType[type].length) {
-    cardIndexes[type] += 1;
-  }
-};
 
 // 관심 단지 데이터 가져오기
 const fetchFavorites = () => {
@@ -93,9 +51,17 @@ const fetchFavorites = () => {
               if (houseResponse && houseResponse.data) {
                 console.log("houseResponse : ", houseResponse);
                 groupedByType[favorite.houseType].push({
-                  aptNm: houseResponse.data.aptNm || "알 수 없음", // 가져온 주택 이름
-                  location: houseResponse.data.jibun || "위치 정보 없음", // 가져온 위치 정보
-                  image: `/assets/${houseType}/high${randomIndex}.jpg`,
+                  aptSeq: houseResponse.data.aptSeq || "알 수 없음", // 주택 고유 번호
+                  sggCd: houseResponse.data.sggCd || "알 수 없음", // 시군구 코드
+                  umdCd: houseResponse.data.umdCd || "알 수 없음", // 읍면동 코드
+                  umdNm: houseResponse.data.umdNm || "알 수 없음", // 읍면동 이름
+                  jibun: houseResponse.data.jibun || "알 수 없음", // 지번 주소
+                  roadNm: houseResponse.data.roadNm || "알 수 없음", // 도로명 주소
+                  aptNm: houseResponse.data.aptNm || "알 수 없음", // 아파트 이름
+                  buildYear: houseResponse.data.buildYear || "알 수 없음", // 건축 연도
+                  latitude: houseResponse.data.latitude || "알 수 없음", // 위도
+                  longitude: houseResponse.data.longitude || "알 수 없음", // 경도
+                  image: `/assets/${houseType}/high${randomIndex}.jpg`, // 랜덤 이미지 경로
                 });
               } else {
                 console.warn(
@@ -126,6 +92,112 @@ const fetchFavorites = () => {
   );
 };
 
+// 좌(<) 우(>) 이동 버튼 관련 코드
+// 카드 인덱스 상태
+const apartmentCardIndex = ref(0);
+const villaCardIndex = ref(0);
+const officetelCardIndex = ref(0);
+
+const visibleCardsCount = 5; // 한 번에 보여줄 카드 개수
+
+const showLeftButton1 = computed(() => apartmentCardIndex.value > 0);
+const showLeftButton2 = computed(() => villaCardIndex.value > 0);
+const showLeftButton3 = computed(() => officetelCardIndex.value > 0);
+
+const showRightButton1 = computed(
+  () =>
+    apartmentCardIndex.value + visibleCardsCount <
+    groupedByType["apartment"].length
+);
+const showRightButton2 = computed(
+  () => villaCardIndex.value + visibleCardsCount < groupedByType["villa"].length
+);
+const showRightButton3 = computed(
+  () =>
+    officetelCardIndex.value + visibleCardsCount <
+    groupedByType["officetel"].length
+);
+
+const scrollLeft = (index) => {
+  if (index == 1) {
+    if (apartmentCardIndex.value > 0) {
+      apartmentCardIndex.value -= 1;
+    }
+  } else if (index == 2) {
+    if (villaCardIndex.value > 0) {
+      villaCardIndex.value -= 1;
+    }
+  } else {
+    if (officetelCardIndex.value > 0) {
+      officetelCardIndex.value -= 1;
+    }
+  }
+};
+
+const scrollRight = (index) => {
+  if (index == 1) {
+    if (
+      apartmentCardIndex.value + visibleCardsCount <
+      groupedByType["apartment"].length
+    ) {
+      apartmentCardIndex.value += 1;
+    }
+  } else if (index == 2) {
+    if (
+      villaCardIndex.value + visibleCardsCount <
+      groupedByType["villa"].length
+    ) {
+      villaCardIndex.value += 1;
+    }
+  } else {
+    if (
+      officetelCardIndex.value + visibleCardsCount <
+      groupedByType["officetel"].length
+    ) {
+      officetelCardIndex.value += 1;
+    }
+  }
+};
+// 현재 화면에 표시될 카드 계산
+const currentApartmentCards = computed(() =>
+  groupedByType["apartment"].slice(
+    apartmentCardIndex.value,
+    apartmentCardIndex.value + visibleCardsCount
+  )
+);
+
+const currentVillaCards = computed(() =>
+  groupedByType["villa"].slice(
+    villaCardIndex.value,
+    villaCardIndex.value + visibleCardsCount
+  )
+);
+
+const currentOfficetelCards = computed(() =>
+  groupedByType["officetel"].slice(
+    officetelCardIndex.value,
+    officetelCardIndex.value + visibleCardsCount
+  )
+);
+
+// 모달 상태
+const isModalOpen = ref(false); // 모달 열림/닫힘 여부
+const selectedHouse = ref(null); // 선택된 주택 정보
+const selectedHouseType = ref(""); // 선택된 주택 타입
+
+// (Modal) 주택 상세정보 띄우기
+const openHouseDetailCard = (houseType, house) => {
+  selectedHouseType.value = houseType; // 주택 타입 설정
+  selectedHouse.value = house; // 선택된 주택 정보 설정
+  isModalOpen.value = true; // 모달 열기
+  console.log("selectedHouseType.value", selectedHouseType.value);
+  console.log("selectedHouse.value", selectedHouse.value);
+};
+
+const closeModal = () => {
+  isModalOpen.value = false; // 모달 닫기
+};
+
 // 컴포넌트 마운트 시 데이터 가져오기
 onMounted(() => {
   fetchFavorites();
@@ -134,41 +206,35 @@ onMounted(() => {
 
   (async () => {
     await sleep(1000); // 1초 대기
-    console.log("cardIndexes", cardIndexes);
-    console.log(groupedByType["apartment"].length);
-    console.log(groupedByType["villa"].length);
-    console.log(groupedByType["officetel"].length);
+    console.log("apartmentCardIndex", apartmentCardIndex.value);
+    console.log("villaCardIndex", villaCardIndex.value);
+    console.log("officetelCardIndex", officetelCardIndex.value);
+    console.log("아파트 배열 length", groupedByType["apartment"].length);
+    console.log("빌라 배열 length", groupedByType["villa"].length);
+    console.log("오피스텔 배열 length", groupedByType["officetel"].length);
   })();
 });
 </script>
 
 <template>
   <div class="favorite-house">
-    <!-- <h2 class="title">관심단지</h2> -->
-    <div
-      v-for="(houses, type) in groupedByType"
-      :key="type"
-      class="house-section"
-    >
-      <h3 class="type-title">
-        {{
-          type === "apartment"
-            ? "아파트"
-            : type === "villa"
-            ? "빌라"
-            : "오피스텔"
-        }}
-      </h3>
-      <!-- 좌측 스크롤 버튼 -->
+    <!-- 아파트 -->
+    <h3 class="type-title">아파트</h3>
+    <div class="apartment-container house-container">
       <button
-        v-if="showLeftButton(type)"
+        v-if="showLeftButton1"
         class="scroll-button left"
-        @click="scrollLeft(type)"
+        @click="scrollLeft(1)"
       >
         ‹
       </button>
       <div class="cards">
-        <div v-for="(house, index) in houses" :key="index" class="card">
+        <div
+          v-for="(house, index) in currentApartmentCards"
+          :key="index"
+          class="card"
+          @click="openHouseDetailCard(`apartment`, house)"
+        >
           <div class="card-image">
             <img :src="house.image" alt="House Image" />
           </div>
@@ -178,14 +244,95 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <!-- 우측 스크롤 버튼 -->
       <button
-        v-if="showRightButton(type)"
+        v-if="showRightButton1"
         class="scroll-button right"
-        @click="scrollRight(type)"
+        @click="scrollRight(1)"
       >
         ›
       </button>
+    </div>
+    <!-- 빌라 -->
+    <h3 class="type-title">빌라</h3>
+    <div class="villa-container house-container">
+      <button
+        v-if="showLeftButton2"
+        class="scroll-button left"
+        @click="scrollLeft(2)"
+      >
+        ‹
+      </button>
+      <div class="cards">
+        <div
+          v-for="(house, index) in currentVillaCards"
+          :key="index"
+          class="card"
+          @click="openHouseDetailCard(`villa`, house)"
+        >
+          <div class="card-image">
+            <img :src="house.image" alt="House Image" />
+          </div>
+          <div class="card-info">
+            <h4>{{ house.aptNm }}</h4>
+            <!-- <p>{{ house.location }}</p> -->
+          </div>
+        </div>
+      </div>
+      <button
+        v-if="showRightButton2"
+        class="scroll-button right"
+        @click="scrollRight(2)"
+      >
+        ›
+      </button>
+    </div>
+    <!-- 오피스텔 -->
+    <h3 class="type-title">오피스텔</h3>
+    <div class="officetel-container house-container">
+      <button
+        v-if="showLeftButton3"
+        class="scroll-button left"
+        @click="scrollLeft(3)"
+      >
+        ‹
+      </button>
+      <div class="cards">
+        <div
+          v-for="(house, index) in currentOfficetelCards"
+          :key="index"
+          class="card"
+          @click="openHouseDetailCard(`officetel`, house)"
+        >
+          <div class="card-image">
+            <img :src="house.image" alt="House Image" />
+          </div>
+          <div class="card-info">
+            <h4>{{ house.aptNm }}</h4>
+            <!-- <p>{{ house.location }}</p> -->
+          </div>
+        </div>
+      </div>
+      <button
+        v-if="showRightButton3"
+        class="scroll-button right"
+        @click="scrollRight(3)"
+      >
+        ›
+      </button>
+    </div>
+
+    <!-- 모달 -->
+    <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content">
+        <div class="modal-button-container">
+          <button class="close-button" @click="closeModal">닫기</button>
+        </div>
+
+        <HouseDetailCard
+          :selectedHouse="selectedHouse"
+          :houseType="selectedHouseType"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -193,6 +340,22 @@ onMounted(() => {
 <style scoped>
 .favorite-house {
   padding: 20px;
+}
+
+.house-container {
+  margin-bottom: 100px;
+}
+
+.apartment-container {
+  position: relative; /* 부모 요소에 위치 기준을 잡아줌 */
+}
+
+.villa-container {
+  position: relative;
+}
+
+.officetel-container {
+  position: relative;
 }
 
 .title {
@@ -211,7 +374,7 @@ onMounted(() => {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: blue;
+  color: rgb(24, 115, 252);
 }
 
 .card-container {
@@ -263,6 +426,7 @@ onMounted(() => {
   color: #7f8c8d;
 }
 
+/* 좌 우 스크롤 버튼 */
 .scroll-button {
   position: absolute;
   top: 50%;
@@ -289,5 +453,49 @@ onMounted(() => {
 
 .scroll-button:hover {
   background: #f0f0f0;
+}
+
+/* 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1000;
+  overflow-y: scroll;
+  padding: 20px;
+}
+
+.modal-button-container {
+  display: flex;
+  justify-content: end;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  margin-top: 20px; /* 추가적인 상단 마진 */
+}
+
+.close-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background: #0056b3;
 }
 </style>
