@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.home.comments.model.mapper.HouseCommentMapper">
+
+    <resultMap id="HouseCommentMap" type="com.ssafy.home.comments.model.HouseCommentDto">
+        <id column="comment_no" property="commentNo"/>
+        <result column="user_no" property="userNo"/>
+        <result column="apt_seq" property="aptSeq"/>
+        <result column="house_type" property="houseType"/>
+        <result column="content" property="content"/>
+        <result column="register_time" property="registerTime"/>
+    </resultMap>
+
+    <select id="selectCommentsByHouse" resultMap="HouseCommentMap">
+        SELECT 
+            comment_no,
+            user_no,
+            apt_seq,
+            house_type,
+            content,
+            register_time
+        FROM 
+            house_comments
+            <!-- 
+        WHERE 
+            apt_seq = #{aptSeq}
+            AND house_type = #{houseType}
+             -->
+        ORDER BY register_time DESC
+    </select>
+
+    <insert id="insertComment" parameterType="com.ssafy.home.comments.model.HouseCommentDto">
+        INSERT INTO house_comments (user_no, apt_seq, house_type, content, register_time)
+        VALUES (#{userNo}, #{aptSeq}, #{houseType}, #{content}, CURRENT_TIMESTAMP)
+    </insert>
+</mapper>

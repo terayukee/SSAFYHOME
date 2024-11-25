@@ -1,6 +1,7 @@
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { getDealsByAptSeq, getDealsBySpace } from "@/api/house.js";
+import { getCommentList, addComment } from "@/api/houseComment.js";
 import ForSale from "@/components/map/ForSale.vue";
 
 import {
@@ -354,6 +355,56 @@ const closeModal = () => {
 };
 
 console.log("selectedHouse : ", props.selectedHouse);
+
+// 댓글
+const commentList = ref([]);
+const newComment = ref("");
+
+// 댓글 가져오기
+const fetchComments = () => {
+  const params = {
+    aptSeq: props.selectedHouse.aptSeq,
+    houseType: props.houseType,
+  };
+
+  getCommentList(
+    params,
+    (response) => {
+      commentList.value = response.data;
+    },
+    (error) => console.error("댓글을 가져오는 중 오류 발생:", error)
+  );
+};
+
+// 댓글 작성
+const postComment = () => {
+  if (newComment.value.trim() === "") {
+    alert("댓글 내용을 입력해주세요.");
+    return;
+  }
+
+  const params = {
+    userNo: Math.floor(Math.random() * 100), // 임시 랜덤 유저 번호
+    aptSeq: props.selectedHouse.aptSeq,
+    houseType: props.houseType,
+    content: newComment.value,
+  };
+
+  addComment(
+    params,
+    () => {
+      newComment.value = ""; // 입력창 초기화
+      fetchComments(); // 댓글 리스트 다시 가져오기
+      alert("댓글이 성공적으로 추가되었습니다.");
+    },
+    (error) => console.error("댓글을 추가하는 중 오류 발생:", error)
+  );
+};
+
+// 컴포넌트가 마운트되면 댓글을 가져옴
+onMounted(() => {
+  fetchComments();
+});
 </script>
 
 <template>
@@ -530,6 +581,46 @@ console.log("selectedHouse : ", props.selectedHouse);
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- 댓글 리스트 -->
+    <div class="house-comment-container">
+      <h3>댓글</h3>
+
+      <!-- 댓글 입력 -->
+      <div class="comment-input-container">
+        <textarea
+          v-model="newComment"
+          placeholder="댓글을 입력하세요."
+          rows="3"
+          class="comment-input"
+        ></textarea>
+        <button class="comment-submit" @click="postComment">등록</button>
+      </div>
+
+      <!-- 댓글 리스트 -->
+      <div v-if="commentList.length > 0" class="comment-list">
+        <div
+          v-for="(comment, index) in commentList"
+          :key="comment.commentNo"
+          class="comment-item"
+        >
+          <div class="comment-profile">
+            <img
+              :src="`https://i.pravatar.cc/40?img=${(index % 70) + 1}`"
+              alt="User Profile"
+              class="profile-image"
+            />
+          </div>
+          <div class="comment-content">
+            <div class="comment-user">User {{ index + 1 }}</div>
+            <div class="comment-text">{{ comment.content }}</div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="no-comments">
+        댓글이 없습니다. 첫 댓글을 작성해보세요!
+      </div>
     </div>
 
     <!-- 모달 -->
@@ -849,6 +940,103 @@ console.log("selectedHouse : ", props.selectedHouse);
 
 .for-sale-button:hover span.real-estate {
   color: #fff; /* 호버 시 노란색 글씨도 흰색으로 변경 */
+}
+
+.house-comment-container {
+  margin-top: 50px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.comment-input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.comment-input {
+  width: 90%;
+  resize: none;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.comment-submit {
+  align-self: flex-end;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.comment-submit:hover {
+  background-color: #0056b3;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.comment-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.comment-profile {
+  margin-right: 10px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-user {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.comment-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.no-comments {
+  text-align: center;
+  font-size: 14px;
+  color: #999;
 }
 
 .modal-overlay {

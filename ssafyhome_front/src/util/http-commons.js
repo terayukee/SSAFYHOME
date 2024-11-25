@@ -101,6 +101,17 @@ function favoriteAxios() {
   return instance;
 }
 
+// 주택 별 댓글 정보
+function houseCommentAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL + "/api/housecomment", // Spring Boot API의 baseURL
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
 export {
   localAxios,
   houseInfoAxios,
@@ -110,4 +121,5 @@ export {
   articleAxios,
   realestateAxios,
   favoriteAxios,
+  houseCommentAxios,
 };
