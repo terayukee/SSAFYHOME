@@ -86,6 +86,9 @@ public class BoardController {
 	                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
 	                String saveFileName = UUID.randomUUID().toString() + fileExtension; // UUID로 파일명 생성
 	                String filePath = saveFolder + File.separator + saveFileName;
+	                
+	                log.info("File save path: " + filePath.toString());
+	                log.info("Original filename: " + originalFileName);
 
 	                try {
 	                    // 파일 저장
