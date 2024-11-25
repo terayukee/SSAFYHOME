@@ -13,21 +13,18 @@ onMounted(()=>{
   getArticleList();
 })
 
-
 const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 
 const articles = ref([]);
 const currentPage = ref(1);
 const totalPage = ref(0);
 
-// 페이징 처리
 const param = ref({
   pgno: currentPage.value,
   spp: VITE_ARTICLE_LIST_SIZE,
   key: "",
   word: "",
 });
-
 
 const getArticleList = () => {
   console.log("서버에서 글목록 얻어오자!!!", param.value);
@@ -54,7 +51,6 @@ const onPageChange = (val) => {
 const moveWrite = (val = 1) => {
   router.push({ name: "board-write" , params: { page : val }});
 };
-
 </script>
 
 <template>
@@ -70,23 +66,23 @@ const moveWrite = (val = 1) => {
       </thead>
       <tbody>
         <BoardListItem 
-          v-for="article in articles"
+          v-for="(article, index) in articles"
           :key="article.boardNo"
           :article="article"
           :current-page="currentPage"
+          :index="(currentPage - 1) * Number(VITE_ARTICLE_LIST_SIZE) + index + 1"
         />
       </tbody>
     </table>
     <div class="button-container">
-        <button class="pagination-button" @click="moveWrite(param.pgno)">게시판 글쓰기</button>
+      <button class="pagination-button" @click="moveWrite(param.pgno)">게시판 글쓰기</button>
     </div>
   </div>  
-    <!-- 페이지네이션 -->
-    <VPageNavigation
-        :current-page="currentPage"
-        :total-page="totalPage"
-        @pageChange="onPageChange"
-    ></VPageNavigation>
+  <VPageNavigation
+    :current-page="currentPage"
+    :total-page="totalPage"
+    @pageChange="onPageChange"
+  />
 </template>
 
 

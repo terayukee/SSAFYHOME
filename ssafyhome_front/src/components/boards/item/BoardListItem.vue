@@ -1,76 +1,51 @@
 <script setup>
 import { ref } from 'vue';
-import { useRouter , useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
-defineProps({ article: Object , currentPage: Number});
+defineProps({
+  article: Object,
+  currentPage: Number,
+  index: Number
+});
 
-const route = useRoute()
-const router = useRouter()
-
+const route = useRoute();
+const router = useRouter();
 </script>
 
 <template>
-  <tr>
-    <!-- 번호를  수 있도록 router-link로 감싸기 -->
-    <td>
-      <router-link
-        :to="{ name: 'board-view', params: { boardNo: article.boardNo , page: currentPage} }"
-        class="link-cell"
-      >
-        {{ article.boardNo }}
-      </router-link>
-    </td>
-
-    <!-- 제목을 클릭할 수 있도록 router-link로 감싸기 -->
-    <td class="text-start">
-      <router-link
-        :to="{ name: 'board-view', params: { boardNo: article.boardNo , page: currentPage} }"
-        class="article-title"
-      >
-        {{ article.subject }}
-      </router-link>
-    </td>
-
-    <!-- 작성자를 클릭할 수 있도록 router-link로 감싸기 -->
-    <td>
-      <router-link
-        :to="{ name: 'board-view', params: { boardNo: article.boardNo,page: currentPage } }"
-        class="link-cell"
-      >
-        {{ article.userNickname }}
-      </router-link>
-    </td>
-
-    <!-- 조회수를 클릭할 수 있도록 router-link로 감싸기 -->
-    <td>
-      <router-link
-        :to="{ name: 'board-view', params: { boardNo: article.boardNo ,page: currentPage} }"
-        class="link-cell"
-      >
-        {{ article.hit }}
-      </router-link>
-    </td>
-  </tr>
+  <router-link
+    :to="{ name: 'board-view', params: { boardNo: article.boardNo, page: currentPage } }"
+    custom
+    v-slot="{ navigate }"
+  >
+    <tr class="board-row" @click="navigate" role="link">
+      <td>{{ index }}</td>
+      <td class="text-start">{{ article.subject }}</td>
+      <td>{{ article.userNickname }}</td>
+      <td>{{ article.hit }}</td>
+    </tr>
+  </router-link>
 </template>
 
 <style scoped>
 .text-start {
   padding-left: 10px !important;
+  text-align: left !important;
 }
 
-.article-title {
-  text-decoration: none;
-  color: #333;
-  display: block;
-  padding: 4px 0;
+.board-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-
-.link-cell {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  padding: 4px 0;
+.board-row:hover {
+  background-color: #f8f8f8;
+  color: #007bff;
 }
 
+td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
 </style>

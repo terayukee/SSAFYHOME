@@ -54,6 +54,17 @@ CREATE TABLE IF NOT EXISTS `home`.`attachments` (
   ON DELETE CASCADE
 );
 
+-- 안되면
+ALTER TABLE `home`.`attachments` 
+DROP FOREIGN KEY `attachments_ibfk_1`;
+
+-- CREATE TABLE과 동일한 설정으로 제약조건 다시 생성
+ALTER TABLE `home`.`attachments`
+ADD CONSTRAINT `fk_board_attachments`
+FOREIGN KEY (`board_no`)
+REFERENCES `home`.`board` (`board_no`)
+ON DELETE CASCADE;
+
 -- -----------------------------------------------------
 -- Table `home`.`sidocode`
 -- -----------------------------------------------------

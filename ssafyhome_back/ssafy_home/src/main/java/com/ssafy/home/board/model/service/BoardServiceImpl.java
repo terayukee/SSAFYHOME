@@ -84,7 +84,6 @@ public class BoardServiceImpl implements BoardService{
 	public void deleteArticle(int boardNo) throws Exception {
         // 1. 게시글에 첨부된 파일 정보 조회
         BoardDto article = boardMapper.getArticle(boardNo);
-        
         if (article != null && article.getFileInfos() != null) {
             // 2. 실제 파일 삭제
             for (FileInfoDto fileInfo : article.getFileInfos()) {
@@ -94,8 +93,8 @@ public class BoardServiceImpl implements BoardService{
                 }
             }
         }
-        System.out.println("확인");
         // 3. DB에서 게시글 삭제 (첨부파일은 FK cascade로 자동 삭제)
+        System.out.println("확인");
         boardMapper.deleteArticle(boardNo);
 	}
 

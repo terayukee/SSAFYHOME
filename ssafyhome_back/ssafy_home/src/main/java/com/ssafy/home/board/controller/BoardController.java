@@ -172,10 +172,9 @@ public class BoardController {
 	    // JSON 파싱
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    BoardDto boardDto = objectMapper.readValue(boardDtoJson, BoardDto.class);
-	    
 	    // 1. 게시글 정보 수정
 	    boardService.modifyArticle(boardDto);
-	    
+
 	    // 2. 삭제된 파일 처리
 	    if (deletedFilesJson != null && !deletedFilesJson.isEmpty()) {
 	        List<FileInfoDto> deletedFiles = objectMapper.readValue(
@@ -231,9 +230,9 @@ public class BoardController {
 	        }
 	        // 게시글 삭제 수행
 	        boardService.deleteArticle(boardNo);
-	        System.out.println("삭제완료?");
 	        return new ResponseEntity<>("삭제가 완료되었습니다.", HttpStatus.OK);
 	    } catch (Exception e) {
+	    	e.printStackTrace();
 	        return new ResponseEntity<>("게시글 삭제 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
