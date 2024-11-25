@@ -67,6 +67,30 @@ function removeHTMLTags(str) {
             .replace(/&gt;/g, '>')
             .replace(/&nbsp;/g, ' ');
 }
+function getRelativeTime(dateStr) {
+  const now = new Date();
+  const pubDate = new Date(dateStr);
+  const diffTime = Math.abs(now - pubDate);
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.round(diffTime / (1000 * 60 * 60));
+  const diffMinutes = Math.round(diffTime / (1000 * 60));
+
+  if (diffDays > 0) {
+    return `${diffDays}일 전`;
+  } else if (diffHours > 0) {
+    return `${diffHours}시간 전`;
+  } else if (diffMinutes > 0) {
+    return `${diffMinutes}분 전`;
+  } else {
+    return '방금 전';
+  }
+}
+
+
+
+
+
+
 
 onMounted(async () => {
   try {
@@ -93,9 +117,12 @@ onMounted(async () => {
           />
         </div>
         <div class="news-content">
-          <a :href="news.link" target="_blank" class="news-title">
-            {{ removeHTMLTags(news.title) }}
-          </a>
+          <div class="news-header">
+            <a :href="news.link" target="_blank" class="news-title">
+              {{ removeHTMLTags(news.title) }}
+            </a>
+          </div>
+          <span class="news-date">{{ getRelativeTime(news.pubDate) }}</span>
           <p class="news-description">
             {{ removeHTMLTags(news.description) || '설명이 없습니다.' }}
           </p>
@@ -122,6 +149,26 @@ onMounted(async () => {
 </template>
  
  <style scoped>
+ .news-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.news-date {
+  margin-top: -20px;
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.news-title {
+  flex: 1;
+  /* 기존 스타일 유지 */
+}
+
  .page-title {
   font-size: 2rem;
   font-weight: bold;
