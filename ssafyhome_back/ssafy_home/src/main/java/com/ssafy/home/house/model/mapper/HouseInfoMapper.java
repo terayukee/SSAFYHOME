@@ -3,6 +3,7 @@ package com.ssafy.home.house.model.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.ssafy.home.house.model.HouseInfoDto;
 
@@ -14,4 +15,7 @@ public interface HouseInfoMapper {
 
     // apt_seq로 특정 집 정보 조회
     HouseInfoDto getHousesInfo(String aptSeq, String tableName);
+    
+    List<HouseInfoDto> getHouseByAptNm(@Param("aptNm") String aptNm, @Param("tableName") String tableName);
+
 }

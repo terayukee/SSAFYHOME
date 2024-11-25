@@ -15,6 +15,13 @@
       >
         나의 매물
       </div>
+      <div
+        class="tab"
+        :class="{ active: activeTab === 'myForSaleCRUD' }"
+        @click="activeTab = 'myForSaleCRUD'"
+      >
+        매물 등록
+      </div>
     </div>
     <div class="tab-container" v-else>
       <div
@@ -44,6 +51,7 @@
       <template v-if="userInfo.role == `BUSINESS`">
         <DetailUserInfo v-if="activeTab === 'userInfo'" />
         <MyForSale v-if="activeTab === 'myForSale'" />
+        <MyForSaleCRUD v-if="activeTab === 'myForSaleCRUD'" />
       </template>
       <template v-else>
         <DetailUserInfo v-if="activeTab === 'userInfo'" />
@@ -60,6 +68,7 @@ import DetailUserInfo from "@/components/users/myinfo/DetailUserInfo.vue";
 import FavoriteHouse from "@/components/users/myinfo/FavoriteHouse.vue";
 import FavoriteRealEstate from "@/components/users/myinfo/FavoriteRealEstate.vue";
 import MyForSale from "@/components/users/myinfo/MyForSale.vue";
+import MyForSaleCRUD from "@/components/users/myinfo/MyForSaleCRUD.vue";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";

@@ -98,8 +98,6 @@ onMounted(() => {
 
 <template>
   <div class="my-for-sale">
-    <h2>내 매물</h2>
-
     <!-- 에러 메시지 -->
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 

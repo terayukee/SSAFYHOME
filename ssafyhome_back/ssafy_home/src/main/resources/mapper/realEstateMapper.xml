@@ -87,4 +87,5 @@
 	    WHERE 
 	        register_user_no = #{registerUserNo}
 	</select>
+	
 </mapper>

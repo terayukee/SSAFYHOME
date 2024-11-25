@@ -54,4 +54,11 @@ public class HouseInfoController {
     public HouseInfoDto getHouseInfoBySeq(@RequestParam("aptSeq") String aptSeq, @RequestParam("houseType") String houseType) {
         return houseInfoService.getHousesInfo(aptSeq, houseType);
     }
+    
+    @GetMapping("/getbyaptnm")
+    public List<HouseInfoDto> getHouseByAptNm(
+            @RequestParam("aptNm") String aptNm,
+            @RequestParam("houseType") String houseType) {
+        return houseInfoService.getHouseByAptNm(aptNm, houseType);
+    }
 }

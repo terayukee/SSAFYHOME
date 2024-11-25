@@ -74,7 +74,7 @@ public class RealEstateController {
         return realEstateInfo;
     }
 
-    @GetMapping("/getbyuserno") // 새로운 메서드 추가
+    @GetMapping("/getbyuserno")
     public List<RealEstateInfoDto> getRealEstateByUserNo(@RequestParam("registerUserNo") String registerUserNo) {
         logger.info("Fetching real estate info for userNo: {}", registerUserNo);
 
@@ -88,4 +88,5 @@ public class RealEstateController {
 
         return realestateList;
     }
+    
 }

@@ -46,4 +46,29 @@ public class HouseInfoServiceImpl implements HouseInfoService {
 
         return houseInfoMapper.getHousesInfo(aptSeq, tableName);
     }
+    
+    @Override
+    public List<HouseInfoDto> getHouseByAptNm(String aptNm, String houseType) {
+        String tableName = "";
+
+        switch (houseType) {
+            case "apartment":
+            case "아파트":
+                tableName = "houseinfos";
+                break;
+            case "villa":
+            case "빌라":
+                tableName = "villainfos";
+                break;
+            case "officetel":
+            case "오피스텔":
+                tableName = "officetelinfos";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid houseType: " + houseType);
+        }
+
+        return houseInfoMapper.getHouseByAptNm(aptNm, tableName);
+    }
+
 }

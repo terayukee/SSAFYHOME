@@ -56,6 +56,10 @@ function getDealsBySpace(
     .catch(fail);
 }
 
+function getByAptNm(param, success, fail) {
+  realestateApi.get("/getbyaptnm", { params: param }).then(success).catch(fail);
+}
+
 export {
   listHouses,
   listHousesInBounds,
@@ -63,4 +67,5 @@ export {
   getRecentDeals,
   getDealsByAptSeq,
   getDealsBySpace,
+  getByAptNm,
 };

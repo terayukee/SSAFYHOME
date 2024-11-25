@@ -23,4 +23,8 @@ function getByUserNo(param, success, fail) {
     .catch(fail);
 }
 
-export { fetchRealEstateInfos, getById, getByUserNo };
+function registerRealEstate(param, success, fail) {
+  realestateApi.get("/register", { params: param }).then(success).catch(fail);
+}
+
+export { fetchRealEstateInfos, getById, getByUserNo, registerRealEstate };
