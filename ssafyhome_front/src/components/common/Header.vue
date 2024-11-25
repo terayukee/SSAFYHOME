@@ -10,8 +10,7 @@
       <ul class="nav-menu">
         <li @click="navigateTo('board')">공지사항</li>
         <li @click="navigateTo('map')">지도</li>
-        <li @click="navigateTo('sale')">분양</li>
-        <li @click="navigateTo('favorites')">관심목록</li>
+        <li @click="navigateTo('news')">뉴스</li>
       </ul>
       <div class="auth-buttons">
         <div v-if="!isLogin" class="">

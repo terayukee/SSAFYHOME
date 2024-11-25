@@ -10,7 +10,32 @@ import UserRegister from "@/components/users/UserRegister.vue";
 import BoardEdit from "@/components/boards/BoardEdit.vue";
 import MyInfo from "@/components/users/MyInfo.vue";
 import MainNews from "@/components/news/MainNews.vue";
+import { useUserStore } from "@/stores/userStore";
+import { storeToRefs } from "pinia";
 
+// 로그인 상태일때
+const isLoginUser = async (to, from, next) => {
+  const userStore = useUserStore();
+  const {isLogin} = storeToRefs(userStore);
+
+  if ( isLogin.value ) {
+    next({ name: "home" });
+  } else {
+    next();
+  }
+};
+
+// 비로그인 상태일때
+const isNotLoginUser = async (to, from, next) => {
+  const userStore = useUserStore();
+  const {isLogin} = storeToRefs(userStore);
+
+  if ( !isLogin.value ) {
+    next({ name: "home" });
+  } else {
+    next();
+  }
+};
 
 
 const routes = [
@@ -28,9 +53,9 @@ const routes = [
     }), // 쿼리 파라미터를 props로 전달
   },
   { path: "/favorites", name: "favorite", component: Favorites },
-  { path: "/login", name: "login", component: Login },
-  { path: "/regist", name: "user-regist", component: UserRegister },
-  { path: "/userinfo", name: "user-info", component: MyInfo },
+  { path: "/login", name: "login", component: Login , beforeEnter: isLoginUser},
+  { path: "/regist", name: "user-regist", component: UserRegister , beforeEnter: isLoginUser },
+  { path: "/userinfo", name: "user-info", component: MyInfo , beforeEnter: isNotLoginUser},
   { path: "/news", name:"news", component: MainNews}
   ,
   {
