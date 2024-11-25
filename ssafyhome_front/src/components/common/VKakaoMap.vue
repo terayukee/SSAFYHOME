@@ -1,5 +1,11 @@
 <script setup>
 import { ref, watch, onMounted, defineProps, defineEmits } from "vue";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/stores/userStore";
+import { fetchUserFavoriteHouses } from "@/api/favorite"; // API 호출
+
+const userStore = useUserStore();
+const { isLogin, accessToken, userInfo } = storeToRefs(userStore);
 
 let map;
 let clusterer;
@@ -37,6 +43,9 @@ const props = defineProps({
 const emit = defineEmits(["boundsChange", "markerClick", "mapClick"]);
 
 onMounted(() => {
+  // 사용자의 관심 주택 불러오기
+  fetchFavorites();
+
   if (window.kakao && window.kakao.maps) {
     initMap();
     loadInitialMarkers();
@@ -164,6 +173,9 @@ const updateMarkers = (houses) => {
 
     clusterMarkers.value.push(basicMarker);
 
+    // 관심 단지 여부 확인
+    const isFavorite = favoriteAptSeqs.value.has(house.aptSeq);
+
     // 커스텀 마커 스타일
     const dealAmountInEok = house.avgDealAmount
       ? (parseFloat(house.avgDealAmount) * 0.0001).toFixed(2)
@@ -172,7 +184,9 @@ const updateMarkers = (houses) => {
     const content = `
       <div class="custom-marker">
         <div class="custom-marker-content">
-          <div class="custom-marker-title">${house.dealSpace}평</div>
+          <div class="custom-marker-title" style="background: ${
+            isFavorite ? "red" : "#136dff"
+          }">${house.dealSpace}평</div>
           <div class="custom-marker-price">
             ${
               props.selectedCategory === "월세"
@@ -269,6 +283,31 @@ watch(
   ([newLat, newLng], [oldLat, oldLng]) => {
     if (map && (newLat !== oldLat || newLng !== oldLng)) {
       updateMapCenter(newLat, newLng);
+    }
+  }
+);
+
+const favoriteAptSeqs = ref(new Set());
+// 관심 단지 불러오기
+const fetchFavorites = async () => {
+  if (userStore.isLogin) {
+    const userNo = userStore.userInfo.userNo;
+    await fetchUserFavoriteHouses({ userNo }, (response) => {
+      favoriteAptSeqs.value = new Set(
+        response.data
+          .filter((item) => item.houseType === props.houseType)
+          .map((item) => item.aptSeq)
+      );
+    });
+  }
+};
+
+watch(
+  () => props.houseType,
+  (newHouseType, oldHouseType) => {
+    if (newHouseType !== oldHouseType) {
+      console.log("houseType 변경:", newHouseType);
+      fetchFavorites(); // houseType 변경 시 관심 단지 목록 다시 로드
     }
   }
 );
