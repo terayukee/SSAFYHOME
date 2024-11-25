@@ -26,7 +26,7 @@
     </delete>
     
     <!-- 관심 매물 여부 확인 -->
-    <select id="isFavoritHouse" resultType="int">
+    <select id="isFavoriteHouse" resultType="int">
         SELECT COUNT(*)
         FROM favorite_house
         WHERE user_no = #{userNo} AND apt_seq = #{aptSeq} AND house_type = #{houseType}

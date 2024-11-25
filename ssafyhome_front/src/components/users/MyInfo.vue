@@ -1,6 +1,22 @@
 <template>
   <div class="my-page">
-    <div class="tab-container">
+    <div class="tab-container" v-if="userInfo.role == `BUSINESS`">
+      <div
+        class="tab"
+        :class="{ active: activeTab === 'userInfo' }"
+        @click="activeTab = 'userInfo'"
+      >
+        내 정보
+      </div>
+      <div
+        class="tab"
+        :class="{ active: activeTab === 'myForSale' }"
+        @click="activeTab = 'myForSale'"
+      >
+        나의 매물
+      </div>
+    </div>
+    <div class="tab-container" v-else>
       <div
         class="tab"
         :class="{ active: activeTab === 'userInfo' }"
@@ -25,9 +41,15 @@
     </div>
 
     <div class="content-container" v-if="userInfo">
-      <DetailUserInfo v-if="activeTab === 'userInfo'" />
-      <FavoriteHouse v-if="activeTab === 'favoriteHouse'" />
-      <FavoriteRealEstate v-if="activeTab === 'favoriteRealEstate'" />
+      <template v-if="userInfo.role == `BUSINESS`">
+        <DetailUserInfo v-if="activeTab === 'userInfo'" />
+        <MyForSale v-if="activeTab === 'myForSale'" />
+      </template>
+      <template v-else>
+        <DetailUserInfo v-if="activeTab === 'userInfo'" />
+        <FavoriteHouse v-if="activeTab === 'favoriteHouse'" />
+        <FavoriteRealEstate v-if="activeTab === 'favoriteRealEstate'" />
+      </template>
     </div>
   </div>
 </template>
@@ -37,12 +59,13 @@ import { ref, onBeforeUnmount } from "vue";
 import DetailUserInfo from "@/components/users/myinfo/DetailUserInfo.vue";
 import FavoriteHouse from "@/components/users/myinfo/FavoriteHouse.vue";
 import FavoriteRealEstate from "@/components/users/myinfo/FavoriteRealEstate.vue";
+import MyForSale from "@/components/users/myinfo/MyForSale.vue";
+import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
-
-// User 정보 및 라우터
 const userStore = useUserStore();
-const { userInfo } = userStore;
+const { isLogin, accessToken, userInfo } = storeToRefs(userStore);
+
 const router = useRouter();
 
 // 현재 활성화된 탭 상태

@@ -58,7 +58,7 @@ const fetchDealsByAptSeq = () => {
   getDealsByAptSeq(
     props.selectedHouse.aptSeq,
     selectedTab.value,
-    props.houseType, // apartment, villa, officetal, pre-sale
+    props.houseType, // apartment, villa, officetal
     (response) => {
       dealList.value = response.data;
 

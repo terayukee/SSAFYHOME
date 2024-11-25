@@ -3,7 +3,7 @@ import { favoriteAxios } from "@/util/http-commons";
 const favoriteApi = favoriteAxios();
 
 // 관심 단지(부동산) 가져오기
-function fetchUserFavorites(param, success, fail) {
+function fetchUserFavoriteHouses(param, success, fail) {
   favoriteApi
     .get("/get-favorite-house", { params: param })
     .then(success)
@@ -29,7 +29,7 @@ function toggleFavoriteRealEstate(param, success, fail) {
 }
 
 export {
-  fetchUserFavorites,
+  fetchUserFavoriteHouses,
   fetchUserFavoriteRealEstates,
   toggleFavorite,
   toggleFavoriteRealEstate,

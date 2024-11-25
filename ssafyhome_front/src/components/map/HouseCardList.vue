@@ -2,7 +2,7 @@
 import { defineProps, defineEmits, ref, onMounted, watch } from "vue";
 import "@/assets/main.css";
 import { useUserStore } from "@/stores/userStore";
-import { fetchUserFavorites, toggleFavorite } from "@/api/favorite"; // API 호출
+import { fetchUserFavoriteHouses, toggleFavorite } from "@/api/favorite"; // API 호출
 
 // Props로 전달된 집 정보를 받습니다.
 const props = defineProps({
@@ -65,7 +65,7 @@ const handleCardClick = (house) => {
 const fetchFavorites = async () => {
   if (userStore.isLogin) {
     const userNo = userStore.userInfo.userNo;
-    await fetchUserFavorites({ userNo }, (response) => {
+    await fetchUserFavoriteHouses({ userNo }, (response) => {
       favoriteAptSeqs.value = new Set(
         response.data
           .filter((item) => item.houseType === props.houseType)

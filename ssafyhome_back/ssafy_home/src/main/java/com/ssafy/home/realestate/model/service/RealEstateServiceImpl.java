@@ -21,6 +21,12 @@ public class RealEstateServiceImpl implements RealEstateService {
 		String mappedHouseType = resolveParamName(houseType);
 		return realEstateMapper.selectRealEstateInfos(space, dealCategory, aptSeq, mappedHouseType);
 	}
+	
+	@Override
+	public RealEstateInfoDto getRealEstateById(String realestateId) {
+	    return realEstateMapper.selectRealEstateById(realestateId);
+	}
+
 
 	// houseType에 따라 테이블 이름 반환
 	private String resolveParamName(String houseType) {

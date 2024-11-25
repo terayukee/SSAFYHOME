@@ -51,7 +51,7 @@ public class HouseInfoController {
 	
 	// apt_seq로 집 정보 조회
     @GetMapping("/getbyseq")
-    public HouseInfoDto getHouseInfoBySeq(@RequestParam("aptSeq") String aptSeq) {
-        return houseInfoService.getHousesInfo(aptSeq);
+    public HouseInfoDto getHouseInfoBySeq(@RequestParam("aptSeq") String aptSeq, @RequestParam("houseType") String houseType) {
+        return houseInfoService.getHousesInfo(aptSeq, houseType);
     }
 }

@@ -57,4 +57,21 @@ public class RealEstateController {
 
         return realestateList;
     }
+    
+    @GetMapping("/getbyid")
+    public RealEstateInfoDto getRealEstateById(@RequestParam("realestateId") String realestateId) {
+        logger.info("Fetching real estate info for ID: {}", realestateId);
+
+        // Fetch the real estate info by ID
+        RealEstateInfoDto realEstateInfo = realEstateService.getRealEstateById(realestateId);
+
+        if (realEstateInfo == null) {
+            logger.warn("No real estate info found for ID: {}", realestateId);
+        } else {
+            logger.debug("Fetched Real Estate Info: {}", realEstateInfo);
+        }
+
+        return realEstateInfo;
+    }
+
 }
