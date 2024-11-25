@@ -9,4 +9,5 @@ public interface RealEstateService {
     
     RealEstateInfoDto getRealEstateById(String realestateId);
 
+    List<RealEstateInfoDto> getRealEstateByUserNo(String registerUserNo); // 새로운 메서드 추가
 }

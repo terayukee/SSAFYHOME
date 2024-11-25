@@ -74,4 +74,18 @@ public class RealEstateController {
         return realEstateInfo;
     }
 
+    @GetMapping("/getbyuserno") // 새로운 메서드 추가
+    public List<RealEstateInfoDto> getRealEstateByUserNo(@RequestParam("registerUserNo") String registerUserNo) {
+        logger.info("Fetching real estate info for userNo: {}", registerUserNo);
+
+        List<RealEstateInfoDto> realestateList = realEstateService.getRealEstateByUserNo(registerUserNo);
+
+        if (realestateList == null || realestateList.isEmpty()) {
+            logger.warn("No real estate info found for userNo: {}", registerUserNo);
+        } else {
+            realestateList.forEach(realestate -> logger.info("Real estate for userNo {}: {}", registerUserNo, realestate.toString()));
+        }
+
+        return realestateList;
+    }
 }

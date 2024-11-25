@@ -66,4 +66,25 @@
 	    WHERE 
 	        id = #{realestateId}
 	</select>
+	
+	<select id="selectRealEstateByUserNo" parameterType="String" resultMap="RealEstateInfoMap">
+	    SELECT 
+	        id,
+	        apt_seq,
+	        max_floor,
+	        this_floor,
+	        register_year,
+	        register_month,
+	        register_day,
+	        exclu_use_ar,
+	        deal_amount,
+	        fee_amount,
+	        maintenance_cost,
+	        deal_category,
+	        house_type
+	    FROM 
+	        realestateinfos
+	    WHERE 
+	        register_user_no = #{registerUserNo}
+	</select>
 </mapper>
