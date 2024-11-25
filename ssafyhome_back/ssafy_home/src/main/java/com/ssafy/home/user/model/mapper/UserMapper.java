@@ -38,7 +38,9 @@ public interface UserMapper {
 	int getUserNumByNickName(String userName) throws Exception;
 	
 	int checkEmailExists(String email) throws Exception;
+	
 	UserDto getDeletedUserByEmail(String email) throws Exception;
+	
 	int restoreUser(int userNo) throws Exception;
 	
 	

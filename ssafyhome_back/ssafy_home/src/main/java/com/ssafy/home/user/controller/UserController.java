@@ -169,6 +169,7 @@ public class UserController {
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
 	        }
 	    } catch (Exception e) {
+	    	e.printStackTrace();
 	        resultMap.put("message", "서버 오류가 발생했습니다.");
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
 	    }

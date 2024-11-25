@@ -1,47 +1,54 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import { storeToRefs } from "pinia"
+import { storeToRefs } from "pinia";
 import { useUserStore } from '@/stores/userStore';
+
 const userStore = useUserStore();
-const { getUserInfo } = useUserStore();
-const { isLogin, isLoginError, isValidToken } = storeToRefs(userStore)
+const { getUserInfo } = userStore;
+const { isLogin, isLoginError, isValidToken } = storeToRefs(userStore);
 const router = useRouter();
 
-// 카카오 REST API 키와 리디렉션 URI 설정
 const KAKAO_REST_API_KEY = '4736eef2397a78d68348b4f3fdbea4ca';
 const KAKAO_REDIRECT_URI = 'http://localhost/home/oauth/kakao/callback';
 
-// 카카오 로그인 리디렉션
+let loginBox = null;
+
+// 메시지 이벤트 리스너
+const handleMessage = async (event) => {
+  const { accessToken, refreshToken, error } = event.data;
+  if (error) {
+    console.error('카카오 로그인 오류:', error);
+  } else {
+    console.log('AccessToken:', accessToken);
+    console.log('RefreshToken:', refreshToken);
+    try {
+      await getUserInfo(accessToken);
+      isLogin.value = true;
+      isLoginError.value = false;
+      isValidToken.value = true;
+      router.replace('/');
+    } catch (err) {
+      console.error("사용자 정보 가져오기 실패:", err);
+    }
+  }
+};
+
 const kakaoLogin = () => {
   const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
   
-  // 팝업 창을 열어 카카오 로그인 페이지로 리디렉션
-  const loginBox = window.open(kakaoAuthUrl, '_blank', 'width=800, height=600');
+  // 팝업 창 열기
+  loginBox = window.open(kakaoAuthUrl, '_blank', 'width=800, height=600');
+  
+  // 메시지 리스너 추가
+  window.addEventListener('message', handleMessage);
 };
 
-onMounted(() => {
-  window.addEventListener('message', (event) => {
-    // 받은 데이터 확인
-    const { accessToken, refreshToken, error } = event.data;
-    if (error) {
-      console.error('카카오 로그인 오류:', error);
-    } else {
-      console.log(accessToken)
-      console.log(refreshToken)
-      // 액세스 토큰으로 사용자 정보 가져오기
-      getUserInfo(accessToken).then(() => {
-        isLogin.value = true
-        isLoginError.value = false
-        isValidToken.value = true
-        router.replace('/');
-      }).catch((error) => {
-        console.error("사용자 정보 가져오기 실패:", error);
-      });
-    }
-  });
+// 컴포넌트 언마운트 시 이벤트 리스너 제거
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handleMessage);
+});
 
-})
 </script>
 
 <template>
