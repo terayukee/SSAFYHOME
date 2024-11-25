@@ -23,5 +23,5 @@ public class RealEstateInfoDto {
     private String maintenanceCost;
     private String dealCategory;
     private String houseType;	
-    
+    private int registerUserNo;
 }

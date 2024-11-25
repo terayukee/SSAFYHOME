@@ -88,4 +88,36 @@
 	        register_user_no = #{registerUserNo}
 	</select>
 	
+	<insert id="insertRealEstate" parameterType="com.ssafy.home.realestate.model.RealEstateInfoDto">
+	    INSERT INTO realestateinfos (
+	        apt_seq,
+	        max_floor,
+	        this_floor,
+	        register_year,
+	        register_month,
+	        register_day,
+	        exclu_use_ar,
+	        deal_amount,
+	        fee_amount,
+	        maintenance_cost,
+	        deal_category,
+	        house_type,
+	        register_user_no
+	    ) VALUES (
+	        #{aptSeq},
+	        #{maxFloor},
+	        #{thisFloor},
+	        #{registerYear},
+	        #{registerMonth},
+	        #{registerDay},
+	        #{excluUseAr},
+	        #{dealAmount},
+	        #{feeAmount},
+	        #{maintenanceCost},
+	        #{dealCategory},
+	        #{houseType},
+	        #{registerUserNo}
+	    )
+	</insert>
+	
 </mapper>

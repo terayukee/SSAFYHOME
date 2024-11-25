@@ -59,6 +59,10 @@ public class HouseInfoController {
     public List<HouseInfoDto> getHouseByAptNm(
             @RequestParam("aptNm") String aptNm,
             @RequestParam("houseType") String houseType) {
-        return houseInfoService.getHouseByAptNm(aptNm, houseType);
+    	List<HouseInfoDto> houseList = houseInfoService.getHouseByAptNm(aptNm, houseType);
+//    	for(HouseInfoDto house : houseList) {
+//    		System.out.println(house.toString());
+//    	}
+        return houseList;
     }
 }

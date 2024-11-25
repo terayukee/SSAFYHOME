@@ -57,7 +57,7 @@ function getDealsBySpace(
 }
 
 function getByAptNm(param, success, fail) {
-  realestateApi.get("/getbyaptnm", { params: param }).then(success).catch(fail);
+  houseInfo.get("/getbyaptnm", { params: param }).then(success).catch(fail);
 }
 
 export {

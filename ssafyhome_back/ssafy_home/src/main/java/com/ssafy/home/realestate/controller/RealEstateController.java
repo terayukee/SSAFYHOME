@@ -89,4 +89,18 @@ public class RealEstateController {
         return realestateList;
     }
     
+    @PostMapping("/register")
+    public String registerRealEstate(@RequestBody RealEstateInfoDto realEstateInfoDto) {
+        logger.info("Registering new real estate: {}", realEstateInfoDto);
+
+        try {
+            realEstateService.registerRealEstate(realEstateInfoDto);
+            logger.info("Real estate registered successfully.");
+            return "매물이 성공적으로 등록되었습니다.";
+        } catch (Exception e) {
+            logger.error("Error occurred while registering real estate: ", e);
+            throw new RuntimeException("매물 등록 중 오류가 발생했습니다.");
+        }
+    }
+
 }

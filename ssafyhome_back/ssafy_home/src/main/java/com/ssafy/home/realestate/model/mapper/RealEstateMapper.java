@@ -14,6 +14,7 @@ public interface RealEstateMapper {
 
     List<RealEstateInfoDto> selectRealEstateByUserNo(@Param("registerUserNo") String registerUserNo); // 새로운 메서드 추가
      
+    void insertRealEstate(RealEstateInfoDto realEstateInfoDto);
 
 }
 
