@@ -91,7 +91,9 @@ public class KakaoLoginController {
             user.setUserName(nickname);
             user.setRefreshToken(refreshToken);
             user.setUserPassword("1234");
-            user.setEmail("aaa@aaa");
+            user.setEmail("aaa@aaaa");
+            user.setRole("USER");
+            
             
             System.out.println("카카오 접근"+accessToken);
             System.out.println("카카오 리프레시"+refreshToken);

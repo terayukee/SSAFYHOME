@@ -55,8 +55,8 @@
 	</select>
 	
 	<insert id="joinUser" parameterType="UserDto">
-		insert into users(user_name,user_password,user_nickname,user_email,phone_number,register_time)
-		values (#{userName},#{userPassword},#{userNickname},#{email},#{phoneNumber},now());
+		insert into users(user_name,user_password,user_nickname,user_email,phone_number,register_time, role)
+		values (#{userName},#{userPassword},#{userNickname},#{email},#{phoneNumber},now(),#{role);
 	</insert>
 	
 	<select id="getUserNumByNickName" parameterType="String" resultType="int">

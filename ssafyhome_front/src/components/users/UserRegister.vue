@@ -2,9 +2,9 @@
 import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
+
 const userStore = useUserStore();
 const router = useRouter();
-const { userRegister, restoreUser } = useUserStore();
 
 const registerUser = ref({
   userName: "",
@@ -13,6 +13,7 @@ const registerUser = ref({
   passwordConfirm: "",
   userNickname: "",
   phoneNumber: "",
+  role: "USER", // 기본값을 개인고객으로 설정
 });
 
 const errors = ref({
@@ -24,10 +25,16 @@ const errors = ref({
   phoneNumber: "",
 });
 
+const selectedTab = ref("USER"); // 기본 선택 탭
+
+const switchRole = (role) => {
+  selectedTab.value = role;
+  registerUser.value.role = role; // 선택된 역할에 따라 role 설정
+};
+
 const validateForm = () => {
   let isValid = true;
 
-  // 이름 검증
   if (!registerUser.value.userName) {
     errors.value.userName = "이름을 입력해주세요";
     isValid = false;
@@ -35,7 +42,6 @@ const validateForm = () => {
     errors.value.userName = "";
   }
 
-  // 이메일 검증
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(registerUser.value.email)) {
     errors.value.email = "올바른 이메일 형식이 아닙니다";
@@ -44,7 +50,6 @@ const validateForm = () => {
     errors.value.email = "";
   }
 
-  // 비밀번호 검증
   if (registerUser.value.userPassword.length < 8) {
     errors.value.userPassword = "비밀번호는 8자 이상이어야 합니다";
     isValid = false;
@@ -52,7 +57,6 @@ const validateForm = () => {
     errors.value.userPassword = "";
   }
 
-  // 비밀번호 확인 검증
   if (registerUser.value.userPassword !== registerUser.value.passwordConfirm) {
     errors.value.passwordConfirm = "비밀번호가 일치하지 않습니다";
     isValid = false;
@@ -60,7 +64,6 @@ const validateForm = () => {
     errors.value.passwordConfirm = "";
   }
 
-  // 전화번호 검증
   const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
   if (!phoneRegex.test(registerUser.value.phoneNumber)) {
     errors.value.phoneNumber = "올바른 전화번호 형식이 아닙니다";
@@ -80,26 +83,9 @@ const register = async () => {
     alert("회원가입이 완료되었습니다.");
     router.push("/login");
   } catch (error) {
-    if (error.response?.status === 302) {
-      // Found - 삭제된 계정 존재
-      const restore = confirm(error.response.data.message); // "이전에 탈퇴한 계정이 존재합니다. 복구하시겠습니까?"
-      if (restore) {
-        try {
-          // 계정 복구 시도
-          await userStore.restoreUser(error.response.data.userInfo.userNo);
-          alert("계정이 성공적으로 복구되었습니다. 로그인해주세요.");
-          router.push("/login");
-          return;
-        } catch (restoreError) {
-          alert("계정 복구 처리 중 오류가 발생했습니다.");
-          console.error("계정 복구 실패:", restoreError);
-        }
-      }
-    } else {
-      alert(
-        error.response?.data?.message || "회원가입 처리 중 오류가 발생했습니다."
-      );
-    }
+    alert(
+      error.response?.data?.message || "회원가입 처리 중 오류가 발생했습니다."
+    );
     console.error("회원가입 실패:", error);
   }
 };
@@ -123,6 +109,23 @@ const moveToLogin = () => {
 
       <!-- 폼 -->
       <form class="login-form" @submit.prevent="register">
+        <!-- 탭 -->
+        <div class="role-tabs">
+          <div
+            class="tab"
+            :class="{ active: selectedTab === 'USER' }"
+            @click="switchRole('USER')"
+          >
+            개인고객
+          </div>
+          <div
+            class="tab"
+            :class="{ active: selectedTab === 'BUSINESS' }"
+            @click="switchRole('BUSINESS')"
+          >
+            기업고객
+          </div>
+        </div>
         <div class="form-group">
           <label for="userName">이름</label>
           <input
@@ -181,15 +184,13 @@ const moveToLogin = () => {
 
         <div class="form-group">
           <label for="userNickname">닉네임</label>
-          <div class="userNickname-input">
-            <input
-              id="userNickname"
-              type="text"
-              v-model="registerUser.userNickname"
-              required
-              placeholder="닉네임을 입력하세요"
-            />
-          </div>
+          <input
+            id="userNickname"
+            type="text"
+            v-model="registerUser.userNickname"
+            required
+            placeholder="닉네임을 입력하세요"
+          />
           <span class="error-message" v-if="errors.userNickname">{{
             errors.userNickname
           }}</span>
@@ -284,6 +285,35 @@ const moveToLogin = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* 탭 스타일 */
+.role-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 20px;
+  text-align: center;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.tab.active {
+  background-color: #2c6bed;
+  color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tab:hover {
+  background-color: #d8e6ff;
 }
 
 .form-group {
