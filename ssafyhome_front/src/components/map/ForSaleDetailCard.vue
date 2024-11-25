@@ -43,8 +43,11 @@ const fetchHouseInfo = () => {
 
 const houseTypeMap = {
   apartment: "아파트",
+  아파트: "아파트",
   villa: "빌라",
+  빌라: "빌라",
   officetel: "오피스텔",
+  오피스텔: "오피스텔",
 };
 
 // Props로 전달된 houseType을 변환

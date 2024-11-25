@@ -343,7 +343,8 @@ onMounted(() => {
 }
 
 .house-container {
-  margin-bottom: 100px;
+  margin-bottom: 30px;
+  width: 1070px;
 }
 
 .apartment-container {

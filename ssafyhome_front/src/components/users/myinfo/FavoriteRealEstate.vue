@@ -2,6 +2,7 @@
 import { ref, computed, reactive, onMounted } from "vue";
 import { fetchUserFavoriteRealEstates } from "@/api/favorite";
 import { getById } from "@/api/realestate";
+import { getBySeq } from "@/api/house";
 import { useUserStore } from "@/stores/userStore";
 
 // 컴포넌트
@@ -35,33 +36,54 @@ const fetchFavoriteRealEstates = () => {
             houseType = "오피스텔";
           }
 
-          // 매물 상세 정보 가져오기
-          // 아직 작성 중인 getById 함수 호출
           getById(
             { realestateId: favorite.realestateId },
             (realEstateResponse) => {
               if (realEstateResponse && realEstateResponse.data) {
                 const randomIndex = ref(Math.floor(Math.random() * 20) + 1);
-                groupedRealEstatesByType[houseType].push({
-                  id: realEstateResponse.data.id || "알 수 없음", // ID
-                  aptSeq: realEstateResponse.data.aptSeq || "알 수 없음", // 아파트 고유번호
-                  maxFloor: realEstateResponse.data.maxFloor || "알 수 없음", // 최대 층수
-                  thisFloor: realEstateResponse.data.thisFloor || "알 수 없음", // 현재 층수
-                  registerYear: realEstateResponse.data.registerYear || 0, // 등록 연도
-                  registerMonth: realEstateResponse.data.registerMonth || 0, // 등록 월
-                  registerDay: realEstateResponse.data.registerDay || 0, // 등록 일
-                  excluUseAr: realEstateResponse.data.excluUseAr || 0.0, // 전용면적
+                const realEstateInfo = {
+                  id: realEstateResponse.data.id || "알 수 없음",
+                  aptSeq: realEstateResponse.data.aptSeq || "알 수 없음",
+                  maxFloor: realEstateResponse.data.maxFloor || "알 수 없음",
+                  thisFloor: realEstateResponse.data.thisFloor || "알 수 없음",
+                  registerYear: realEstateResponse.data.registerYear || 0,
+                  registerMonth: realEstateResponse.data.registerMonth || 0,
+                  registerDay: realEstateResponse.data.registerDay || 0,
+                  excluUseAr: realEstateResponse.data.excluUseAr || 0.0,
                   dealAmount:
-                    realEstateResponse.data.dealAmount || "알 수 없음", // 거래 금액 or 보증금
-                  feeAmount: realEstateResponse.data.feeAmount || "알 수 없음", // 월세
+                    realEstateResponse.data.dealAmount || "알 수 없음",
+                  feeAmount: realEstateResponse.data.feeAmount || "알 수 없음",
                   maintenanceCost:
-                    realEstateResponse.data.maintenanceCost || "알 수 없음", // 관리비
+                    realEstateResponse.data.maintenanceCost || "알 수 없음",
                   dealCategory:
-                    realEstateResponse.data.dealCategory || "알 수 없음", // 거래 유형
-                  houseType: realEstateResponse.data.houseType || "알 수 없음", // 주택 유형
+                    realEstateResponse.data.dealCategory || "알 수 없음",
+                  houseType: realEstateResponse.data.houseType || "알 수 없음",
                   randomIndex: randomIndex.value,
-                  image: `/assets/interior/livingroom/${randomIndex.value}.jpg`, // 랜덤 이미지
-                });
+                  image: `/assets/interior/livingroom/${randomIndex.value}.jpg`,
+                  aptNm: "", // 기본값 추가
+                };
+
+                // 추가: `getBySeq` 호출
+                getBySeq(
+                  {
+                    aptSeq: realEstateInfo.aptSeq,
+                    houseType: favorite.houseType,
+                  },
+                  (houseResponse) => {
+                    if (houseResponse && houseResponse.data) {
+                      realEstateInfo.aptNm =
+                        houseResponse.data.aptNm || "알 수 없음";
+                    }
+                    groupedRealEstatesByType[houseType].push(realEstateInfo);
+                  },
+                  (error) => {
+                    console.error(
+                      `Failed to fetch aptNm for aptSeq ${realEstateInfo.aptSeq}:`,
+                      error
+                    );
+                    groupedRealEstatesByType[houseType].push(realEstateInfo);
+                  }
+                );
               }
             },
             (error) => {
@@ -158,10 +180,10 @@ const realEstateInfo = ref(null);
 const selectedHouseType = ref("");
 const selectedRandomIndex = ref(null);
 
-const openRealEstateDetailCard = (realEstateInfo) => {
-  realEstateInfo.value = realEstateInfo;
-  selectedHouseType.value = realEstateInfo.houseType;
-  selectedRandomIndex.value = realEstateInfo.randomIndex;
+const openRealEstateDetailCard = (selectedRealEstate) => {
+  realEstateInfo.value = selectedRealEstate;
+  selectedHouseType.value = selectedRealEstate.houseType;
+  selectedRandomIndex.value = selectedRealEstate.randomIndex;
   isModalOpen.value = true;
 };
 
@@ -181,7 +203,6 @@ onMounted(() => {
 
 <template>
   <div class="favorite-real-estate">
-    <h2>관심 매물</h2>
     <div
       v-for="type in realEstateTypes"
       :key="type"
@@ -211,7 +232,25 @@ onMounted(() => {
             <div class="card-image">
               <img :src="realEstate.image" alt="Real Estate Image" />
             </div>
-            <h4>{{ realEstate.id }}</h4>
+            <div class="card-info">
+              <h4>{{ realEstate.aptNm }}</h4>
+              <p>{{ realEstate.excluUseAr }}㎡</p>
+              <p>{{ realEstate.dealCategory }}</p>
+              <template v-if="realEstate.dealCategory === '월세'">
+                {{ realEstate.dealAmount || "N/A" }}만원 /
+                {{ realEstate.feeAmount }}만원
+              </template>
+              <template v-else>
+                {{
+                  realEstate.dealAmount
+                    ? (
+                        parseFloat(realEstate.dealAmount.replace(/,/g, "")) *
+                        0.0001
+                      ).toFixed(2) + "억"
+                    : "N/A"
+                }}
+              </template>
+            </div>
           </div>
         </div>
         <button
@@ -225,9 +264,11 @@ onMounted(() => {
     </div>
     <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
-        <button class="close-button" @click="closeModal">닫기</button>
+        <div class="modal-button-container">
+          <button class="close-button" @click="closeModal">닫기</button>
+        </div>
         <ForSaleDetailCard
-          :realestates="realestates"
+          :realestates="realEstateInfo"
           :houseType="selectedHouseType"
           :selectedCard="realEstateInfo"
           :randomIndex="selectedRandomIndex"
@@ -257,6 +298,7 @@ onMounted(() => {
   position: relative;
   display: flex;
   align-items: center;
+  width: 1070px;
 }
 
 .cards {
@@ -357,7 +399,7 @@ onMounted(() => {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
+  /* width: 400px; */
   margin-top: 20px; /* 추가적인 상단 마진 */
 }
 

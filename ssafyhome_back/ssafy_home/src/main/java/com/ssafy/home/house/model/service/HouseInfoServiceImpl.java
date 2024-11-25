@@ -27,15 +27,19 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public HouseInfoDto getHousesInfo(String aptSeq, String houseType) {
     	String tableName = "";
+    	    	
     	
     	switch(houseType) {
     	case "apartment" :
+    	case "아파트" :
     		tableName = "houseinfos";
     		break;
     	case "villa" :
+    	case "빌라" :
     		tableName = "villainfos";
     		break;
     	case "officetel" :
+    	case "오피스텔" :
     		tableName = "officetelinfos";
     		break;
     	}
