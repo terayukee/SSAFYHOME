@@ -12,4 +12,8 @@ function fetchRealEstateInfos(params, success, fail) {
     .catch(fail);
 }
 
-export { fetchRealEstateInfos };
+function getById(param, success, fail) {
+  realestateApi.get("/getbyid", { params: param }).then(success).catch(fail);
+}
+
+export { fetchRealEstateInfos, getById };
