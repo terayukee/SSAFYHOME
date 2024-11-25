@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode"
 import { userConfirm, findById, tokenRegeneration, logout , registerUser , updateUser , deleteUser , userRestore} from "@/api/user"
 import { httpStatusCode } from "@/util/http-status"
 
-export const useUserStore = defineStore("memberStore", () => {
+export const useUserStore = defineStore("userStore", () => {
   const router = useRouter()
 
   const isLogin = ref(false)

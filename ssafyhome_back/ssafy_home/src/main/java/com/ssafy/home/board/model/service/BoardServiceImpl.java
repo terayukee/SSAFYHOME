@@ -130,7 +130,7 @@ public class BoardServiceImpl implements BoardService{
 	public String getOriginalFileName(String filePath) throws Exception {
 	    return boardMapper.getFileInfoByPath(filePath)
 	        .map(FileInfoDto::getFileName)
-	        .orElse(new File(filePath).getName());  // DB에서 못 찾으면 파일 시스템의 이름 사용
+	        .orElse(new File(filePath).getName());  
 	}
  
 }

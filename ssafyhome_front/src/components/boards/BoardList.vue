@@ -1,9 +1,14 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { listArticle } from '@/api/board';
 import { useRoute, useRouter } from "vue-router";
 import VPageNavigation from '../common/VPageNavigation.vue';
 import BoardListItem from './item/BoardListItem.vue';
+import { useUserStore } from '@/stores/userStore';
+import { storeToRefs } from 'pinia';
+
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore); 
 
 const router = useRouter();
 const route = useRoute();
@@ -75,7 +80,7 @@ const moveWrite = (val = 1) => {
       </tbody>
     </table>
     <div class="button-container">
-      <button class="pagination-button" @click="moveWrite(param.pgno)">게시판 글쓰기</button>
+      <button class="pagination-button" @click="moveWrite(param.pgno)" v-if="userInfo && userInfo.role === 'ADMIN'">게시판 글쓰기</button>
     </div>
   </div>  
   <VPageNavigation

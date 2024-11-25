@@ -37,6 +37,18 @@ const isNotLoginUser = async (to, from, next) => {
   }
 };
 
+// 로그인 상태일때
+const isAdmin = async (to, from, next) => {
+  const userStore = useUserStore();
+  const { userInfo } = storeToRefs(userStore);
+  console.log(userInfo.value.role)
+  if ( userInfo.value.role != 'ADMIN' ) {
+    next({ name: "home" });
+  } else {
+    next();
+  }
+};
+
 
 const routes = [
   { path: "/", name: "home", component: Home },
@@ -83,11 +95,13 @@ const routes = [
         path: "view/wirte/:page",
         name: "board-write",
         component: BoardWirte,
+        beforeEnter: isAdmin,
       },
       {
         path: "view/edit/:page/:boardNo",
         name: "board-edit",
-        component: BoardEdit,  
+        component: BoardEdit,
+        beforeEnter: isAdmin,
       },
     ],
   },

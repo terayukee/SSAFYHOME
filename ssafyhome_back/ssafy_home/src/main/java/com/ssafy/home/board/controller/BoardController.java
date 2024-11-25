@@ -51,7 +51,7 @@ public class BoardController {
 	private final BoardService boardService;
 
 	@Value("${file.upload-dir}")
-	private String uploadDir; // application.properties에서 파일 경로를 주입받기
+	private String uploadDir;
 	
 	public BoardController(BoardService boardService) {
 		super();
