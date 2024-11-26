@@ -39,7 +39,7 @@ import { useRouter } from "vue-router";
 
 import SearchBar from "@/components/SearchBar.vue";
 
-import Logo from "@/assets/logo.jpg";
+import Logo from "@/assets/logo.png";
 import { useUserStore } from "@/stores/userStore";
 import { storeToRefs } from "pinia";
 
@@ -81,7 +81,8 @@ const navigateTo = (route) => {
 }
 
 .logo img {
-  height: 40px;
+  width: 150px;
+  height: auto;
   cursor: pointer;
   margin-right: 16px;
 }
