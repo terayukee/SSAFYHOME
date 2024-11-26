@@ -36,7 +36,6 @@ const mvUserRegister = () => {
 </script>
 
 <template>
-  <button @click="check">체크</button>
   <div class="login-container">
     <div class="login-card">
       <!-- 헤더 -->
@@ -77,9 +76,6 @@ const mvUserRegister = () => {
           </p>
         </div>
 
-        <!-- <div class="form-options">
-          <a href="#" class="forgot-password link">비밀번호를 잊으셨나요?</a>
-        </div> -->
 
         <button type="submit" class="primary-button">로그인</button>
 

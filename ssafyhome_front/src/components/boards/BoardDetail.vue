@@ -2,6 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { detailArticle, deleteArticle } from '@/api/board';
+import { useUserStore } from '@/stores/userStore';
+import { storeToRefs } from 'pinia';
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore); 
 
 const route = useRoute();
 const router = useRouter();
@@ -165,10 +169,10 @@ onMounted(getArticle);
           </button>
         </div>
         <div class="right-buttons">
-          <button @click="goToUpdate" class="edit-button">
+          <button @click="goToUpdate" class="edit-button"  v-if="userInfo && userInfo.role === 'ADMIN'">
             수정
           </button>
-          <button @click="deletePost" class="delete-button">
+          <button @click="deletePost" class="delete-button"  v-if="userInfo && userInfo.role === 'ADMIN'">
             삭제
           </button>
         </div>

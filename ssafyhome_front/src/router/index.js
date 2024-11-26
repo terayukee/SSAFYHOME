@@ -64,7 +64,6 @@ const routes = [
       houseType: route.query.housetype || "apartment",
     }), // 쿼리 파라미터를 props로 전달
   },
-  { path: "/favorites", name: "favorite", component: Favorites },
   { path: "/login", name: "login", component: Login , beforeEnter: isLoginUser},
   { path: "/regist", name: "user-regist", component: UserRegister , beforeEnter: isLoginUser },
   { path: "/userinfo", name: "user-info", component: MyInfo , beforeEnter: isNotLoginUser},
