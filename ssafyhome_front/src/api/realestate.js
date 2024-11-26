@@ -16,4 +16,15 @@ function getById(param, success, fail) {
   realestateApi.get("/getbyid", { params: param }).then(success).catch(fail);
 }
 
-export { fetchRealEstateInfos, getById };
+function getByUserNo(param, success, fail) {
+  realestateApi
+    .get("/getbyuserno", { params: param })
+    .then(success)
+    .catch(fail);
+}
+
+function registerRealEstate(param, success, fail) {
+  realestateApi.post("/register", param).then(success).catch(fail);
+}
+
+export { fetchRealEstateInfos, getById, getByUserNo, registerRealEstate };

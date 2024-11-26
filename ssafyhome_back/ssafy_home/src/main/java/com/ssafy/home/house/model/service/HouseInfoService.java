@@ -12,4 +12,7 @@ public interface HouseInfoService {
 
     // apt_seq로 특정 집 정보 조회
     HouseInfoDto getHousesInfo(String aptSeq, String houseType);
+    
+    List<HouseInfoDto> getHouseByAptNm(String aptNm, String houseType);
+
 }

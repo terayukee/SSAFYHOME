@@ -73,6 +73,24 @@
 			apt_seq = #{aptSeq}
 	</select>
 
+	<select id="getHouseByAptNm" resultMap="HouseInfoResultMap">
+	    SELECT
+	        apt_seq,
+	        sgg_cd,
+	        umd_cd,
+	        umd_nm,
+	        jibun,
+	        road_nm,
+	        apt_nm,
+	        build_year,
+	        latitude,
+	        longitude
+	    FROM
+	        ${tableName}
+	    WHERE
+	        apt_nm LIKE CONCAT('%', #{aptNm}, '%')
+	</select>
+	
 </mapper>
 
     
