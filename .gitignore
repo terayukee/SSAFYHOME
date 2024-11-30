@@ -21,6 +21,9 @@ target/
 
 ### NetBeans ###
 /nbproject/private/
+
+.env
+application.properties
 /nbbuild/
 /dist/
 /nbdist/
