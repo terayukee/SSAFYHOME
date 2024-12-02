@@ -1,6 +1,6 @@
 ### **🤔 사용자들은 부동산 탐색을 위해 어떤 서비스를 사용할까?**
 
-![image](/uploads/89950a86e1f0a86ff5f0ffbd6fe61237/image.png)
+![image](./assets/images/slide1.png)
 
 💰 **주택 실거래가** 정보
 
@@ -14,42 +14,43 @@
 
 ## Project 개집
 
-![image__1_](/uploads/d6d19ef0ca27433728ccf1e8b6060c39/image__1_.png)
+![image__1_](./assets/images/slide2.png)
 
 💦 우리는 사용자의 성공적인 내집 마련을 위해 **헌신**합니다.
 
-![슬라이드3](/uploads/6d96f36650b9d15ecfd1091e4672eec1/슬라이드3.png)
+![slide3](./assets/images/slide3.png)
 
-![슬라이드4](/uploads/070e312ef6be61a37c1cefa6e98e5333/슬라이드4.png)
+![slide4](./assets/images/slide4.png)
 
-![슬라이드5](/uploads/8990772e247d8b8462325b4e394bccaa/슬라이드5.png)
+![slide5](./assets/images/slide5.png)
 
-![슬라이드6](/uploads/f4fbd4ee1a3c9bddb112fcd147bad39a/슬라이드6.png)
+![slide6](./assets/images/slide6.png)
 
-![슬라이드7](/uploads/9bf5a68af8a639ee23fd77aff4eab601/슬라이드7.png)
+![slide7](./assets/images/slide7.png)
 
-![슬라이드8](/uploads/1bbaf043a6a3c2c394008fb4de0751ea/슬라이드8.png)
+![slide8](./assets/images/slide8.png)
 
-![슬라이드9](/uploads/1ab433a4a24163a6040e920a8762efc8/슬라이드9.png)
+![slide9](./assets/images/slide9.png)
 
-![슬라이드10](/uploads/1c501e677275c7c83ce420046e6a7d57/슬라이드10.png)
+![slide10](./assets/images/slide10.png)
 
-![슬라이드11](/uploads/92043cf77b2143fc1dbd11300087bd52/슬라이드11.png)
+![slide11](./assets/images/slide11.png)
 
-![슬라이드12](/uploads/839a086e86a8dffc739744b34786ce60/슬라이드12.png)
+![slide12](./assets/images/slide12.png)
 
-![슬라이드13](/uploads/a4ba4379962ac5db2c9d1c709b172ea1/슬라이드13.png)
+![slide13](./assets/images/slide13.png)
 
-![슬라이드14](/uploads/88b607e83218fa3b14f93267c268ddb6/슬라이드14.png)
+![slide14](./assets/images/slide14.png)
+
 ---
 
 ### 🌟 Class Diagram
 
-![클래스_다이어그램](/uploads/8d782446ab1a8e3d74e08783131fc3b8/클래스_다이어그램.jpg)
+![클래스_다이어그램](./assets/images/class_diagram.jpg)
 
 ### 🌟 EER Diagram
 
-![image__2_](/uploads/f22af1b2397c899ba5570a019860afbc/image__2_.png)
+![image__2_](./assets/images/eer_diagram.png)
 
 ### 🌟 요구사항 정의서
 
