@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 동영상 ###
+*.mp4
