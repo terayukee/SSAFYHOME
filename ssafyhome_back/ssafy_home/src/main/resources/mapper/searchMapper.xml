@@ -21,6 +21,7 @@
 	</select>
 
 
+	<!-- 주택 검색 -->
 	<select id="searchHouse" parameterType="string" resultType="com.ssafy.home.search.model.HouseDto">
 	    SELECT 
 	        hi.apt_seq AS aptSeq,
@@ -36,9 +37,16 @@
 	        hi.build_year AS buildYear,
 	        hi.latitude AS latitude,
 	        hi.longitude AS longitude,
-	        '아파트' AS houseType
-	    FROM houseinfos hi
-	    WHERE MATCH(hi.apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
+	        '아파트' AS houseType,
+	        dc.sido_name AS sidoName,
+	        dc.gugun_name AS gugunName,
+	        dc.dong_name AS dongName
+	    FROM 
+	        houseinfos hi
+	    LEFT JOIN 
+	        dongcodes dc ON dc.dong_code = CONCAT(hi.sgg_cd, hi.umd_cd)
+	    WHERE 
+	        MATCH(hi.apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
 	
 	    UNION ALL
 	
@@ -56,9 +64,16 @@
 	        vi.build_year AS buildYear,
 	        vi.latitude AS latitude,
 	        vi.longitude AS longitude,
-	        '빌라' AS houseType
-	    FROM villainfos vi
-	    WHERE MATCH(vi.apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
+	        '빌라' AS houseType,
+	        dc.sido_name AS sidoName,
+	        dc.gugun_name AS gugunName,
+	        dc.dong_name AS dongName
+	    FROM 
+	        villainfos vi
+	    LEFT JOIN 
+	        dongcodes dc ON dc.dong_code = CONCAT(vi.sgg_cd, vi.umd_cd)
+	    WHERE 
+	        MATCH(vi.apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
 	
 	    UNION ALL
 	
@@ -76,20 +91,68 @@
 	        oi.build_year AS buildYear,
 	        oi.latitude AS latitude,
 	        oi.longitude AS longitude,
-	        '오피스텔' AS houseType
-	    FROM officetelinfos oi
-	    WHERE MATCH(oi.apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
+	        '오피스텔' AS houseType,
+	        dc.sido_name AS sidoName,
+	        dc.gugun_name AS gugunName,
+	        dc.dong_name AS dongName
+	    FROM 
+	        officetelinfos oi
+	    LEFT JOIN 
+	        dongcodes dc ON dc.dong_code = CONCAT(oi.sgg_cd, oi.umd_cd)
+	    WHERE 
+	        MATCH(oi.apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
 	</select>
-
-
-    <!-- dongcodes 테이블에서 sido_name, gugun_name, dong_name을 조회 -->
-	<select id="getDongInfo" parameterType="map" resultType="map">
+	
+	<!-- houseinfos 검색 -->
+	<select id="searchHouseInfos" parameterType="string" resultType="com.ssafy.home.search.model.HouseDto">
 	    SELECT 
-	        sido_name AS sidoName,
-	        gugun_name AS gugunName,
-	        dong_name AS dongName
-	    FROM dongcodes
-	    WHERE dong_code = CONCAT(#{sggCd}, #{umdCd})
+	        apt_seq AS aptSeq,
+	        sgg_cd AS sggCd,
+	        umd_cd AS umdCd,
+	        umd_nm AS umdNm,
+	        apt_nm AS aptNm,
+	        latitude AS latitude,
+	        longitude AS longitude,
+	        '아파트' AS houseType
+	    FROM 
+	        houseinfos
+	    WHERE 
+	        MATCH(apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
 	</select>
+	
+	<!-- villainfos 검색 -->
+	<select id="searchVillaInfos" parameterType="string" resultType="com.ssafy.home.search.model.HouseDto">
+	    SELECT 
+	        apt_seq AS aptSeq,
+	        sgg_cd AS sggCd,
+	        umd_cd AS umdCd,
+	        umd_nm AS umdNm,
+	        apt_nm AS aptNm,
+	        latitude AS latitude,
+	        longitude AS longitude,
+	        '빌라' AS houseType
+	    FROM 
+	        villainfos
+	    WHERE 
+	        MATCH(apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
+	</select>
+	
+	<!-- officetelinfos 검색 -->
+	<select id="searchOfficetelInfos" parameterType="string" resultType="com.ssafy.home.search.model.HouseDto">
+	    SELECT 
+	        apt_seq AS aptSeq,
+	        sgg_cd AS sggCd,
+	        umd_cd AS umdCd,
+	        umd_nm AS umdNm,
+	        apt_nm AS aptNm,
+	        latitude AS latitude,
+	        longitude AS longitude,
+	        '오피스텔' AS houseType
+	    FROM 
+	        officetelinfos
+	    WHERE 
+	        MATCH(apt_nm) AGAINST(#{keyword} IN BOOLEAN MODE)
+	</select>
+	
     
 </mapper>

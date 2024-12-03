@@ -1,8 +1,8 @@
 package com.ssafy.home.search.model.service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 
@@ -25,31 +25,35 @@ public class SearchServiceImpl implements SearchService {
 		return searchMapper.searchRegion(formattedKeyword);
 	}
 
-	// 주택검색 Service
+	
 	@Override
-	public List<HouseDto> searchHouse(String keyword) {
-		// 1. "서울" 검색 시 "서울"이라는 이름이 들어간 아파트, 빌라, 오피스텔 모두 가져오기 
-		String formattedKeyword = formattingKeyword(keyword);
-		List<HouseDto> houses = searchMapper.searchHouse(formattedKeyword);
+    public List<HouseDto> searchHouse(String keyword) {
+        String formattedKeyword = "+" + keyword + "*";
 
-		// 2. 각 HouseDto에 시-구-동 정보를 조회해 설정
-		for (HouseDto house : houses) {		
-			// DB 조회용 파라미터 설정 
-			Map<String, String> params = new HashMap<>();
-			params.put("sggCd", house.getSggCd());
-			params.put("umdCd", house.getUmdCd());
+        // 병렬로 테이블 조회
+        CompletableFuture<List<HouseDto>> houseInfosFuture =
+            CompletableFuture.supplyAsync(() -> searchMapper.searchHouseInfos(formattedKeyword));
+        CompletableFuture<List<HouseDto>> villaInfosFuture =
+            CompletableFuture.supplyAsync(() -> searchMapper.searchVillaInfos(formattedKeyword));
+        CompletableFuture<List<HouseDto>> officetelInfosFuture =
+            CompletableFuture.supplyAsync(() -> searchMapper.searchOfficetelInfos(formattedKeyword));
 
-			// DB 조회
-			Map<String, String> dongInfo = searchMapper.getDongInfo(params);
-			if (dongInfo != null) {
-				house.setSidoName(dongInfo.get("sidoName"));
-				house.setGugunName(dongInfo.get("gugunName"));
-				house.setDongName(dongInfo.get("dongName"));
-			}
-		}
+        // 결과를 결합
+        try {
+            List<HouseDto> houseInfos = houseInfosFuture.get();
+            List<HouseDto> villaInfos = villaInfosFuture.get();
+            List<HouseDto> officetelInfos = officetelInfosFuture.get();
 
-		return houses;
-	}
+            List<HouseDto> result = new ArrayList<>();
+            result.addAll(houseInfos);
+            result.addAll(villaInfos);
+            result.addAll(officetelInfos);
+
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException("Error while fetching house data in parallel", e);
+        }
+    }
 	
 	// Full-Text Index를 활용하기 위한 키워드 변경 
 	public String formattingKeyword(String keyword) {

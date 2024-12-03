@@ -18,12 +18,25 @@ public interface SearchMapper {
      */
     List<RegionDto> searchRegion(@Param("keyword") String keyword);
 
-    /**
-     * 주택 검색
-     * @param keyword 검색 키워드
-     * @return 주택 검색 결과 리스트
-     */
-    List<HouseDto> searchHouse(@Param("keyword") String keyword);
 
-	Map<String, String> getDongInfo(Map<String, String> params);
+    /**
+     * 주택 검색: 아파트 정보
+     * @param keyword 검색 키워드
+     * @return 아파트 검색 결과 리스트
+     */
+    List<HouseDto> searchHouseInfos(@Param("keyword") String keyword);
+
+    /**
+     * 주택 검색: 빌라 정보
+     * @param keyword 검색 키워드
+     * @return 빌라 검색 결과 리스트
+     */
+    List<HouseDto> searchVillaInfos(@Param("keyword") String keyword);
+
+    /**
+     * 주택 검색: 오피스텔 정보
+     * @param keyword 검색 키워드
+     * @return 오피스텔 검색 결과 리스트
+     */
+    List<HouseDto> searchOfficetelInfos(@Param("keyword") String keyword);
 }
