@@ -37,3 +37,7 @@ build/
 
 ### 동영상 ###
 *.mp4
+
+### 민감 파일 ###
+application.properties
+*.env
