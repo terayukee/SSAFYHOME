@@ -1,5 +1,6 @@
 ### **🤔 사용자들은 부동산 탐색을 위해 어떤 서비스를 사용할까?**
 
+<<<<<<< HEAD
 ![image](/uploads/89950a86e1f0a86ff5f0ffbd6fe61237/image.png)
 
 💰 **주택 실거래가** 정보
@@ -41,15 +42,66 @@
 ![슬라이드13](/uploads/a4ba4379962ac5db2c9d1c709b172ea1/슬라이드13.png)
 
 ![슬라이드14](/uploads/88b607e83218fa3b14f93267c268ddb6/슬라이드14.png)
+=======
+💰 **주택 실거래가** 정보
+
+- 호갱노노
+
+🏠 **부동산 매물** 정보
+
+- 직방
+
+### 💡 만약 **둘을 합친 서비스**가 있다면?
+
+## Project 개집
+![image](./assets/images/slide1.png)
+
+![image__1_](./assets/images/slide2.png)
+
+💦 우리는 사용자의 성공적인 내집 마련을 위해 **헌신**합니다.
+
+![slide3](./assets/images/slide3.png)
+
+![slide4](./assets/images/slide4.png)
+
+![slide5](./assets/images/slide5.png)
+
+![slide6](./assets/images/slide6.png)
+
+![slide7](./assets/images/slide7.png)
+
+![slide8](./assets/images/slide8.png)
+
+![slide9](./assets/images/slide9.png)
+
+![slide10](./assets/images/slide10.png)
+
+![slide11](./assets/images/slide11.png)
+
+![slide12](./assets/images/slide12.png)
+
+![slide13](./assets/images/slide13.png)
+
+![slide14](./assets/images/slide14.png)
+
+>>>>>>> d45a22b60e6aaa4b3b70c3d7558c9b806ddd8fa9
 ---
 
 ### 🌟 Class Diagram
 
+<<<<<<< HEAD
 ![클래스_다이어그램](/uploads/8d782446ab1a8e3d74e08783131fc3b8/클래스_다이어그램.jpg)
 
 ### 🌟 EER Diagram
 
 ![image__2_](/uploads/f22af1b2397c899ba5570a019860afbc/image__2_.png)
+=======
+![클래스_다이어그램](./assets/images/class_diagram.jpg)
+
+### 🌟 EER Diagram
+
+![image__2_](./assets/images/eer_diagram.png)
+>>>>>>> d45a22b60e6aaa4b3b70c3d7558c9b806ddd8fa9
 
 ### 🌟 요구사항 정의서
 

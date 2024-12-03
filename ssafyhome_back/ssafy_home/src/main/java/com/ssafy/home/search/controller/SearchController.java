@@ -17,6 +17,7 @@ import com.ssafy.home.search.model.service.SearchService;
 @RestController
 @RequestMapping("/api/search")
 public class SearchController {
+
 	private final SearchService searchService;
 
 	public SearchController(SearchService searchService) {

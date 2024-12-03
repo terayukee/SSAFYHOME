@@ -21,6 +21,9 @@ target/
 
 ### NetBeans ###
 /nbproject/private/
+
+.env
+application.properties
 /nbbuild/
 /dist/
 /nbdist/
@@ -32,5 +35,10 @@ build/
 ### VS Code ###
 .vscode/
 
+<<<<<<< HEAD
 ### 동영상 ###
 *.mp4
+=======
+### 발표 영상 ###
+강인혁_박준현_발표영상.mp4
+>>>>>>> d45a22b60e6aaa4b3b70c3d7558c9b806ddd8fa9
