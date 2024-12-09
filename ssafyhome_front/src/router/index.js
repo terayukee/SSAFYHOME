@@ -1,4 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/stores/userStore";
+import { storeToRefs } from "pinia";
+
+// 컴포넌트
 import Home from "../views/Home.vue";
 import Category from "../views/Category.vue";
 import Favorites from "@/components/common/Favorites.vue";
@@ -10,15 +14,14 @@ import UserRegister from "@/components/users/UserRegister.vue";
 import BoardEdit from "@/components/boards/BoardEdit.vue";
 import MyInfo from "@/components/users/MyInfo.vue";
 import MainNews from "@/components/news/MainNews.vue";
-import { useUserStore } from "@/stores/userStore";
-import { storeToRefs } from "pinia";
+import KakaoLoginRedirect from "@/components/users/KakaoLoginRedirect.vue";
 
 // 로그인 상태일때
 const isLoginUser = async (to, from, next) => {
   const userStore = useUserStore();
-  const {isLogin} = storeToRefs(userStore);
+  const { isLogin } = storeToRefs(userStore);
 
-  if ( isLogin.value ) {
+  if (isLogin.value) {
     next({ name: "home" });
   } else {
     next();
@@ -28,9 +31,9 @@ const isLoginUser = async (to, from, next) => {
 // 비로그인 상태일때
 const isNotLoginUser = async (to, from, next) => {
   const userStore = useUserStore();
-  const {isLogin} = storeToRefs(userStore);
+  const { isLogin } = storeToRefs(userStore);
 
-  if ( !isLogin.value ) {
+  if (!isLogin.value) {
     next({ name: "home" });
   } else {
     next();
@@ -41,14 +44,13 @@ const isNotLoginUser = async (to, from, next) => {
 const isAdmin = async (to, from, next) => {
   const userStore = useUserStore();
   const { userInfo } = storeToRefs(userStore);
-  console.log(userInfo.value.role)
-  if ( userInfo.value.role != 'ADMIN' ) {
+  console.log(userInfo.value.role);
+  if (userInfo.value.role != "ADMIN") {
     next({ name: "home" });
   } else {
     next();
   }
 };
-
 
 const routes = [
   { path: "/", name: "home", component: Home },
@@ -64,11 +66,20 @@ const routes = [
       houseType: route.query.housetype || "apartment",
     }), // 쿼리 파라미터를 props로 전달
   },
-  { path: "/login", name: "login", component: Login , beforeEnter: isLoginUser},
-  { path: "/regist", name: "user-regist", component: UserRegister , beforeEnter: isLoginUser },
-  { path: "/userinfo", name: "user-info", component: MyInfo , beforeEnter: isNotLoginUser},
-  { path: "/news", name:"news", component: MainNews}
-  ,
+  { path: "/login", name: "login", component: Login, beforeEnter: isLoginUser },
+  {
+    path: "/regist",
+    name: "user-regist",
+    component: UserRegister,
+    beforeEnter: isLoginUser,
+  },
+  {
+    path: "/userinfo",
+    name: "user-info",
+    component: MyInfo,
+    beforeEnter: isNotLoginUser,
+  },
+  { path: "/news", name: "news", component: MainNews },
   {
     path: "/board",
     name: "board",
@@ -103,6 +114,11 @@ const routes = [
         beforeEnter: isAdmin,
       },
     ],
+  },
+  {
+    path: "/oauth/callback/kakao",
+    name: "kakaoRedirect",
+    component: KakaoLoginRedirect,
   },
 ];
 

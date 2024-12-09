@@ -13,6 +13,7 @@
         <li @click="navigateTo('news')">뉴스</li>
       </ul>
       <div class="auth-buttons">
+        <!-- 로그인 전 -->
         <div v-if="!isLogin" class="">
           <button class="btn btn-shadow mg-l-1" @click="navigateTo('login')">
             로그인
@@ -22,8 +23,12 @@
           </button>
         </div>
 
-        <div v-else>
-          <!-- 로그인 후 내 정보 버튼만 표시 -->
+        <!-- 로그인 후 -->
+        <div v-else class="auth-container">
+          <p class="welcome-message">
+            <span class="nickname">{{ userInfo?.nickname }}</span
+            >님 환영합니다.
+          </p>
           <button class="btn mg-l-1" @click="logout">로그아웃</button>
           <button class="btn btn-gradient" @click="navigateTo('user-info')">
             내 정보
@@ -44,7 +49,7 @@ import { useUserStore } from "@/stores/userStore";
 import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();
-const { isLogin } = storeToRefs(userStore);
+const { isLogin, userInfo } = storeToRefs(userStore);
 
 const { userLogout } = userStore;
 
@@ -243,5 +248,22 @@ const navigateTo = (route) => {
 .btn-lg {
   padding: 8px 20px;
   font-size: 16px;
+}
+
+.auth-container {
+  display: flex; /* 가로로 배치 */
+  align-items: center; /* 세로 가운데 정렬 */
+  gap: 16px; /* 요소 간 간격 */
+}
+
+.welcome-message {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0; /* 여백 제거 */
+}
+
+.nickname {
+  color: #2563eb; /* 파란 글씨 */
+  font-weight: bold;
 }
 </style>

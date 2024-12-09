@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
-import KakaoLogin from "./kakaoLogin.vue";
+import KakaoLogin from "./KakaoLogin.vue";
 const userStore = useUserStore();
 const { isLogin, accessToken, userInfo } = storeToRefs(userStore);
 const { userLogin, getUserInfo } = useUserStore();
@@ -75,7 +75,6 @@ const mvUserRegister = () => {
             로그인 실패! 이메일 또는 비밀번호를 확인해주세요.
           </p>
         </div>
-
 
         <button type="submit" class="primary-button">로그인</button>
 

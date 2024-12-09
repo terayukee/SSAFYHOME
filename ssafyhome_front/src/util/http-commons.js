@@ -112,6 +112,17 @@ function houseCommentAxios() {
   return instance;
 }
 
+// 소셜 로그인
+function oauthAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL + "/oauth",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
 export {
   localAxios,
   houseInfoAxios,
@@ -122,4 +133,5 @@ export {
   realestateAxios,
   favoriteAxios,
   houseCommentAxios,
+  oauthAxios,
 };

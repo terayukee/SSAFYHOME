@@ -1,49 +1,67 @@
 <script setup>
-import { onMounted, onBeforeUnmount } from "vue";
+import { onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/userStore";
 
+// Key
 const { VITE_KAKAO_REST_API_KEY, VITE_KAKAO_REDIRECT_URI } = import.meta.env;
 
+// Pinia Store
 const userStore = useUserStore();
-const { getUserInfo } = userStore;
-const { isLogin, isLoginError, isValidToken } = storeToRefs(userStore);
+const { setUserInfo } = userStore;
+const { isLogin } = storeToRefs(userStore);
+
+// Vue Router
 const router = useRouter();
 
+// 팝업 창 참조
 let loginBox = null;
 
 // 메시지 이벤트 리스너
-const handleMessage = async (event) => {
-  const { accessToken, refreshToken, error } = event.data;
+const handleMessage = (event) => {
+  // 출처 확인
+  if (event.origin !== window.location.origin) {
+    console.error("Invalid message origin:", event.origin);
+    return;
+  }
+
+  const { accessToken, id, nickname, error } = event.data;
+
   if (error) {
     console.error("카카오 로그인 오류:", error);
-  } else {
-    console.log("AccessToken:", accessToken);
-    console.log("RefreshToken:", refreshToken);
-    try {
-      await getUserInfo(accessToken);
-      isLogin.value = true;
-      isLoginError.value = false;
-      isValidToken.value = true;
-      router.replace("/");
-    } catch (err) {
-      console.error("사용자 정보 가져오기 실패:", err);
-    }
+    alert("로그인 실패: " + error);
+    return;
   }
+
+  console.log("카카오 로그인 성공:", { accessToken, id, nickname });
+
+  // 사용자 정보를 Pinia Store에 저장
+  setUserInfo({ id, nickname, accessToken });
+
+  // 로그인 상태 업데이트
+  isLogin.value = true;
+
+  // 메인 페이지로 이동
+  router.replace("/"); // Home.vue로 이동
 };
 
+// 카카오 로그인
 const kakaoLogin = () => {
   const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${VITE_KAKAO_REST_API_KEY}&redirect_uri=${VITE_KAKAO_REDIRECT_URI}&response_type=code`;
 
   // 팝업 창 열기
   loginBox = window.open(kakaoAuthUrl, "_blank", "width=800, height=600");
 
+  if (!loginBox) {
+    alert("팝업 차단을 해제해주세요.");
+  }
+
   // 메시지 리스너 추가
   window.addEventListener("message", handleMessage);
 };
 
-// 컴포넌트 언마운트 시 이벤트 리스너 제거
+// 컴포넌트 언마운트 시 메시지 리스너 제거
 onBeforeUnmount(() => {
   window.removeEventListener("message", handleMessage);
 });
