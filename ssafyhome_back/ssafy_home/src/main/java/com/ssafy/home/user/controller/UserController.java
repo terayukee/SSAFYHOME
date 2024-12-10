@@ -161,7 +161,7 @@ public class UserController {
 	        }
 	        
 	        // 일반적인 회원가입 처리
-	        int no = userService.joinUser(user);
+	        int no = userService.registerUser(user);
 	        if(no == 1) {
 	            return ResponseEntity.status(HttpStatus.CREATED).build();
 	        } else {

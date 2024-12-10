@@ -30,6 +30,8 @@ const handleKakaoLogin = async () => {
         refreshToken: res.data.refreshToken,
         id: res.data.id,
         nickname: res.data.nickname,
+        email: res.data.email,
+        userNo: res.data.userNo,
       };
 
       window.opener.postMessage(userInfo, "*"); // 부모 창으로 메시지 전달

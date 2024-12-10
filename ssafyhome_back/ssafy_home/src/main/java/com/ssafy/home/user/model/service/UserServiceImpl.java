@@ -39,11 +39,6 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	@Override
-	public int joinUser(UserDto userDto) throws Exception {
-		return userMapper.joinUser(userDto);
-		
-	}
 	
 	@Override
 	public int userUpdate(UserDto userDto) throws Exception {
@@ -88,7 +83,7 @@ public class UserServiceImpl implements UserService {
 		// 회원가입
 		if(userCount == 0) {
 			// 회원가입 
-			userMapper.joinUser(userDto);
+			userMapper.registerUser(userDto);
 			// 가입한 유저 번호 
 			int userNum = userMapper.getUserNumByNickName(userDto.getUserNickname());
 			// 토큰 생성
@@ -130,22 +125,19 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	// 회원가입
-    public boolean registerUser(UserDto userDto) throws Exception {
+	@Override
+    public int registerUser(UserDto userDto) throws Exception {
         // 이메일 중복 체크
         if (userMapper.checkEmailExists(userDto.getEmail()) > 0) {
             throw new Exception("이미 가입된 이메일입니다.");
         }
 
-        // 닉네임 중복 체크
-        if (userMapper.getUserCountByNickName(userDto.getUserNickname()) > 0) {
-            throw new Exception("이미 사용 중인 닉네임입니다.");
-        }
-
         // 회원가입
-        return userMapper.joinUser(userDto) > 0;
+        return userMapper.registerUser(userDto);
     }
 
     // 사용자 정보 조회
+	@Override
     public UserDto getUserByEmail(String email) throws Exception {
         return userMapper.getDeletedUserByEmail(email);
     }

@@ -26,7 +26,7 @@ const handleMessage = (event) => {
     return;
   }
 
-  const { accessToken, id, nickname, error } = event.data;
+  const { accessToken, id, nickname, email, userNo, error } = event.data;
 
   if (error) {
     console.error("카카오 로그인 오류:", error);
@@ -37,7 +37,7 @@ const handleMessage = (event) => {
   console.log("카카오 로그인 성공:", { accessToken, id, nickname });
 
   // 사용자 정보를 Pinia Store에 저장
-  setUserInfo({ id, nickname, accessToken });
+  setUserInfo({ id, nickname, accessToken, email, userNo });
 
   // 로그인 상태 업데이트
   isLogin.value = true;

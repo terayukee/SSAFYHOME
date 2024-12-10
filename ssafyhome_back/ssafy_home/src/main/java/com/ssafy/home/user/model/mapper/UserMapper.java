@@ -17,7 +17,7 @@ public interface UserMapper {
 	// 유저 전체
 	List<UserDto> getAllUserList() throws SQLException;
 	// 회원가입
-	int joinUser(UserDto UserDto) throws SQLException;
+	int registerUser(UserDto UserDto) throws SQLException;
 	// 유저 수정
 	int userUpdate(UserDto userDto) throws SQLException;
 	

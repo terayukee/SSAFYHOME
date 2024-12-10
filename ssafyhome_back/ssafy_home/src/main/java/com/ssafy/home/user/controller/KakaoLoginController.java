@@ -65,11 +65,11 @@ public class KakaoLoginController {
                 newUser.setEmail(email);
                 newUser.setUserName(nickname); // 이름은 닉네임으로 설정
                 newUser.setRole("USER"); // 기본 권한 설정
-                if (!userService.registerUser(newUser)) {
+                if (userService.registerUser(newUser) == 0) {
                     throw new Exception("회원가입에 실패했습니다.");
                 }
                 // 회원가입 후 새로 저장된 사용자 정보 가져오기
-                user = userService.getUserByEmail(email);
+                user = newUser;
             } 
             // 4.2. 기존 사용자인 경우 
             else {

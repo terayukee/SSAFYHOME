@@ -54,7 +54,7 @@
 	    where user_nickname = #{userNickname}
 	</select>
 	
-	<insert id="joinUser" parameterType="UserDto">
+	<insert id="registerUser" parameterType="UserDto">
 		insert into users(user_name,user_password,user_nickname,user_email,phone_number, role ,register_time)
 		values (#{userName},#{userPassword},#{userNickname},#{email},#{phoneNumber},#{role},now());
 	</insert>
@@ -95,5 +95,9 @@
 	    WHERE user_no = #{userNo}
 	</update>
 
+	
+	<select id="checkEmailExists" parameterType="String" resultType="int">
+	    SELECT COUNT(*) FROM users WHERE user_email = #{email} AND deleted = false
+	</select>
 
 </mapper>
