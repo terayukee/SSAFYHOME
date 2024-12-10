@@ -129,5 +129,24 @@ public class UserServiceImpl implements UserService {
 	    return userMapper.restoreUser(userNo) > 0;
 	}
 	
-	
+	// 회원가입
+    public boolean registerUser(UserDto userDto) throws Exception {
+        // 이메일 중복 체크
+        if (userMapper.checkEmailExists(userDto.getEmail()) > 0) {
+            throw new Exception("이미 가입된 이메일입니다.");
+        }
+
+        // 닉네임 중복 체크
+        if (userMapper.getUserCountByNickName(userDto.getUserNickname()) > 0) {
+            throw new Exception("이미 사용 중인 닉네임입니다.");
+        }
+
+        // 회원가입
+        return userMapper.joinUser(userDto) > 0;
+    }
+
+    // 사용자 정보 조회
+    public UserDto getUserByEmail(String email) throws Exception {
+        return userMapper.getDeletedUserByEmail(email);
+    }
 }

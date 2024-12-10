@@ -81,51 +81,60 @@ public class KakaoUtil {
 
 	// 카카오 로그인 3단계 : 액세스토큰 -> 사용자 정보 받기
 	public HashMap<String, Object> getUserInfo(String accessToken) {
-		HashMap<String, Object> userInfo = new HashMap<>();
-		String reqUrl = "https://kapi.kakao.com/v2/user/me";
-		try {
-			URL url = new URL(reqUrl);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-			conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+	    HashMap<String, Object> userInfo = new HashMap<>();
+	    String reqUrl = "https://kapi.kakao.com/v2/user/me";
+	    try {
+	        URL url = new URL(reqUrl);
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	        conn.setRequestMethod("POST");
+	        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+	        conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-			int responseCode = conn.getResponseCode();
-			log.info("[KakaoApi.getUserInfo] responseCode : {}", responseCode);
+	        int responseCode = conn.getResponseCode();
+	        log.info("[KakaoApi.getUserInfo] responseCode : {}", responseCode);
 
-			BufferedReader br;
-			if (responseCode >= 200 && responseCode <= 300) {
-				br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			} else {
-				br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-			}
+	        BufferedReader br;
+	        if (responseCode >= 200 && responseCode <= 300) {
+	            br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        } else {
+	            br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+	        }
 
-			String line = "";
-			StringBuilder responseSb = new StringBuilder();
-			while ((line = br.readLine()) != null) {
-				responseSb.append(line);
-			}
-			String result = responseSb.toString();
-			log.info("responseBody = {}", result);
+	        String line = "";
+	        StringBuilder responseSb = new StringBuilder();
+	        while ((line = br.readLine()) != null) {
+	            responseSb.append(line);
+	        }
+	        String result = responseSb.toString();
+	        log.info("responseBody = {}", result);
 
-			JsonParser parser = new JsonParser();
-			JsonElement element = parser.parse(result);
+	        JsonParser parser = new JsonParser();
+	        JsonElement element = parser.parse(result);
 
-			// `id`는 최상위 레벨에 있으므로 바로 추출 가능
-			String id = element.getAsJsonObject().get("id").getAsString();
+	        // `id`는 최상위 레벨에 있으므로 바로 추출 가능
+	        String id = element.getAsJsonObject().get("id").getAsString();
 
-			// `nickname`은 `properties` 내부에 있으므로 추출
-			JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-			String nickname = properties.get("nickname").getAsString();
+	        // `nickname`은 `properties` 내부에 있으므로 추출
+	        JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+	        String nickname = properties.get("nickname").getAsString();
 
-			userInfo.put("nickname", nickname);
-			userInfo.put("id", id);
+	        // `email`은 `kakao_account` 내부에 있으므로 추출
+	        JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+	        String email = kakaoAccount.has("email") ? kakaoAccount.get("email").getAsString() : null;
 
-			br.close();
+	        // 사용자 정보 맵에 추가
+	        userInfo.put("id", id);
+	        userInfo.put("nickname", nickname);
+	        if (email != null) {
+	            userInfo.put("email", email);
+	        }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return userInfo;
+	        br.close();
+
+	    } catch (Exception e) {
+	        log.error("사용자 정보 가져오기 실패: ", e);
+	    }
+	    return userInfo;
 	}
+
 }

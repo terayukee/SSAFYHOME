@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.home.user.model.UserDto;
 import com.ssafy.home.user.model.service.UserService;
 import com.ssafy.home.util.KakaoUtil;
 
@@ -49,14 +50,39 @@ public class KakaoLoginController {
 
             String id = (String) userInfo.get("id");
             String nickname = (String) userInfo.get("nickname");
+            String email = (String) userInfo.get("email");
 
-            log.info("카카오 사용자 정보 - id: {}, nickname: {}", id, nickname);
+            log.info("카카오 사용자 정보 - id: {}, nickname: {}, email : {}", id, nickname, email);
+            
+             
+            UserDto user;
+            UserDto existingUser = userService.getUserByEmail(email);
+            // 4.1. 기존 사용자가 아니라면 회원가입 처리
+            if (existingUser == null) {
+                // 신규 회원인 경우 회원가입 처리
+                UserDto newUser = new UserDto();
+                newUser.setUserNickname(nickname);
+                newUser.setEmail(email);
+                newUser.setUserName(nickname); // 이름은 닉네임으로 설정
+                newUser.setRole("USER"); // 기본 권한 설정
+                if (!userService.registerUser(newUser)) {
+                    throw new Exception("회원가입에 실패했습니다.");
+                }
+                // 회원가입 후 새로 저장된 사용자 정보 가져오기
+                user = userService.getUserByEmail(email);
+            } 
+            // 4.2. 기존 사용자인 경우 
+            else {
+                user = existingUser; // 기존 사용자
+            }
 
-            // 4. 사용자 정보와 토큰 반환
+            // 5. 사용자 정보와 토큰 반환
             return ResponseEntity.ok(Map.of(
                 "accessToken", accessToken,
                 "id", id,
-                "nickname", nickname
+                "nickname", nickname,
+                "email", email,
+                "userNo", user.getUserNo() // userNo 추가
             ));
 
         } catch (Exception e) {

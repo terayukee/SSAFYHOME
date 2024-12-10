@@ -36,4 +36,8 @@ public interface UserService {
 	UserDto getDeletedUserByEmail(String email) throws Exception;
 	
 	boolean restoreUser(int userNo) throws Exception;
+
+	boolean registerUser(UserDto userDto) throws Exception;
+
+	UserDto getUserByEmail(String email) throws Exception;
 }

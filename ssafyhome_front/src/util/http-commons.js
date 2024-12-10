@@ -13,6 +13,17 @@ function localAxios() {
   return instance;
 }
 
+// 소셜 로그인
+function userAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL + "/user",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
 // 폼 데이터 가져오기
 function formAxios() {
   const instance = axios.create({
@@ -125,6 +136,7 @@ function oauthAxios() {
 
 export {
   localAxios,
+  userAxios,
   houseInfoAxios,
   houseDealAxios,
   formAxios,

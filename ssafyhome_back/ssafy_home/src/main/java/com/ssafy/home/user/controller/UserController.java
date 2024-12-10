@@ -130,8 +130,8 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/logout/{userNo}")
-	public ResponseEntity<?> removeToken(@PathVariable ("userNo") String userNo) {
+	@PostMapping("/logout")
+	public ResponseEntity<?> removeToken(@RequestParam String userNo) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		try {
