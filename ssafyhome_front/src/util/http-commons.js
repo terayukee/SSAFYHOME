@@ -134,6 +134,17 @@ function oauthAxios() {
   return instance;
 }
 
+// 이ㄴ증
+function authAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL + "/oauth",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
 export {
   localAxios,
   userAxios,
@@ -146,4 +157,5 @@ export {
   favoriteAxios,
   houseCommentAxios,
   oauthAxios,
+  authAxios,
 };

@@ -32,12 +32,33 @@ const isLoginUser = async (to, from, next) => {
 const isNotLoginUser = async (to, from, next) => {
   const userStore = useUserStore();
   const { isLogin } = storeToRefs(userStore);
+  const accessToken = userStore.accessToken;
 
+  // 1. 로그인 / 로그아웃 상태 확인
   if (!isLogin.value) {
     next({ name: "home" });
   } else {
     next();
   }
+
+  // 2. 토큰 검증
+  if (!accessToken) {
+    // 토큰이 없으면 로그인 페이지로 리다이렉트
+    return next({ name: "login" });
+  }
+
+  // 토큰 유효성 확인
+  validateToken(
+    accessToken,
+    () => {
+      next(); // 유효한 토큰인 경우
+    },
+    (error) => {
+      console.error("토큰 유효성 검사 실패:", error);
+      userStore.logout(); // 로그아웃 처리
+      next({ name: "login" }); // 로그인 페이지로 이동
+    }
+  );
 };
 
 // 로그인 상태일때
