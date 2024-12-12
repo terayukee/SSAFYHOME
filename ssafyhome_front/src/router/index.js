@@ -16,6 +16,9 @@ import MyInfo from "@/components/users/MyInfo.vue";
 import MainNews from "@/components/news/MainNews.vue";
 import KakaoLoginRedirect from "@/components/users/KakaoLoginRedirect.vue";
 
+// api
+import { validateToken } from "@/api/auth"; // API 호출
+
 // 로그인 상태일때
 const isLoginUser = async (to, from, next) => {
   const userStore = useUserStore();
@@ -32,7 +35,6 @@ const isLoginUser = async (to, from, next) => {
 const isNotLoginUser = async (to, from, next) => {
   const userStore = useUserStore();
   const { isLogin } = storeToRefs(userStore);
-  const accessToken = userStore.accessToken;
 
   // 1. 로그인 / 로그아웃 상태 확인
   if (!isLogin.value) {
@@ -40,25 +42,33 @@ const isNotLoginUser = async (to, from, next) => {
   } else {
     next();
   }
+};
 
-  // 2. 토큰 검증
+// accessToken 검증
+const isValidToken = async (to, from, next) => {
+  const userStore = useUserStore();
+  const accessToken = userStore.accessToken;
+
   if (!accessToken) {
     // 토큰이 없으면 로그인 페이지로 리다이렉트
     return next({ name: "login" });
   }
 
+  console.time("isValidToken Execution Time"); // 시작 시간 측정
+
   // 토큰 유효성 확인
-  validateToken(
-    accessToken,
-    () => {
-      next(); // 유효한 토큰인 경우
-    },
-    (error) => {
-      console.error("토큰 유효성 검사 실패:", error);
-      userStore.logout(); // 로그아웃 처리
-      next({ name: "login" }); // 로그인 페이지로 이동
-    }
-  );
+  try {
+    await validateToken(accessToken); // 성공하면 넘어감
+    console.timeEnd("isValidToken Execution Time"); // 종료 시간 출력
+    next();
+  } catch (error) {
+    console.error(
+      "토큰 유효성 검사 실패:",
+      error.response?.data || error.message
+    );
+    userStore.logout(); // 로그아웃 처리
+    next({ name: "login" }); // 로그인 페이지로 이동
+  }
 };
 
 // 로그인 상태일때
@@ -98,7 +108,7 @@ const routes = [
     path: "/userinfo",
     name: "user-info",
     component: MyInfo,
-    beforeEnter: isNotLoginUser,
+    beforeEnter: isValidToken,
   },
   { path: "/news", name: "news", component: MainNews },
   {

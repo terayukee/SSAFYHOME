@@ -139,6 +139,6 @@ public class UserServiceImpl implements UserService {
     // 사용자 정보 조회
 	@Override
     public UserDto getUserByEmail(String email) throws Exception {
-        return userMapper.getDeletedUserByEmail(email);
+        return userMapper.getUserByEmail(email);
     }
 }

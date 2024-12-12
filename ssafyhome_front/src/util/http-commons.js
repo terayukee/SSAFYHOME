@@ -137,7 +137,7 @@ function oauthAxios() {
 // 이ㄴ증
 function authAxios() {
   const instance = axios.create({
-    baseURL: VITE_VUE_API_URL + "/oauth",
+    baseURL: VITE_VUE_API_URL + "/auth",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
     },

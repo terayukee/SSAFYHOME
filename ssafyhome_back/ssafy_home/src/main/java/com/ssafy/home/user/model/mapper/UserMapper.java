@@ -43,5 +43,7 @@ public interface UserMapper {
 	
 	int restoreUser(int userNo) throws Exception;
 	
+	UserDto getUserByEmail(String email);
+	
 	
 }

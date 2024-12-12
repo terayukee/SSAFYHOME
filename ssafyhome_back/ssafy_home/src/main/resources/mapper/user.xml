@@ -81,6 +81,14 @@
 	    and deleted = false
 	</update>
 	
+	
+	<select id="getUserByEmail" parameterType="string" resultMap="user">
+	    SELECT *
+	    FROM users
+	    WHERE user_email = #{email}
+	    AND deleted = false
+	</select>
+	
 	<select id="getDeletedUserByEmail" parameterType="string" resultMap="user">
 	    SELECT *
 	    FROM users

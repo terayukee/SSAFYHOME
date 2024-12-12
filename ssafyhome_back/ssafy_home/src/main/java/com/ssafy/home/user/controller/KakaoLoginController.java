@@ -57,6 +57,7 @@ public class KakaoLoginController {
              
             UserDto user;
             UserDto existingUser = userService.getUserByEmail(email);
+            log.info("기존 사용자 정보 : {}", existingUser);
             // 4.1. 기존 사용자가 아니라면 회원가입 처리
             if (existingUser == null) {
                 // 신규 회원인 경우 회원가입 처리
