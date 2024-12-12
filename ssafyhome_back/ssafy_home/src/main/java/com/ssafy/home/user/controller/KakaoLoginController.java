@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.home.user.model.UserDto;
 import com.ssafy.home.user.model.service.UserService;
+import com.ssafy.home.util.JWTUtil;
 import com.ssafy.home.util.KakaoUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,14 @@ public class KakaoLoginController {
 
     // 카카오 로그인 유틸
     private final KakaoUtil kakaoUtil;
+    
+    // jwt 
+    private JWTUtil jwtUtil;
 
-    public KakaoLoginController(UserService userService, KakaoUtil kakaoUtil) {
+    public KakaoLoginController(UserService userService, KakaoUtil kakaoUtil, JWTUtil jwtUtil) {
         this.kakaoUtil = kakaoUtil;
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/login")
@@ -43,10 +48,10 @@ public class KakaoLoginController {
 
             
             // 2. 인가 코드와 클라이언트 정보를 사용하여 액세스 토큰 가져오기
-            String accessToken = kakaoUtil.getAccessToken(code, clientId, redirectUri, clientSecret);
+            String kakaoAccessToken = kakaoUtil.getAccessToken(code, clientId, redirectUri, clientSecret);
 
             // 3. 액세스 토큰으로 사용자 정보 가져오기
-            Map<String, Object> userInfo = kakaoUtil.getUserInfo(accessToken);
+            Map<String, Object> userInfo = kakaoUtil.getUserInfo(kakaoAccessToken);
 
             String id = (String) userInfo.get("id");
             String nickname = (String) userInfo.get("nickname");
@@ -76,10 +81,15 @@ public class KakaoLoginController {
             else {
                 user = existingUser; // 기존 사용자
             }
+            
+            // 4. JWT 액세스 토큰 생성 (서버에서 관리)
+            String jwtAccessToken = jwtUtil.createAccessToken(user.getUserNo());
+            String jwtRefreshToken = jwtUtil.createRefreshToken(user.getUserNo());
 
             // 5. 사용자 정보와 토큰 반환
             return ResponseEntity.ok(Map.of(
-                "accessToken", accessToken,
+                "accessToken", jwtAccessToken,
+                "refreshToken", jwtRefreshToken,
                 "id", id,
                 "nickname", nickname,
                 "email", email,
