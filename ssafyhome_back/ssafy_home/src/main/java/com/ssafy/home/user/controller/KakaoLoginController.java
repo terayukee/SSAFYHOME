@@ -82,11 +82,15 @@ public class KakaoLoginController {
                 user = existingUser; // 기존 사용자
             }
             
-            // 4. JWT 액세스 토큰 생성 (서버에서 관리)
+            // 5. JWT 액세스 토큰 생성 (서버에서 관리)
             String jwtAccessToken = jwtUtil.createAccessToken(user.getUserNo());
             String jwtRefreshToken = jwtUtil.createRefreshToken(user.getUserNo());
+            
+            // 5.1. DB에 refreshToken 저장 
+            user.setRefreshToken(jwtRefreshToken);
+			userService.saveRefreshToken(user);
 
-            // 5. 사용자 정보와 토큰 반환
+            // 6. 사용자 정보와 토큰 반환
             return ResponseEntity.ok(Map.of(
                 "accessToken", jwtAccessToken,
                 "refreshToken", jwtRefreshToken,
