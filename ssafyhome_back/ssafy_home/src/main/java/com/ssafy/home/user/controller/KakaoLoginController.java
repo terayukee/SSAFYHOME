@@ -42,6 +42,8 @@ public class KakaoLoginController {
             @RequestParam String redirectUri,
             @RequestParam String clientSecret) {
         try {
+        	// ============= KAKAO 로직 =============
+        	
         	// 1. Front에서 정보 받아오기 
             log.info("카카오 인가 코드: {}", code);
             log.info("클라이언트 정보 - clientId: {}, redirectUri: {}, clientSecret: {}", clientId, redirectUri, clientSecret);
@@ -50,7 +52,7 @@ public class KakaoLoginController {
             // 2. 인가 코드와 클라이언트 정보를 사용하여 액세스 토큰 가져오기
             String kakaoAccessToken = kakaoUtil.getAccessToken(code, clientId, redirectUri, clientSecret);
 
-            // 3. 액세스 토큰으로 사용자 정보 가져오기
+            // 3. KAKAO 액세스 토큰으로 사용자 정보 가져오기
             Map<String, Object> userInfo = kakaoUtil.getUserInfo(kakaoAccessToken);
 
             String id = (String) userInfo.get("id");
@@ -59,13 +61,13 @@ public class KakaoLoginController {
 
             log.info("카카오 사용자 정보 - id: {}, nickname: {}, email : {}", id, nickname, email);
             
+        	// ============= 커스텀 로직 =============
              
             UserDto user;
             UserDto existingUser = userService.getUserByEmail(email);
             log.info("기존 사용자 정보 : {}", existingUser);
             // 4.1. 기존 사용자가 아니라면 회원가입 처리
             if (existingUser == null) {
-                // 신규 회원인 경우 회원가입 처리
                 UserDto newUser = new UserDto();
                 newUser.setUserNickname(nickname);
                 newUser.setEmail(email);
@@ -79,11 +81,11 @@ public class KakaoLoginController {
             } 
             // 4.2. 기존 사용자인 경우 
             else {
-                user = existingUser; // 기존 사용자
+                user = existingUser;
             }
             
             // 5. JWT 액세스 토큰 생성 (서버에서 관리)
-            String jwtAccessToken = jwtUtil.createAccessToken(user.getUserNo());
+            String jwtAccessToken = jwtUtil.createAccessToken(user);
             String jwtRefreshToken = jwtUtil.createRefreshToken(user.getUserNo());
             
             // 5.1. DB에 refreshToken 저장 
@@ -92,12 +94,8 @@ public class KakaoLoginController {
 
             // 6. 사용자 정보와 토큰 반환
             return ResponseEntity.ok(Map.of(
-                "accessToken", jwtAccessToken,
-                "refreshToken", jwtRefreshToken,
-                "id", id,
-                "nickname", nickname,
-                "email", email,
-                "userNo", user.getUserNo() // userNo 추가
+                "access-token", jwtAccessToken,
+                "refresh-token", jwtRefreshToken
             ));
 
         } catch (Exception e) {

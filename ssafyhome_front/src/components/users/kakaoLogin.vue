@@ -9,8 +9,7 @@ const { VITE_KAKAO_REST_API_KEY, VITE_KAKAO_REDIRECT_URI } = import.meta.env;
 
 // Pinia Store
 const userStore = useUserStore();
-const { setUserInfo } = userStore;
-const { isLogin } = storeToRefs(userStore);
+const { setUserInfo, parseAccessToken, setToken } = userStore;
 
 // Vue Router
 const router = useRouter();
@@ -26,21 +25,19 @@ const handleMessage = (event) => {
     return;
   }
 
-  const { accessToken, id, nickname, email, userNo, error } = event.data;
+  // jwtToken 세팅
+  console.log("카카오 로그인 토큰 : ", event.data);
+  setToken(event.data);
 
-  if (error) {
-    console.error("카카오 로그인 오류:", error);
-    alert("로그인 실패: " + error);
+  // accessToken 디코딩 후 상태 갱신
+  const userData = parseAccessToken(event.data["access-token"]);
+  setUserInfo(userData);
+
+  if (event.data.error) {
+    console.error("카카오 로그인 오류:", event.data.error);
+    alert("로그인 실패: " + event.data.error);
     return;
   }
-
-  console.log("카카오 로그인 성공:", { accessToken, id, nickname });
-
-  // 사용자 정보를 Pinia Store에 저장
-  setUserInfo({ id, nickname, accessToken, email, userNo });
-
-  // 로그인 상태 업데이트
-  isLogin.value = true;
 
   // 메인 페이지로 이동
   router.replace("/"); // Home.vue로 이동

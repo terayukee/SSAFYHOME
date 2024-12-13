@@ -5,8 +5,8 @@ import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import KakaoLogin from "./KakaoLogin.vue";
 const userStore = useUserStore();
-const { isLogin, accessToken, userInfo } = storeToRefs(userStore);
-const { userLogin, getUserInfo } = useUserStore();
+const { isLogin } = storeToRefs(userStore);
+const { userLogin } = useUserStore();
 const router = useRouter();
 
 const loginUser = ref({
@@ -17,14 +17,16 @@ const loginUser = ref({
 const isLoginFail = ref(false);
 
 const login = async () => {
+  // 로그인 처리 + 액세스 토큰에서 정보 뽑아오기
   await userLogin(loginUser.value);
-  const token = accessToken.value;
-  console.log("isLogin: " + isLogin.value);
+
+  // 1. 로그인 성공 시 메인 화면으로 이동
   if (isLogin.value) {
-    console.log("acessToken값 유저인포 전달", token);
-    getUserInfo(token);
+    console.log("로그인 성공");
     router.replace("/");
-  } else {
+  }
+  // 2. 로그인 실패 시 처리
+  else {
     isLoginFail.value = true;
     loginUser.value.userPassword = "";
   }

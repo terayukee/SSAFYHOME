@@ -10,10 +10,11 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.ssafy.home.user.model.UserDto;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,15 +34,20 @@ public class JWTUtil {
 	@Value("${jwt.refresh-token.expiretime}")
 	private long refreshTokenExpireTime;
 
-	// createToken 만들기
-	public String createAccessToken(int user_no) {
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("userNo", user_no);
-		claims.put("tokenType", "ACCESS");
-		return generateToken(claims, "access-token", accessTokenExpireTime);
+	// accessToken 만들기
+	public String createAccessToken(UserDto user) {
+	    Map<String, Object> claims = new HashMap<>();
+	    claims.put("userNo", user.getUserNo());
+	    claims.put("nickname", user.getUserNickname());
+	    claims.put("email", user.getEmail());
+	    claims.put("role", user.getRole());
+	    claims.put("tokenType", "ACCESS"); // 토큰 유형
+
+	    return generateToken(claims, "access-token", accessTokenExpireTime);
 	}
 
-	// AccessToken에 비해 유효기간을 길게 설정.
+
+	// refreshToken 만들기 
 	public String createRefreshToken(int user_no) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("userNo", user_no);

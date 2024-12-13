@@ -31,7 +31,6 @@ public interface UserService {
 	// 리프레시 토큰 삭제
 	void deleteRefreshToken(int userNo) throws Exception;
 	
-	Map<String, Object> checkUserInfo(UserDto userDto) throws Exception; 
 	
 	UserDto getDeletedUserByEmail(String email) throws Exception;
 	

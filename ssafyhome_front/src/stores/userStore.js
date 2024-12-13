@@ -27,26 +27,24 @@ export const useUserStore = defineStore(
     const refreshToken = ref(null);
     const userInfo = ref(null);
 
-    // const userInfo = ref(JSON.parse(localStorage.getItem("userInfo")) || null)
-
     const userLogin = async (loginUser) => {
       await userConfirm(
         loginUser,
         (response) => {
           if (response.status === httpStatusCode.CREATE) {
             console.log("로그인 성공!!!!");
-            let { data } = response;
-            isLogin.value = true;
-            isLoginError.value = false;
-            isValidToken.value = true;
 
-            accessToken.value = data["access-token"];
-            accessToken.value = data["refresh-token"];
+            // access-token, refresh-token
+            let { data } = response;
+            setToken(data);
+
+            // accessToken 디코딩 후 상태 갱신
+            const userData = parseAccessToken(accessToken.value);
+            setUserInfo(userData, data);
           }
         },
         (error) => {
           console.log("로그인 실패!!!!");
-          console.log(loginUser);
           isLogin.value = false;
           isLoginError.value = true;
           isValidToken.value = false;
@@ -97,32 +95,39 @@ export const useUserStore = defineStore(
       }
     };
 
-    const getUserInfo = async (token) => {
-      console.log("디코드 토큰!", token);
-      let decodeToken = jwtDecode(token);
-      console.log("디코드 토큰 쌩으로 ", decodeToken);
+    const getUserInfo = async (forceReload = false) => {
+      // forceReload가 true일 때만 서버 호출
+      if (!forceReload) {
+        console.log("accessToken 기반으로 사용자 정보 반환");
+        return userInfo.value;
+      }
 
+      console.log("서버에서 사용자 정보 가져오기");
       await findById(
-        decodeToken.userNo,
-        token,
+        userInfo.value.userNo,
+        accessToken.value,
         (response) => {
           if (response.status === httpStatusCode.OK) {
             userInfo.value = response.data.userInfo;
-            console.log(userInfo.value, "userInfo 업데이트");
-          } else {
-            console.log("유저 정보 없음!!!!");
           }
         },
-        async (error) => {
-          console.error(
-            "g[토큰 만료되어 사용 불가능.] : ",
-            error.response.status,
-            error.response.statusText
-          );
-          isValidToken.value = false;
-          await tokenRegenerate();
+        (error) => {
+          console.error("유저 정보 요청 실패:", error);
         }
       );
+    };
+
+    const parseAccessToken = (token) => {
+      const decoded = jwtDecode(token);
+      console.log("디코드된 accessToken:", decoded);
+
+      // 필요한 정보만 반환
+      return {
+        userNo: decoded.userNo,
+        nickname: decoded.nickname,
+        email: decoded.email,
+        role: decoded.role,
+      };
     };
 
     const tokenRegenerate = async () => {
@@ -168,12 +173,7 @@ export const useUserStore = defineStore(
         userInfo.value.userNo,
         (response) => {
           if (response.status === httpStatusCode.OK) {
-            isLogin.value = false;
-            userInfo.value = null;
-            isValidToken.value = false;
-
-            refreshToken.value = "";
-            accessToken.value = "";
+            setUserInfo(null); // Pinia 상태를 초기화
             console.log("로그아웃");
           } else {
             console.error("유저 정보 없음!!!!");
@@ -235,8 +235,6 @@ export const useUserStore = defineStore(
         isLogin.value = true;
         isValidToken.value = true;
         userInfo.value = userData;
-        accessToken.value = userData.accessToken || null; // 액세스 토큰이 있을 경우 설정
-        refreshToken.value = userData.refreshToken || null; // 리프레시 토큰이 있을 경우 설정
       } else {
         // 데이터가 없을 경우 기본 상태로 초기화
         isLogin.value = false;
@@ -244,6 +242,16 @@ export const useUserStore = defineStore(
         userInfo.value = null;
         accessToken.value = null;
         refreshToken.value = null;
+      }
+    };
+
+    const setToken = (jwtTokens) => {
+      if (jwtTokens) {
+        accessToken.value = jwtTokens["access-token"];
+        refreshToken.value = jwtTokens["refresh-token"];
+        console.log("토큰이 성공적으로 저장되었습니다.");
+      } else {
+        console.error("유효하지 않은 토큰 데이터입니다.");
       }
     };
 
@@ -263,6 +271,8 @@ export const useUserStore = defineStore(
       accessToken,
       refreshToken,
       setUserInfo,
+      parseAccessToken,
+      setToken,
     };
   },
   { persist: true }

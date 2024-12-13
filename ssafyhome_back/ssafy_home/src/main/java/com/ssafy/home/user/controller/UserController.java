@@ -51,10 +51,11 @@ public class UserController {
 			if(loginUser != null && !loginUser.getDeleted()) {
 				
 				// 토큰 생성
-				String accessToken = jwtUtil.createAccessToken(loginUser.getUserNo());
+				String accessToken = jwtUtil.createAccessToken(loginUser);
 				String refreshToken = jwtUtil.createRefreshToken(loginUser.getUserNo());
 				log.debug("access token : {}", accessToken);
 				log.debug("refresh token : {}", refreshToken);
+				
 				//발급받은 refresh token 을 DB에 저장.
 				loginUser.setRefreshToken(refreshToken);
 				userService.saveRefreshToken(loginUser);
@@ -108,16 +109,16 @@ public class UserController {
 	
 	// 만료된 토큰 재 발급
 	@PostMapping("/refresh")
-	public ResponseEntity<?> refreshToken(@RequestBody UserDto memberDto, @RequestHeader("refreshToken") String token) throws Exception {
+	public ResponseEntity<?> refreshToken(@RequestBody UserDto userDto, @RequestHeader("refreshToken") String token) throws Exception {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		
 //		String token = request.getHeader("refreshToken");
 		
-		log.debug("token : {}, memberDto : {}", token, memberDto);
+		log.debug("token : {}, userDto : {}", token, userDto);
 		if (jwtUtil.checkToken(token)) {
-			if (token.equals(userService.getRefreshToken(memberDto.getUserNo()))) {
-				String accessToken = jwtUtil.createAccessToken(memberDto.getUserNo());
+			if (token.equals(userService.getRefreshToken(userDto.getUserNo()))) {
+				String accessToken = jwtUtil.createAccessToken(userDto);
 				log.debug("token : {}", accessToken);
 				log.debug("정상적으로 access token 재발급!!!");
 				resultMap.put("access-token", accessToken);
@@ -131,20 +132,26 @@ public class UserController {
 	}
 	
 	
-	@PostMapping("/logout")
-	public ResponseEntity<?> removeToken(@RequestParam String userNo) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = HttpStatus.ACCEPTED;
-		try {
-			userService.deleteRefreshToken(Integer.parseInt(userNo));
-			status = HttpStatus.OK;
-		} catch (Exception e) {
-			log.error("로그아웃 실패 : {}", e);
-			resultMap.put("message", e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	@GetMapping("/logout")
+	public ResponseEntity<?> removeToken(@RequestParam int userNo) {
+	    Map<String, Object> resultMap = new HashMap<>();
+	    HttpStatus status = HttpStatus.ACCEPTED;
+
+	    try {
+	        // RefreshToken 삭제 로직
+	        userService.deleteRefreshToken(userNo);
+	        status = HttpStatus.OK;
+	        resultMap.put("message", "로그아웃 성공");
+	        log.info("사용자 {} 로그아웃 성공", userNo);
+	    } catch (Exception e) {
+	        log.error("로그아웃 실패 : {}", e.getMessage());
+	        resultMap.put("message", "로그아웃 중 오류가 발생했습니다.");
+	        status = HttpStatus.INTERNAL_SERVER_ERROR;
+	    }
+
+	    return ResponseEntity.status(status).body(resultMap);
 	}
+
 	
 	@PostMapping("/register")
 	public ResponseEntity<Map<String, Object>> regist(@RequestBody UserDto user) {

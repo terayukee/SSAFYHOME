@@ -25,16 +25,12 @@ const handleKakaoLogin = async () => {
       console.log("카카오 로그인 성공:", res);
 
       // 사용자 정보를 부모 창으로 전달
-      const userInfo = {
-        accessToken: res.data.accessToken,
-        refreshToken: res.data.refreshToken,
-        id: res.data.id,
-        nickname: res.data.nickname,
-        email: res.data.email,
-        userNo: res.data.userNo,
+      const jwtTokens = {
+        "access-token": res.data["access-token"],
+        "refresh-token": res.data["refresh-token"],
       };
 
-      window.opener.postMessage(userInfo, "*"); // 부모 창으로 메시지 전달
+      window.opener.postMessage(jwtTokens, "*"); // 부모 창으로 메시지 전달
       window.close(); // 팝업 창 닫기
     },
     (err) => {
