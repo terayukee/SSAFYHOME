@@ -13,7 +13,7 @@ function localAxios() {
   return instance;
 }
 
-// 소셜 로그인
+// /user
 function userAxios() {
   const instance = axios.create({
     baseURL: VITE_VUE_API_URL + "/user",
@@ -134,7 +134,7 @@ function oauthAxios() {
   return instance;
 }
 
-// 이ㄴ증
+// 인증
 function authAxios() {
   const instance = axios.create({
     baseURL: VITE_VUE_API_URL + "/auth",

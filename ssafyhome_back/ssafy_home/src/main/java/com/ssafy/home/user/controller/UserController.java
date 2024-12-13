@@ -89,9 +89,10 @@ public class UserController {
 		if (jwtUtil.checkToken(header)) {
 			log.info("사용 가능한 토큰!!!");
 			try {
-				UserDto memberDto = userService.getUserInfo(userId);
-				resultMap.put("userInfo", memberDto);
-				System.out.println(memberDto);
+				UserDto userDto = userService.getUserInfo(userId);
+				resultMap.put("userInfo", userDto);
+				log.info("사용자 정보 decode : {}", userDto);
+				System.out.println(userDto);
 				status = HttpStatus.OK;
 			} catch (Exception e) {
 				log.error("정보조회 실패 : {}", e);

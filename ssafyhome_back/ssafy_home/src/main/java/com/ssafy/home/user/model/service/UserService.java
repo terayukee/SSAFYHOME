@@ -11,7 +11,7 @@ public interface UserService {
 	UserDto login(UserDto userDto) throws Exception;
 	
 	// 단일유저정보 
-	UserDto getUserInfo(String userId) throws Exception;
+	UserDto getUserInfo(String userNo) throws Exception;
 	
 	// 유저 전체
 	List<UserDto> getAllUserList() throws Exception;

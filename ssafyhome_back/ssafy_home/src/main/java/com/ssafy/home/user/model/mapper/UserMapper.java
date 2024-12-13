@@ -13,7 +13,7 @@ public interface UserMapper {
 	// 로그인
 	UserDto login(UserDto userDto) throws SQLException;
 	// 단일유저정보 
-	UserDto getUserInfo(String userId) throws SQLException;
+	UserDto getUserInfo(String userNo) throws SQLException;
 	// 유저 전체
 	List<UserDto> getAllUserList() throws SQLException;
 	// 회원가입

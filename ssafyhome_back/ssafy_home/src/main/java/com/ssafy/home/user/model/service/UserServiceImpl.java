@@ -30,8 +30,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto getUserInfo(String userId) throws Exception {
-		return userMapper.getUserInfo(userId);
+	public UserDto getUserInfo(String userNo) throws Exception {
+		return userMapper.getUserInfo(userNo);
 	}
 
 	@Override
