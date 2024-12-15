@@ -47,6 +47,7 @@ const isNotLoginUser = async (to, from, next) => {
 // accessToken 검증
 const isValidToken = async (to, from, next) => {
   const userStore = useUserStore();
+  const { userLogout } = userStore;
   const accessToken = userStore.accessToken;
 
   if (!accessToken) {
@@ -66,13 +67,18 @@ const isValidToken = async (to, from, next) => {
       "토큰 유효성 검사 실패:",
       error.response?.data || error.message
     );
-    userStore.logout(); // 로그아웃 처리
+
+    userLogout(); // 로그아웃 처리
     next({ name: "login" }); // 로그인 페이지로 이동
   }
 };
 
 // 로그인 상태일때
 const isAdmin = async (to, from, next) => {
+  // 1. 토큰 확인
+  await isValidToken();
+
+  // 2. 권한 확인
   const userStore = useUserStore();
   const { userInfo } = storeToRefs(userStore);
   console.log(userInfo.value.role);

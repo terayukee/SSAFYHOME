@@ -75,12 +75,12 @@ public class JWTUtil {
 	}
 
 //	전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 UnauthorizedException 발생.
-	public boolean checkToken(String token) {
+	public boolean checkToken(String accessToken) {
 		try {
 //			Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
 //			setSigningKey : JWS 서명 검증을 위한  secret key 세팅
 //			parseClaimsJws : 파싱하여 원본 jws 만들기	
-			Jws<Claims> claims = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
+			Jws<Claims> claims = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(accessToken);
 			log.debug("claims: {}", claims);
 
 			return true;

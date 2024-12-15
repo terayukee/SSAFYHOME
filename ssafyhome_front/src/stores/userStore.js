@@ -173,7 +173,8 @@ export const useUserStore = defineStore(
         userInfo.value.userNo,
         (response) => {
           if (response.status === httpStatusCode.OK) {
-            setUserInfo(null); // Pinia 상태를 초기화
+            setToken(null); // jwt 토큰 초기화
+            setUserInfo(null); // userInfo pinia 정보 초기화
             console.log("로그아웃");
           } else {
             console.error("유저 정보 없음!!!!");
@@ -240,8 +241,6 @@ export const useUserStore = defineStore(
         isLogin.value = false;
         isValidToken.value = false;
         userInfo.value = null;
-        accessToken.value = null;
-        refreshToken.value = null;
       }
     };
 
@@ -251,7 +250,9 @@ export const useUserStore = defineStore(
         refreshToken.value = jwtTokens["refresh-token"];
         console.log("토큰이 성공적으로 저장되었습니다.");
       } else {
-        console.error("유효하지 않은 토큰 데이터입니다.");
+        accessToken.value = null;
+        refreshToken.value = null;
+        console.log("토큰 정보 삭제 ");
       }
     };
 

@@ -21,8 +21,8 @@ public class AuthController {
 
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authorization) {
-        String token = authorization.replace("Bearer ", "");
-        if (jwtUtil.checkToken(token)) {
+        String accessToken = authorization.replace("Bearer ", "");
+        if (jwtUtil.checkToken(accessToken)) {
             return ResponseEntity.ok().build(); // 유효한 토큰
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
