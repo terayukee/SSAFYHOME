@@ -4,15 +4,15 @@ import { defineStore } from "pinia";
 import { jwtDecode } from "jwt-decode";
 
 import {
-  userConfirm,
   findById,
-  tokenRegeneration,
-  logout,
   registerUser,
   updateUser,
   deleteUser,
   userRestore,
 } from "@/api/user";
+
+import { login, logout, tokenRegeneration, validateToken } from "@/api/auth";
+
 import { httpStatusCode } from "@/util/http-status";
 
 export const useUserStore = defineStore(
@@ -28,7 +28,7 @@ export const useUserStore = defineStore(
     const userInfo = ref(null);
 
     const userLogin = async (loginUser) => {
-      await userConfirm(
+      await login(
         loginUser,
         (response) => {
           if (response.status === httpStatusCode.CREATE) {
