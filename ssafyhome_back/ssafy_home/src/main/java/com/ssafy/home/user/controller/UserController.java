@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.home.user.model.UserDto;
 import com.ssafy.home.user.model.service.UserService;
+import com.ssafy.home.util.AuthUtil;
 import com.ssafy.home.util.JWTUtil;
+import com.ssafy.home.util.KakaoUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,56 +31,45 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController {
 	
-	private UserService userService;
-	private JWTUtil jwtUtil;
+	// 유저 서비스
+    private final UserService userService;
+    
+    // jwt 
+    private JWTUtil jwtUtil;
+    
+    // 인증 
+    private AuthUtil authUtil;
 	
-	public UserController(UserService userService, JWTUtil jwtUtil) {
-		super();
-		this.userService = userService;
-		this.jwtUtil = jwtUtil;
-	}
+	public UserController(UserService userService, JWTUtil jwtUtil, AuthUtil authUtil) {        
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+        this.authUtil = authUtil;
+    }
 	
 	@PostMapping("/login")
-	public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto userDto) {
-		
-		// 토큰 저장
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		HttpStatus status = HttpStatus.ACCEPTED;
-		try {
-			UserDto loginUser = userService.login(userDto);
-		
-			// 유저가 있으면
-			if(loginUser != null && !loginUser.getDeleted()) {
-				
-				// 토큰 생성
-				String accessToken = jwtUtil.createAccessToken(loginUser);
-				String refreshToken = jwtUtil.createRefreshToken(loginUser.getUserNo());
-				log.debug("access token : {}", accessToken);
-				log.debug("refresh token : {}", refreshToken);
-				
-				//발급받은 refresh token 을 DB에 저장.
-				loginUser.setRefreshToken(refreshToken);
-				userService.saveRefreshToken(loginUser);
-				
-				//JSON 으로 token 전달.
-				resultMap.put("access-token", accessToken);
-				resultMap.put("refresh-token", refreshToken);
-				
-				System.out.println(accessToken);
-				System.out.println(refreshToken);
-				status = HttpStatus.CREATED;
-				System.out.println("정상실행");
-			} else {
-				status = HttpStatus.OK;
-			} 
-		} catch (Exception e) {
-			log.debug("로그인 에러 발생 : {}", e);
-			e.printStackTrace();
-			resultMap.put("message", e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+	    try {
+	        // 1. 사용자 인증
+	        UserDto loginUser = userService.login(userDto);
+
+	        if (loginUser != null && !loginUser.getDeleted()) {
+	            // 2. JWT 토큰 생성 및 저장
+	            Map<String, String> tokens = authUtil.generateAndStoreTokens(loginUser);
+
+	            // 3. 토큰 반환
+	            return ResponseEntity.status(HttpStatus.CREATED).body(tokens);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "로그인 실패"));
+	        }
+	    } catch (Exception e) {
+	        log.error("로그인 에러 발생 : {}", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+	            "error", "서버 에러가 발생했습니다.",
+	            "details", e.getMessage()
+	        ));
+	    }
 	}
+
 	
 	@GetMapping("/info/{userNo}")
 	public ResponseEntity<Map<String, Object>> getInfo(
