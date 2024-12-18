@@ -19,17 +19,17 @@ let loginBox = null;
 
 // 메시지 이벤트 리스너
 const handleMessage = (event) => {
-  // 출처 확인
+  // before. 출처 확인
   if (event.origin !== window.location.origin) {
     console.error("Invalid message origin:", event.origin);
     return;
   }
 
-  // jwtToken 세팅
+  // 1. jwtToken 세팅
   console.log("카카오 로그인 토큰 : ", event.data);
   setToken(event.data);
 
-  // accessToken 디코딩 후 상태 갱신
+  // 2. accessToken 디코딩 후 상태 갱신
   const userData = parseAccessToken(event.data["access-token"]);
   setUserInfo(userData);
 
@@ -39,7 +39,7 @@ const handleMessage = (event) => {
     return;
   }
 
-  // 메인 페이지로 이동
+  // finally. 메인 페이지로 이동
   router.replace("/"); // Home.vue로 이동
 };
 
