@@ -42,24 +42,16 @@
 
 ![slide14](./assets/images/slide14.png)
 
->>>>>>> d45a22b60e6aaa4b3b70c3d7558c9b806ddd8fa9
+
 ---
 
 ### 🌟 Class Diagram
-
-<<<<<<< HEAD
-![클래스_다이어그램](/uploads/8d782446ab1a8e3d74e08783131fc3b8/클래스_다이어그램.jpg)
-
-### 🌟 EER Diagram
-
-![image__2_](/uploads/f22af1b2397c899ba5570a019860afbc/image__2_.png)
-=======
 ![클래스_다이어그램](./assets/images/class_diagram.jpg)
 
 ### 🌟 EER Diagram
 
 ![image__2_](./assets/images/eer_diagram.png)
->>>>>>> d45a22b60e6aaa4b3b70c3d7558c9b806ddd8fa9
+
 
 ### 🌟 요구사항 정의서
 
