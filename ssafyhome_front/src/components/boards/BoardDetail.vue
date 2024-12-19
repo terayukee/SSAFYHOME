@@ -1,11 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { detailArticle, deleteArticle } from '@/api/board';
-import { useUserStore } from '@/stores/userStore';
-import { storeToRefs } from 'pinia';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { detailArticle, deleteArticle } from "@/api/board";
+import { useUserStore } from "@/stores/userStore";
+import { storeToRefs } from "pinia";
+const { VITE_VUE_API_URL } = import.meta.env;
 const userStore = useUserStore();
-const { userInfo } = storeToRefs(userStore); 
+const { userInfo } = storeToRefs(userStore);
 
 const route = useRoute();
 const router = useRouter();
@@ -14,50 +15,50 @@ const router = useRouter();
 const currentPage = ref(route.params.page || 1);
 const boardNo = ref(route.params.boardNo);
 const isLoading = ref(false);
-const errorMessage = ref('');
+const errorMessage = ref("");
 
 // 게시글 데이터
 const article = ref({
-  subject: '',
-  content: '',
-  userNickname: '',
+  subject: "",
+  content: "",
+  userNickname: "",
   registerTime: new Date(),
-  attachments: []
+  attachments: [],
 });
 
 // 날짜 포맷 함수
 const formatDate = (date) => {
   try {
-    return new Date(date).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(date).toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch (error) {
-    console.error('날짜 변환 중 오류:', error);
-    return '날짜 정보 없음';
+    console.error("날짜 변환 중 오류:", error);
+    return "날짜 정보 없음";
   }
 };
 
 // 게시글 불러오기
 const getArticle = () => {
   isLoading.value = true;
-  errorMessage.value = '';
-  
+  errorMessage.value = "";
+
   detailArticle(
     boardNo.value,
     ({ data }) => {
       article.value = {
         ...data,
-        attachments: data.fileInfos || []
+        attachments: data.fileInfos || [],
       };
       isLoading.value = false;
     },
     (error) => {
-      console.error('게시글 로딩 중 오류:', error);
-      errorMessage.value = '게시글을 불러오는 중 오류가 발생했습니다.';
+      console.error("게시글 로딩 중 오류:", error);
+      errorMessage.value = "게시글을 불러오는 중 오류가 발생했습니다.";
       isLoading.value = false;
     }
   );
@@ -65,8 +66,10 @@ const getArticle = () => {
 
 // 파일 다운로드
 const downloadFile = (filePath) => {
-  const link = document.createElement('a');
-  link.href = `http://localhost/home/board/file/download?filePath=${encodeURIComponent(filePath)}`;
+  const link = document.createElement("a");
+  link.href = `${VITE_VUE_API_URL}/board/file/download?filePath=${encodeURIComponent(
+    filePath
+  )}`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -74,42 +77,42 @@ const downloadFile = (filePath) => {
 
 // 목록으로 돌아가기
 const goToList = () => {
-  router.push({ 
-    name: 'board-list-page', 
-    params: { page: currentPage.value }
+  router.push({
+    name: "board-list-page",
+    params: { page: currentPage.value },
   });
 };
 
 // 게시글 수정 페이지로 이동
 const goToUpdate = () => {
   router.push({
-    name: 'board-edit',
+    name: "board-edit",
     params: { boardNo: boardNo.value },
-    query: { page: currentPage.value }
+    query: { page: currentPage.value },
   });
 };
 
 // 게시글 삭제
 const deletePost = async () => {
-  if (confirm('정말 이 게시글을 삭제하시겠습니까?')) {
+  if (confirm("정말 이 게시글을 삭제하시겠습니까?")) {
     try {
       await deleteArticle(
         boardNo.value,
         () => {
-          alert('게시글이 삭제되었습니다.');
-          router.push({ 
-            name: 'board-list-page', 
-            params: { page: currentPage.value }
+          alert("게시글이 삭제되었습니다.");
+          router.push({
+            name: "board-list-page",
+            params: { page: currentPage.value },
           });
         },
         (error) => {
-          console.error('게시글 삭제 중 오류:', error);
-          alert('게시글 삭제 중 오류가 발생했습니다.');
+          console.error("게시글 삭제 중 오류:", error);
+          alert("게시글 삭제 중 오류가 발생했습니다.");
         }
       );
     } catch (error) {
-      console.error('게시글 삭제 중 오류:', error);
-      alert('게시글 삭제 중 오류가 발생했습니다.');
+      console.error("게시글 삭제 중 오류:", error);
+      alert("게시글 삭제 중 오류가 발생했습니다.");
     }
   }
 };
@@ -120,9 +123,7 @@ onMounted(getArticle);
 <template>
   <div class="post-container">
     <!-- 로딩 상태 -->
-    <div v-if="isLoading" class="loading-spinner">
-      로딩 중...
-    </div>
+    <div v-if="isLoading" class="loading-spinner">로딩 중...</div>
 
     <!-- 에러 메시지 -->
     <div v-if="errorMessage" class="error-message">
@@ -147,13 +148,16 @@ onMounted(getArticle);
       <div v-if="article.attachments?.length > 0" class="attachments">
         <h3>첨부파일</h3>
         <ul>
-          <li v-for="(file, index) in article.attachments" 
-              :key="index"
-              class="attachment-item">
+          <li
+            v-for="(file, index) in article.attachments"
+            :key="index"
+            class="attachment-item"
+          >
             <a
               @click.prevent="downloadFile(file.filePath)"
               href="#"
-              class="download-link">
+              class="download-link"
+            >
               {{ file.fileName }}
               <span class="file-size">({{ file.fileSize }} KB)</span>
             </a>
@@ -164,15 +168,21 @@ onMounted(getArticle);
       <!-- 버튼 영역 -->
       <div class="button-area">
         <div class="left-buttons">
-          <button @click="goToList" class="list-button">
-            목록으로
-          </button>
+          <button @click="goToList" class="list-button">목록으로</button>
         </div>
         <div class="right-buttons">
-          <button @click="goToUpdate" class="edit-button"  v-if="userInfo && userInfo.role === 'ADMIN'">
+          <button
+            @click="goToUpdate"
+            class="edit-button"
+            v-if="userInfo && userInfo.role === 'ADMIN'"
+          >
             수정
           </button>
-          <button @click="deletePost" class="delete-button"  v-if="userInfo && userInfo.role === 'ADMIN'">
+          <button
+            @click="deletePost"
+            class="delete-button"
+            v-if="userInfo && userInfo.role === 'ADMIN'"
+          >
             삭제
           </button>
         </div>
@@ -273,7 +283,7 @@ onMounted(getArticle);
 .right-buttons {
   /* 오른쪽 버튼 그룹 */
   display: flex;
-  gap: 10px;  /* 버튼 사이 간격 */
+  gap: 10px; /* 버튼 사이 간격 */
 }
 
 .list-button {
