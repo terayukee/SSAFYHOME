@@ -25,17 +25,30 @@ jobs:
         with:
           node-version: '20.18.1'
 
-      # 3. Install dependencies
+      # 3. Generate .env.production file
+      - name: Generate .env.production file
+        working-directory: ./ssafyhome_front
+        run: |
+          echo "VITE_OPEN_API_SERVICE_KEY=${{ secrets.VITE_OPEN_API_SERVICE_KEY }}" >> .env.production
+          echo "VITE_KAKAO_MAP_SERVICE_KEY=${{ secrets.VITE_KAKAO_MAP_SERVICE_KEY }}" >> .env.production
+          echo "VITE_VUE_API_URL=${{ secrets.VITE_VUE_API_URL }}" >> .env.production
+          echo "VITE_KAKAO_REST_API_KEY=${{ secrets.VITE_KAKAO_REST_API_KEY }}" >> .env.production
+          echo "VITE_KAKAO_REDIRECT_URI=${{ secrets.VITE_KAKAO_REDIRECT_URI }}" >> .env.production
+          echo "VITE_KAKAO_CLIENT_SECRET=${{ secrets.VITE_KAKAO_CLIENT_SECRET }}" >> .env.production
+          echo "VITE_ARTICLE_LIST_SIZE=${{ secrets.VITE_ARTICLE_LIST_SIZE }}" >> .env.production
+          echo "VITE_ARTICLE_NAVIGATION_SIZE=${{ secrets.VITE_ARTICLE_NAVIGATION_SIZE }}" >> .env.production
+
+      # 4. Install dependencies
       - name: Install dependencies
         working-directory: ./ssafyhome_front
         run: npm ci
 
-      # 4. Build the Vue.js application
+      # 5. Build the Vue.js application
       - name: Build Vue.js Application
         working-directory: ./ssafyhome_front
         run: npm run build
 
-      # 5. Deploy to Azure Static Web Apps
+      # 6. Deploy to Azure Static Web Apps
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
