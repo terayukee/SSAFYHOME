@@ -15,16 +15,15 @@ jobs:
       - uses: actions/checkout@v4
 
       # 2. Set up Java version
-      - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
-      # 3. Build with Maven (Allow Test Failures)
+      # 3. Build with Maven (Activate Production Profile)
       - name: Build with Maven
         working-directory: ./ssafyhome_back/ssafy_home
-        run: mvn clean install -Dmaven.test.failure.ignore=true
+        run: mvn clean install -Dspring.profiles.active=prod -Dmaven.test.failure.ignore=true
 
       # 4. Upload surefire reports
       - name: Upload surefire reports
