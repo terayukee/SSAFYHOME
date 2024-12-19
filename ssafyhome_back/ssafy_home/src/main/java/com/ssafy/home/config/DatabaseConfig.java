@@ -16,7 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 
 
 @Configuration
-@PropertySource("classpath:/application.properties") // 프로퍼티 파일 로드
+@PropertySource("classpath:/application-${spring.profiles.active}.properties")
 @MapperScan(basePackages = { "com.ssafy.home.*.model.mapper" }) // Mapper 인터페이스 스캔 경로
 public class DatabaseConfig {
 

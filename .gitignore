@@ -39,7 +39,7 @@ build/
 *.mp4
 
 ### 민감 파일 ###
-application.properties
+application*.properties
 *.env
 *.env.production
 
