@@ -4,20 +4,26 @@ import { computed } from "vue";
 const props = defineProps({ currentPage: Number, totalPage: Number });
 const emit = defineEmits(["pageChange"]);
 
-const navigationSize = parseInt(import.meta.env.VITE_ARTICLE_NAVIGATION_SIZE);
+const navigationSize = 10;
 
 const startPage = computed(() => {
-  return parseInt((props.currentPage - 1) / navigationSize) * navigationSize + 1;
+  return (
+    parseInt((props.currentPage - 1) / navigationSize) * navigationSize + 1
+  );
 });
 
 const endPage = computed(() => {
   let lastPage =
-    parseInt((props.currentPage - 1) / navigationSize) * navigationSize + navigationSize;
+    parseInt((props.currentPage - 1) / navigationSize) * navigationSize +
+    navigationSize;
   return props.totalPage < lastPage ? props.totalPage : lastPage;
 });
 
 const endRange = computed(() => {
-  return parseInt((props.totalPage - 1) / navigationSize) * navigationSize < props.currentPage;
+  return (
+    parseInt((props.totalPage - 1) / navigationSize) * navigationSize <
+    props.currentPage
+  );
 });
 
 function range(start, end) {
@@ -38,7 +44,9 @@ function onPageChange(pg) {
         <button @click="onPageChange(1)">최신</button>
       </li>
       <li>
-        <button @click="onPageChange(startPage == 1 ? 1 : startPage - 1)">이전</button>
+        <button @click="onPageChange(startPage == 1 ? 1 : startPage - 1)">
+          이전
+        </button>
       </li>
       <template v-for="pg in range(startPage, endPage)" :key="pg">
         <li :class="{ active: currentPage === pg }">
@@ -46,7 +54,9 @@ function onPageChange(pg) {
         </li>
       </template>
       <li>
-        <button @click="onPageChange(endRange ? totalPage : endPage + 1)">다음</button>
+        <button @click="onPageChange(endRange ? totalPage : endPage + 1)">
+          다음
+        </button>
       </li>
       <li>
         <button @click="onPageChange(totalPage)">마지막</button>
