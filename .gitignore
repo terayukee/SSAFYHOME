@@ -41,6 +41,7 @@ build/
 ### 민감 파일 ###
 application.properties
 *.env
+*.env.production
 
 ### 기타 ###
 *.jar
