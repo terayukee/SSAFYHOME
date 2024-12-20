@@ -23,14 +23,17 @@ jobs:
 
       # 3. Create application.properties
       - name: Create resources directory
+        working-directory: ./ssafyhome_back/ssafy_home
         run: mkdir -p src/main/resources
       
       - name: Create application.properties
+        working-directory: ./ssafyhome_back/ssafy_home
         run: |
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
 
       # 4. Create application-prod.properties
       - name: Create application-prod.properties
+        working-directory: ./ssafyhome_back/ssafy_home
         run: |
           echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" > src/main/resources/application-prod.properties
 
