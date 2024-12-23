@@ -31,7 +31,7 @@ function getRandomNewsImage(newsId) {
   }
 
   const randomNum = Math.floor(Math.random() * 20) + 1;
-  const imagePath = `/src/assets/news/news${randomNum}.jpg`;
+  const imagePath = `/assets/news/news${randomNum}.jpg`;
   newsImages.value.set(newsId, imagePath);
   return imagePath;
 }
