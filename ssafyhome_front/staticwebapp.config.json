@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "route": "/oauth/callback/kakao",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/home",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/*",
+      "rewrite": "/index.html"
+    }
+  ]
+}
