@@ -14,7 +14,7 @@ public class WebConfiguration implements WebMvcConfigurer{
 	public void addCorsMappings(CorsRegistry registry) {
 		registry
 			.addMapping("/**")
-			.allowedOrigins("*")
+			.allowedOrigins("https://witty-moss-0e91d2d00.4.azurestaticapps.net")
 			.allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
 						HttpMethod.DELETE.name(), HttpMethod.HEAD.name(), HttpMethod.OPTIONS.name(),
 						HttpMethod.PATCH.name())
